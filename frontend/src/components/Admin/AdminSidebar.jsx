@@ -210,11 +210,6 @@ export default function AdminSidebar() {
     // Initial fetch
     fetchPendingCounts();
     
-    // Set up interval to refresh counts every minute
-    const intervalId = setInterval(fetchPendingCounts, 10);
-    
-    // Clean up interval on component unmount
-    return () => clearInterval(intervalId);
   }, []);
 
   const toggleDrawer = () => {
