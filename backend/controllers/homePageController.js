@@ -308,11 +308,11 @@ export const updateOfficials = async (req, res) => {
 // Upload carousel images
 export const uploadCarouselImages = async (req, res) => {
   try {
-    const { adminName } = req.body;
+    console.log('Request body:', req.body); // Debug log
+    console.log('Request files:', req.files ? req.files.length : 'No files'); // Debug log
     
-    if (!adminName) {
-      return res.status(400).json({ message: 'Admin name is required for logging' });
-    }
+    // Default to 'Unknown Admin' if adminName is missing
+    const adminName = req.body?.adminName || 'Unknown Admin';
     
     let homepageContent = await HomepageContent.findOne();
     
@@ -342,7 +342,7 @@ export const uploadCarouselImages = async (req, res) => {
     }
     
     // Update or replace carousel images based on action
-    if (req.body.action === 'replace') {
+    if (req.body && req.body.action === 'replace') {
       // Delete old images first
       for (const image of homepageContent.carouselImages) {
         // Only delete from Supabase if the path contains supabase.co
@@ -362,17 +362,22 @@ export const uploadCarouselImages = async (req, res) => {
     
     await homepageContent.save();
     
-    await logAdminAction(
-      adminName,
-      'UPDATE_HOMEPAGE_CAROUSEL',
-      `${req.body.action === 'replace' ? 'Replaced' : 'Added'} carousel images`,
-      homepageContent._id
-    );
+    try {
+      await logAdminAction(
+        adminName,
+        'UPDATE_HOMEPAGE_CAROUSEL',
+        `${(req.body && req.body.action === 'replace') ? 'Replaced' : 'Added'} carousel images`,
+        homepageContent._id
+      );
+    } catch (logError) {
+      console.error('Error logging admin action:', logError);
+      // Continue anyway if logging fails
+    }
     
     res.status(200).json(homepageContent);
   } catch (error) {
     console.error('Error uploading carousel images:', error);
-    res.status(500).json({ message: 'Error uploading carousel images', error: error.message });
+    res.status(500).json({ message: 'Error uploading carousel images. Please try again.', error: error.message });
   }
 };
 
