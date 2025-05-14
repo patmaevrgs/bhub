@@ -30,7 +30,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import CancelIcon from '@mui/icons-material/Cancel';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function ResidentReport() {
   const [loading, setLoading] = useState(false);

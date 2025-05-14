@@ -34,7 +34,7 @@ import {
   ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 // Resident type options - keeping original values
 const residentTypes = ['Minor', '18-30', 'Illiterate', 'PWD', 'Senior Citizen', 'Indigent'];

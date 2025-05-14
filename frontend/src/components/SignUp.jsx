@@ -37,7 +37,7 @@ import ReportIcon from '@mui/icons-material/Report';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CircularProgress from '@mui/material/CircularProgress';
-import API_BASE_URL from '../../config';
+import API_BASE_URL from '../config';
 import bhubLogo from '../assets/bhub-logo.png';
 
 function SignUp() {

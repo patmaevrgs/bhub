@@ -50,7 +50,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { format } from 'date-fns';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function AdminProposal() {
   const theme = useTheme();

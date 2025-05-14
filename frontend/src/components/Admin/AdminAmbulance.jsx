@@ -77,7 +77,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import SearchIcon from '@mui/icons-material/Search';
 import { alpha } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 // Tab panel component for the bookings tabs
 function TabPanel(props) {

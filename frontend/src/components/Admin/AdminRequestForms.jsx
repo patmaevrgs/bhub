@@ -49,7 +49,7 @@ import {
   Comment as CommentIcon
 } from '@mui/icons-material';
 import { format } from 'date-fns';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function AdminRequestForms() {
   // State for document requests

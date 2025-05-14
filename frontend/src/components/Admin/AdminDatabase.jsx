@@ -59,7 +59,7 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { alpha } from '@mui/material/styles';
 import PendingIcon from '@mui/icons-material/Pending';
 import Avatar from '@mui/material/Avatar';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 
 // Resident type options

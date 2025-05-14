@@ -31,7 +31,7 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import EditIcon from '@mui/icons-material/Edit';
 import InfoIcon from '@mui/icons-material/Info';
 import { Chip } from '@mui/material';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function AdminProfile() {
   // State for user profile

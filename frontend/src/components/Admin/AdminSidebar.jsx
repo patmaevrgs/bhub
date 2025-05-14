@@ -39,7 +39,7 @@ import {
 import CircleIcon from '@mui/icons-material/Circle';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 import bhubLogo from '../../assets/bhub-logo.png';
 
 const drawerWidth = 250;

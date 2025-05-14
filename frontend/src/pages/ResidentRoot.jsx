@@ -4,7 +4,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import ResidentNav from '../components/Resident/ResidentNav';
 import Footer from '../components/Resident/Footer';
 import { Box, Container } from '@mui/material';
-import API_BASE_URL from '../../config';
+import API_BASE_URL from '../config';
 
 function ResidentRoot() {
   const [ResidentFirstName, setResidentFirstName] = useState('');

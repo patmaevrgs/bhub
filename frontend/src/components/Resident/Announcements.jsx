@@ -49,7 +49,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 // Dialog transition effect
 const Transition = React.forwardRef(function Transition(props, ref) {

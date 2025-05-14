@@ -38,8 +38,29 @@ mongoose.connect(MONGODB_URI, {
 });
 
 // CORS configuration
+// CORS configuration
 app.use(cors({
-  origin: FRONTEND_URL,
+  origin: [FRONTEND_URL, 'https://bhub-maahas.netlify.app'],
+  credentials: true
+}));
+
+// For better flexibility, you can do this:
+const allowedOrigins = [
+  FRONTEND_URL,
+  'https://bhub-maahas.netlify.app',
+  'http://localhost:3000'
+];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, etc)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
   credentials: true
 }));
 
@@ -47,6 +68,22 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS,POST,DELETE,PUT");
   res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers,Access-Control-Allow-Methods,Origin,Accept,Content-Type,X-Requested-With,Cookie");
   res.setHeader("Access-Control-Allow-Credentials", "true");
+  next();
+});
+
+// Set secure cookie settings for production
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'production') {
+    res.originalCookie = res.cookie;
+    res.cookie = function(name, value, options) {
+      const productionOptions = {
+        ...options,
+        sameSite: 'None',
+        secure: true,
+      };
+      return res.originalCookie(name, value, productionOptions);
+    };
+  }
   next();
 });
 

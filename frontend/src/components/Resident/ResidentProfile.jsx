@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff, Edit } from '@mui/icons-material';
 import Cookies from 'universal-cookie'; // Import Cookies
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function ResidentProfile() {
   // State for user profile

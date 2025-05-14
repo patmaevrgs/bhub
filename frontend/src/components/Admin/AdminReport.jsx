@@ -21,7 +21,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function AdminReport() {
   const [loading, setLoading] = useState(true);

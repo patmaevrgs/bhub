@@ -3,7 +3,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import LandingNavbar from '../components/LandingNavbar';
 import Footer from '../components/Resident/Footer';
 import { Box, Container } from '@mui/material';
-import API_BASE_URL from '../../config';
+import API_BASE_URL from '../config';
 
 function LandingRoot() {
   const [footerData, setFooterData] = useState(null);

@@ -71,7 +71,7 @@ import SecurityIcon from '@mui/icons-material/Security';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import GroupsIcon from '@mui/icons-material/Groups';
 import { format } from 'date-fns';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function ResidentProposal() {
   const theme = useTheme();

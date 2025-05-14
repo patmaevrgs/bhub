@@ -47,7 +47,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { format } from 'date-fns';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function RequestID() {
   const navigate = useNavigate();

@@ -44,7 +44,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import InfoIcon from '@mui/icons-material/Info';
 import PhoneIcon from '@mui/icons-material/Phone';
 import { format, parseISO, isAfter, addHours, isBefore, startOfDay } from 'date-fns';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function ResidentCourt() {
   const theme = useTheme();

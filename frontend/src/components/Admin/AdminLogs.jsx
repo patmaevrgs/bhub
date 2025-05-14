@@ -43,7 +43,7 @@ import Avatar from '@mui/material/Avatar';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function AdminLogs() {
   const [logs, setLogs] = useState([]);

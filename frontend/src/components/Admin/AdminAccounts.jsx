@@ -37,7 +37,7 @@ import SortIcon from '@mui/icons-material/Sort';
 import InputAdornment from '@mui/material/InputAdornment';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function AdminAccounts() {
   const [users, setUsers] = useState([]);

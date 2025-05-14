@@ -45,7 +45,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useNavigate } from 'react-router-dom';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function RequestDigging() {
   const navigate = useNavigate();

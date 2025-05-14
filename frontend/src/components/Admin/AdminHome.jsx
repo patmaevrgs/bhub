@@ -24,7 +24,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import AdminDashboard from './AdminDashboard';
 import QuickStats from './QuickStats';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function AdminHome() {
   const theme = useTheme();

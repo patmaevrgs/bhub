@@ -38,7 +38,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import LockPersonOutlinedIcon from '@mui/icons-material/LockPersonOutlined';
 import { alpha } from '@mui/material/styles';
-import API_BASE_URL from '../../config';
+import API_BASE_URL from '../config';
 import bhubLogo from '../assets/bhub-logo.png';
 
 export default function SignIn() {

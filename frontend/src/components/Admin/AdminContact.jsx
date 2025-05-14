@@ -48,7 +48,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import Avatar from '@mui/material/Avatar';
 import { formatDistanceToNow } from 'date-fns';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function AdminContact() {
   const [messages, setMessages] = useState([]);

@@ -52,7 +52,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import InfoIcon from '@mui/icons-material/Info';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 import { format } from 'date-fns';
 
 function AdminCourt() {

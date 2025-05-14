@@ -48,7 +48,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useNavigate } from 'react-router-dom';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function RequestObjection() {
   const navigate = useNavigate();

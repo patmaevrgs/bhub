@@ -84,7 +84,7 @@ import {
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 // Utility function to format date
 const formatDate = (dateString) => {

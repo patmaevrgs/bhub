@@ -48,7 +48,7 @@ import RequestObjection from './components/Resident/RequestObjection.jsx';
 import LandingRoot from './components/LandingRoot.jsx';
 import LandingPage from './components/LandingPage';
 import AdminContact from './components/Admin/AdminContact.jsx';
-import API_BASE_URL from '../config.js';
+import API_BASE_URL from './config.js';
 
 const checkIfLoggedInOnHome = async () => {
 

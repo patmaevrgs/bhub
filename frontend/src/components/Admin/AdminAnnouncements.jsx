@@ -55,7 +55,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useMemo } from 'react';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function AdminAnnouncements() {
   const [title, setTitle] = useState('Brgy Maahas Update'); // New title state

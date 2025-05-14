@@ -63,7 +63,7 @@ import {
 } from '@mui/icons-material';
 import InputAdornment from '@mui/material/InputAdornment';
 import { format } from 'date-fns';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 const ResidentTransaction = () => {
   // Get userId from localStorage

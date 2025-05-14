@@ -38,7 +38,7 @@ import {
 } from '@mui/icons-material';
 import { alpha } from '@mui/material/styles';
 import { Link as RouterLink } from 'react-router-dom';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 // Ultra Fast Lightweight Carousel - Optimized for immediate display
 function SimpleCarousel({ images }) {

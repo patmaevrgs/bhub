@@ -31,7 +31,7 @@ import {
 } from '@mui/icons-material';
 import { ThemeProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 // Date formatter
 const formatDate = (date) => {

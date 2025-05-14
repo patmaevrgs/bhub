@@ -74,7 +74,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import AlertTitle from '@mui/material/AlertTitle';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

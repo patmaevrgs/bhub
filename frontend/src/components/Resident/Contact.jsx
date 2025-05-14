@@ -31,7 +31,7 @@ import {
   ErrorOutline as ErrorOutlineIcon
 } from '@mui/icons-material';
 import Avatar from '@mui/material/Avatar';
-import API_BASE_URL from '../../../config';
+import API_BASE_URL from '../../config';
 
 function Contact() {
   const [loading, setLoading] = useState(false);
