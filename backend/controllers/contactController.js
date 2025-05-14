@@ -38,7 +38,7 @@ export const createContactMessage = async (req, res) => {
       // Send to admin
       await transporter.sendMail({
         from: process.env.EMAIL_USER,
-        to: 'pivargas2@up.edu.ph',
+        to: process.env.ADMIN_EMAIL,
         subject: `New Contact Message: ${subject}`,
         text: `
           New contact message received:

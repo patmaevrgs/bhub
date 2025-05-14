@@ -1,15 +1,11 @@
 import Report from '../models/Report.js';
 import Transaction from '../models/Transaction.js';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { uploadFile, deleteFile } from '../supabaseUpload.js';
+const API_URL = process.env.API_URL || 'http://localhost:3002';
 
 const createAdminLog = async (adminName, action, details, entityId) => {
   try {
-    const response = await fetch('http://localhost:3002/logs', {
+    const response = await fetch(`${API_URL}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -31,12 +27,6 @@ const createAdminLog = async (adminName, action, details, entityId) => {
   }
 };
 
-// Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, '../uploads/reports');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
 // Create a new report
 export const createReport = async (req, res) => {
   try {
@@ -57,31 +47,23 @@ export const createReport = async (req, res) => {
         return res.status(400).json({ message: 'User ID is required' });
       }
 
-    const uploadedFiles = [];
+    const mediaUrls = [];
     
     // Handle file uploads if files exist in request
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
-        const fileType = file.mimetype.split('/')[0]; // image, video, application, etc.
-        const fileName = `${Date.now()}-${file.originalname}`;
-        const filePath = path.join(uploadsDir, fileName);
+        // Upload to Supabase
+        const publicUrl = await uploadFile(
+          'reports',
+          file.originalname,
+          file.buffer,
+          file.mimetype
+        );
         
-        // Save file to server
-        fs.writeFileSync(filePath, file.buffer);
-        
-        // Store file info
-        uploadedFiles.push({
-          name: fileName,
-          originalName: file.originalname,
-          path: `/uploads/reports/${fileName}`,
-          type: fileType,
-          size: file.size
-        });
+        // Add to media URLs array
+        mediaUrls.push(publicUrl);
       }
     }
-    
-    // Separate files by type
-    const mediaUrls = uploadedFiles.map(file => file.path);
     
     // Create the report
     const report = new Report({
@@ -113,7 +95,6 @@ export const createReport = async (req, res) => {
       referenceId: savedReport._id // This was missing - add the reportId as referenceId
     });
     
-
     await transaction.save();
 
     res.status(201).json({ 
@@ -124,22 +105,6 @@ export const createReport = async (req, res) => {
     });
   } catch (error) {
     console.error('Error creating report:', error);
-    
-    // Clean up uploaded files if report creation fails
-    if (req.files) {
-      req.files.forEach(file => {
-        try {
-          // Remove the uploaded file
-          const filePath = path.join(uploadsDir, file.filename);
-          if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-          }
-        } catch (unlinkError) {
-          console.error('Error removing uploaded file:', unlinkError);
-        }
-      });
-    }
-    
     res.status(500).json({ 
       success: false, 
       message: error.message,

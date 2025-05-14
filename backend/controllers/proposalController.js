@@ -1,18 +1,14 @@
 import ProjectProposal from '../models/ProjectProposal.js';
 import mongoose from 'mongoose';
 import fetch from 'node-fetch';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { uploadFile, deleteFile } from '../supabaseUpload.js';
 import Transaction from '../models/Transaction.js';
 import UserLog from '../models/UserLog.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const API_URL = process.env.API_URL || 'http://localhost:3002';
 
 const createAdminLog = async (adminName, action, details, entityId) => {
   try {
-    const response = await fetch('http://localhost:3002/logs', {
+    const response = await fetch(`${API_URL}/logs`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -68,28 +64,23 @@ export const createProposal = async (req, res) => {
 
     // Process the uploaded file
     const file = req.file;
-    const fileExt = path.extname(file.originalname);
+    const fileExt = file.originalname.split('.').pop().toLowerCase();
     
     // Check file extension (allow only PDF and DOCX)
-    if (!['.pdf', '.docx'].includes(fileExt.toLowerCase())) {
+    if (!['pdf', 'docx'].includes(fileExt)) {
       return res.status(400).json({ 
         success: false, 
         message: 'Invalid file format. Only PDF and DOCX files are allowed.' 
       });
     }
 
-    // Create upload directory if it doesn't exist
-    const uploadDir = path.join(__dirname, '../uploads/proposals');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-
-    // Generate unique filename
-    const uniqueFilename = `${Date.now()}-${file.originalname.replace(/\s+/g, '_')}`;
-    const filePath = path.join(uploadDir, uniqueFilename);
-
-    // Save the file
-    fs.writeFileSync(filePath, file.buffer);
+    // Upload to Supabase
+    const publicUrl = await uploadFile(
+      'proposals',
+      file.originalname,
+      file.buffer,
+      file.mimetype
+    );
 
     // Create new project proposal
     const newProposal = new ProjectProposal({
@@ -99,7 +90,7 @@ export const createProposal = async (req, res) => {
       email,
       projectTitle,
       description,
-      documentPath: `/uploads/proposals/${uniqueFilename}`,
+      documentPath: publicUrl,
       documentFilename: file.originalname,
       status: 'pending'
     });
@@ -124,18 +115,9 @@ export const createProposal = async (req, res) => {
         referenceId: newProposal._id
       };
       
-      // Create transaction via API call instead of direct function import
-      const transactionResponse = await fetch('http://localhost:3002/transactions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(transactionData),
-      });
-      
-      if (!transactionResponse.ok) {
-        console.warn('Failed to create transaction for proposal, but proposal was saved');
-      }
+      // Create transaction
+      const transaction = new Transaction(transactionData);
+      await transaction.save();
     } catch (transactionError) {
       console.warn('Error creating transaction for proposal:', transactionError);
       // Continue even if transaction creation fails
@@ -281,7 +263,6 @@ export const updateProposalStatus = async (req, res) => {
     }
     
     // Also update the related transaction
-    // Find and update the related transaction 
 try {
     const transaction = await Transaction.findOne({ 
       referenceId: proposal._id,
@@ -397,26 +378,16 @@ export const cancelProposal = async (req, res) => {
     
     // Also update the related transaction
     try {
-      const transactionResponse = await fetch(`http://localhost:3002/transactions?referenceId=${id}`);
-      const transactions = await transactionResponse.json();
+      const transaction = await Transaction.findOne({
+        serviceType: 'project_proposal',
+        referenceId: id
+      });
       
-      if (transactions && transactions.length > 0) {
-        const transaction = transactions[0];
-        
-        await fetch(`http://localhost:3002/transactions/${transaction._id}/status`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            status: 'cancelled',
-            adminComment: proposal.adminComment,
-            details: {
-              ...transaction.details,
-              proposalStatus: 'rejected' // Store the original proposal status
-            }
-          }),
-        });
+      if (transaction) {
+        transaction.status = 'cancelled';
+        transaction.adminComment = proposal.adminComment;
+        transaction.updatedAt = Date.now();
+        await transaction.save();
       }
     } catch (transactionError) {
       console.error('Error updating related transaction:', transactionError);
@@ -453,12 +424,9 @@ export const deleteProposal = async (req, res) => {
       });
     }
     
-    // Delete the associated file
-    if (proposal.documentPath) {
-      const filePath = path.join(__dirname, '..', proposal.documentPath);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
+    // Delete the associated file from Supabase
+    if (proposal.documentPath && proposal.documentPath.includes('supabase.co')) {
+      await deleteFile('proposals', proposal.documentPath);
     }
     
     // Create admin log for the deletion

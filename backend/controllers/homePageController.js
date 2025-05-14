@@ -1,17 +1,6 @@
 import HomepageContent from '../models/HomepageContent.js';
 import UserLog from '../models/UserLog.js';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, '../uploads/homepage');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
+import { uploadFile, deleteFile } from '../supabaseUpload.js';
 
 // Helper function to log admin actions
 const logAdminAction = async (adminName, action, details, entityId = null, entityType = 'Other') => {
@@ -335,17 +324,18 @@ export const uploadCarouselImages = async (req, res) => {
     
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
-        // Create a unique filename
-        const fileName = `carousel_${Date.now()}_${file.originalname.replace(/\s+/g, '_')}`;
-        const filePath = path.join(uploadsDir, fileName);
-        
-        // Save the file
-        fs.writeFileSync(filePath, file.buffer);
+        // Upload to Supabase
+        const publicUrl = await uploadFile(
+          'homepage',
+          file.originalname,
+          file.buffer,
+          file.mimetype
+        );
         
         // Add to carousel images array
         uploadedImages.push({
-          name: fileName,
-          path: `/uploads/homepage/${fileName}`,
+          name: file.originalname,
+          path: publicUrl,
           caption: req.body.captions ? JSON.parse(req.body.captions)[uploadedImages.length] || '' : ''
         });
       }
@@ -355,9 +345,9 @@ export const uploadCarouselImages = async (req, res) => {
     if (req.body.action === 'replace') {
       // Delete old images first
       for (const image of homepageContent.carouselImages) {
-        const fullPath = path.join(__dirname, '..', image.path.replace(/^\//, ''));
-        if (fs.existsSync(fullPath)) {
-          fs.unlinkSync(fullPath);
+        // Only delete from Supabase if the path contains supabase.co
+        if (image.path.includes('supabase.co')) {
+          await deleteFile('homepage', image.path);
         }
       }
       
@@ -408,10 +398,9 @@ export const deleteCarouselImage = async (req, res) => {
       return res.status(404).json({ message: 'Image not found' });
     }
     
-    // Delete the file
-    const fullPath = path.join(__dirname, '..', imageToDelete.path.replace(/^\//, ''));
-    if (fs.existsSync(fullPath)) {
-      fs.unlinkSync(fullPath);
+    // Delete the file from Supabase
+    if (imageToDelete.path.includes('supabase.co')) {
+      await deleteFile('homepage', imageToDelete.path);
     }
     
     // Remove from array
@@ -454,31 +443,22 @@ export const uploadOfficialImage = async (req, res) => {
         return res.status(400).json({ message: 'Admin name is required for logging' });
       }
       
-      // Create a unique filename
-      const fileName = `official_${Date.now()}_${req.file.originalname.replace(/\s+/g, '_')}`;
-      const filePath = path.join(uploadsDir, fileName);
+      // Upload to Supabase
+      const publicUrl = await uploadFile(
+        'homepage',
+        req.file.originalname,
+        req.file.buffer,
+        req.file.mimetype
+      );
       
-      console.log("Saving file to:", filePath);
-      
-      // Make sure uploads dir exists
-      if (!fs.existsSync(uploadsDir)) {
-        fs.mkdirSync(uploadsDir, { recursive: true });
-        console.log("Created uploads directory");
-      }
-      
-      // Save the file
-      fs.writeFileSync(filePath, req.file.buffer);
-      
-      // FIX: Return the correct path with /homepage/ included
-      const imagePath = `/uploads/homepage/${fileName}`;
-      console.log("Image saved, path:", imagePath);
+      console.log("Image saved, path:", publicUrl);
       
       // Try to log action, but don't fail if logging fails
       try {
         await logAdminAction(
           adminName,
           'UPLOAD_OFFICIAL_IMAGE',
-          `Uploaded image for official: ${fileName}`,
+          `Uploaded image for official: ${req.file.originalname}`,
           null,
           'Other' // Use 'Other' instead of 'HomepageContent' to avoid validation issues
         );
@@ -487,14 +467,14 @@ export const uploadOfficialImage = async (req, res) => {
         // Continue anyway
       }
       
-      res.status(200).json({ success: true, imagePath });
+      res.status(200).json({ success: true, imagePath: publicUrl });
     } catch (error) {
       console.error('Error uploading official image:', error);
       res.status(500).json({ message: 'Error uploading official image', error: error.message });
     }
   };
 
-// Update footer data
+// Update footer data (continued)
 export const updateFooterData = async (req, res) => {
   try {
     const { footerData, adminName } = req.body;

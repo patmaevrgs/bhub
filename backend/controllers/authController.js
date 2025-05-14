@@ -71,7 +71,7 @@ const login = async (req, res) => {
     _id: user._id
   }
 
-  const token = jwt.sign(tokenPayload, "THIS_IS_A_SECRET_STRING");
+  const token = jwt.sign(tokenPayload, process.env.JWT_SECRET || "THIS_IS_A_SECRET_STRING");
 
   // return the token to the client
   return res.send({ success: true, userType: user.userType, token, user: user._id, firstName: user.firstName, lastName: user.lastName, email: user.email});
@@ -86,7 +86,7 @@ const checkIfLoggedIn = async (req, res) => {
 
   try {
     // try to verify the token
-    const tokenPayload = jwt.verify(req.cookies.authToken, 'THIS_IS_A_SECRET_STRING');
+    const tokenPayload = jwt.verify(req.cookies.authToken, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
 
     // check if the _id in the payload is an existing user id
     const user = await User.findById(tokenPayload._id)

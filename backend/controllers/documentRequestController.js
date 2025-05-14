@@ -2,10 +2,11 @@ import DocumentRequest from '../models/DocumentRequest.js';
 import Transaction from '../models/Transaction.js';
 import mongoose from 'mongoose';
 import UserLog from '../models/UserLog.js';
+const API_URL = process.env.API_URL || 'http://localhost:3002';
 
 const createAdminLog = async (adminName, action, details, entityId) => {
   try {
-    const response = await fetch('http://localhost:3002/logs', {
+    const response = await fetch(`${API_URL}/logs`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

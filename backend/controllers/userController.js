@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+const API_URL = process.env.API_URL || 'http://localhost:3002';
 
 // Get all users (for admin dashboard)
 const getAllUsers = async (req, res) => {
@@ -78,7 +79,7 @@ const updateUserType = async (req, res) => {
 
       // Create log entry for this admin action
       try {
-        await fetch('http://localhost:3002/logs', {
+        await fetch(`${API_URL}/logs`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

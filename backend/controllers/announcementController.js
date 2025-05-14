@@ -1,17 +1,6 @@
 import Announcement from '../models/Announcement.js';
 import UserLog from '../models/UserLog.js';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Create uploads directory if it doesn't exist
-const uploadsDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
+import { uploadFile, deleteFile } from '../supabaseUpload.js';
 
 // Helper function to log admin actions
 const logAdminAction = async (adminName, action, details, entityId = null, entityType = 'Announcement') => {
@@ -44,17 +33,20 @@ export const createAnnouncement = async (req, res) => {
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
         const fileType = file.mimetype.split('/')[0]; // image, video, application, etc.
-        const fileName = `${Date.now()}-${file.originalname}`;
-        const filePath = path.join(uploadsDir, fileName);
         
-        // Save file to server
-        fs.writeFileSync(filePath, file.buffer);
+        // Upload to Supabase instead of saving locally
+        const publicUrl = await uploadFile(
+          'uploads', // Bucket name
+          file.originalname,
+          file.buffer,
+          file.mimetype
+        );
         
         // Store file info based on type
         uploadedFiles.push({
-          name: fileName,
+          name: file.originalname,
           originalName: file.originalname,
-          path: `/uploads/${fileName}`,
+          path: publicUrl, // This is now a public URL from Supabase
           type: fileType,
           size: file.size
         });
@@ -131,14 +123,14 @@ export const deleteAnnouncement = async (req, res) => {
       return res.status(404).json({ message: 'Announcement not found' });
     }
     
-    // Delete associated files
+    // Delete associated files from Supabase
     const allFiles = [...announcement.images, ...announcement.videos];
     announcement.files.forEach(file => allFiles.push(file.path));
     
     for (const filePath of allFiles) {
-      const fullPath = path.join(__dirname, '..', filePath.replace(/^\//, ''));
-      if (fs.existsSync(fullPath)) {
-        fs.unlinkSync(fullPath);
+      // Only attempt deletion if it's a Supabase URL
+      if (filePath.includes('supabase.co')) {
+        await deleteFile('uploads', filePath);
       }
     }
     
@@ -187,14 +179,14 @@ export const updateAnnouncement = async (req, res) => {
     const filesToRemove = announcement.files.filter(file => 
       !filesToKeep.some(keep => keep.path === file.path));
     
-    // Delete removed files from the server
+    // Delete removed files from Supabase
     const allFilesToRemove = [...imagesToRemove, ...videosToRemove];
     filesToRemove.forEach(file => allFilesToRemove.push(file.path));
     
     for (const filePath of allFilesToRemove) {
-      const fullPath = path.join(__dirname, '..', filePath.replace(/^\//, ''));
-      if (fs.existsSync(fullPath)) {
-        fs.unlinkSync(fullPath);
+      // Only attempt deletion if it's a Supabase URL
+      if (filePath.includes('supabase.co')) {
+        await deleteFile('uploads', filePath);
       }
     }
     
@@ -204,17 +196,20 @@ export const updateAnnouncement = async (req, res) => {
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
         const fileType = file.mimetype.split('/')[0]; // image, video, application, etc.
-        const fileName = `${Date.now()}-${file.originalname}`;
-        const filePath = path.join(uploadsDir, fileName);
         
-        // Save file to server
-        fs.writeFileSync(filePath, file.buffer);
+        // Upload to Supabase
+        const publicUrl = await uploadFile(
+          'uploads',
+          file.originalname,
+          file.buffer,
+          file.mimetype
+        );
         
         // Store file info based on type
         uploadedFiles.push({
-          name: fileName,
+          name: file.originalname,
           originalName: file.originalname,
-          path: `/uploads/${fileName}`,
+          path: publicUrl,
           type: fileType,
           size: file.size
         });
