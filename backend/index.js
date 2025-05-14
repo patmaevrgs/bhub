@@ -61,7 +61,7 @@ app.use(cors({
     }
     return callback(null, true);
   },
-  credentials: true
+  credentials: true // This is essential for cookies to work cross-origin
 }));
 
 app.use((req, res, next) => {
@@ -70,6 +70,7 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Credentials", "true");
   next();
 });
+
 
 // Set secure cookie settings for production
 app.use((req, res, next) => {
@@ -80,6 +81,7 @@ app.use((req, res, next) => {
         ...options,
         sameSite: 'None',
         secure: true,
+        httpOnly: true
       };
       return res.originalCookie(name, value, productionOptions);
     };

@@ -105,11 +105,11 @@ export default function SignIn() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
+        credentials: 'include'  // Very important for cookies to be sent and received
       });
       const body = await response.json();
       if (body.success) {
-        const cookies = new Cookies();
-        cookies.set('authToken', body.token, { path: '/', age: 60 * 60, sameSite: false });
+        // Store user data in localStorage
         localStorage.setItem('user', body.user);
         localStorage.setItem('userType', body.userType);
         localStorage.setItem('firstName', body.firstName);

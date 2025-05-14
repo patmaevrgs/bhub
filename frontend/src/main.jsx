@@ -51,55 +51,68 @@ import AdminContact from './components/Admin/AdminContact.jsx';
 import API_BASE_URL from './config.js';
 
 const checkIfLoggedInOnHome = async () => {
-
-  const res = await fetch(`${API_BASE_URL}/checkifloggedin`,
-    {
+  try {
+    const res = await fetch(`${API_BASE_URL}/checkifloggedin`, {
       method: "POST",
-      credentials: "include" 
+      credentials: "include" // Very important for cookies to be sent
     });
 
-  const payload = await res.json();
-  console.log(`checkIfLoggedInHome: isLoggedIn: ${payload.isLoggedIn}, userType: ${payload.userType}`);
-  
-  if (payload.isLoggedIn) {
-    if(payload.userType === "resident"){
-      return redirect("/resident");
-    } else if(payload.userType === "admin" || payload.userType === "superadmin"){
-      return redirect("/admin");
+    const payload = await res.json();
+    console.log(`checkIfLoggedInHome: isLoggedIn: ${payload.isLoggedIn}, userType: ${payload.userType}`);
+    
+    if (payload.isLoggedIn) {
+      if (payload.userType === "resident") {
+        return redirect("/resident");
+      } else if (payload.userType === "admin" || payload.userType === "superadmin") {
+        return redirect("/admin");
+      }
+    } else {
+      return null;
     }
-  } else {
-    return 0;
+  } catch (error) {
+    console.error("Error checking login status:", error);
+    return null;
   }
 }
 
 const checkIfLoggedInOnDash = async () => {
-  const res = await fetch(`${API_BASE_URL}/checkifloggedin`,
-    {
+  try {
+    const res = await fetch(`${API_BASE_URL}/checkifloggedin`, {
       method: "POST",
-      credentials: "include" 
+      credentials: "include" // Very important for cookies to be sent
     });
 
-  const payload = await res.json();
-  console.log(`checkIfLoggedInOnDash: isLoggedIn: ${payload.isLoggedIn}, userType: ${payload.userType}`);
+    const payload = await res.json();
+    console.log(`checkIfLoggedInOnDash: isLoggedIn: ${payload.isLoggedIn}, userType: ${payload.userType}`);
+    
     if (payload.isLoggedIn && (payload.userType === "admin" || payload.userType === "superadmin")) {
       return true;
     } else {
       return redirect("/");
     }
+  } catch (error) {
+    console.error("Error checking login status:", error);
+    return redirect("/");
+  }
 }
 
 const checkIfLoggedInOnResidentPage = async () => {
-  const res = await fetch(`${API_BASE_URL}/checkifloggedin`, {
-    method: "POST",
-    credentials: "include"
-  });
+  try {
+    const res = await fetch(`${API_BASE_URL}/checkifloggedin`, {
+      method: "POST",
+      credentials: "include" // Very important for cookies to be sent
+    });
 
-  const payload = await res.json();
-  console.log(`checkIfLoggedInOnResidentPage: isLoggedIn: ${payload.isLoggedIn}, userType: ${payload.userType}`);
+    const payload = await res.json();
+    console.log(`checkIfLoggedInOnResidentPage: isLoggedIn: ${payload.isLoggedIn}, userType: ${payload.userType}`);
 
-  if (payload.isLoggedIn && payload.userType === "resident") {
-    return true;
-  } else {
+    if (payload.isLoggedIn && payload.userType === "resident") {
+      return true;
+    } else {
+      return redirect("/");
+    }
+  } catch (error) {
+    console.error("Error checking login status:", error);
     return redirect("/");
   }
 }

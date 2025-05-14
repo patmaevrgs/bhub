@@ -73,8 +73,24 @@ const login = async (req, res) => {
 
   const token = jwt.sign(tokenPayload, process.env.JWT_SECRET || "THIS_IS_A_SECRET_STRING");
 
-  // return the token to the client
-  return res.send({ success: true, userType: user.userType, token, user: user._id, firstName: user.firstName, lastName: user.lastName, email: user.email});
+  // Set the token as a cookie
+  res.cookie('authToken', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  });
+
+  // Also return the token in the response for client-side storage if needed
+  return res.send({ 
+    success: true, 
+    userType: user.userType, 
+    token, 
+    user: user._id, 
+    firstName: user.firstName, 
+    lastName: user.lastName, 
+    email: user.email
+  });
 };
 
 const checkIfLoggedIn = async (req, res) => {
