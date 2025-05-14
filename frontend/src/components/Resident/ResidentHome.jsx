@@ -128,7 +128,7 @@ function SimpleCarousel({ images }) {
       {/* Static image - no animations or fancy transitions for speed */}
       <Box
         component="img"
-        src={`${API_BASE_URL}${images[currentIndex]?.path || ''}`}
+        src={getProperImageUrl(images[currentIndex]?.path || '')}
         alt={images[currentIndex]?.caption || 'Carousel image'}
         onError={(e) => {
           e.target.src = '/placeholder-image.jpg';
@@ -330,6 +330,11 @@ function ResidentHome() {
     }
   };
   
+  const getProperImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    return imagePath.startsWith('http') ? imagePath : `${API_BASE_URL}${imagePath}`;
+  };
+
   const fetchLatestAnnouncements = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/announcements`);
@@ -537,7 +542,7 @@ function ResidentHome() {
                       component="img"
                       height="120"
                       image={announcement.images && announcement.images.length > 0 
-                        ? `${API_BASE_URL}${announcement.images[0]}` 
+                        ? getProperImageUrl(announcement.images[0]) 
                         : '/placeholder-image.jpg'
                       }
                       alt={announcement.title}
@@ -1059,7 +1064,7 @@ function ResidentHome() {
                           }}
                         >
                           <Avatar
-                            src={official.imageUrl ? `${API_BASE_URL}${official.imageUrl}` : ''}
+                            src={getProperImageUrl(official.imageUrl)}
                             alt={official.name}
                             sx={{ 
                               width: 120, 
@@ -1171,7 +1176,7 @@ function ResidentHome() {
                           }}
                         >
                           <Avatar
-                            src={official.imageUrl ? `${API_BASE_URL}${official.imageUrl}` : ''}
+                            src={getProperImageUrl(official.imageUrl)}
                             alt={official.name}
                             sx={{ 
                               width: 80, 

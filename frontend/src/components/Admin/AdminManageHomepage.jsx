@@ -175,6 +175,11 @@ function AdminManageHomepage() {
     }
   }, [tabValue, carouselImages]);
 
+  const getProperImageUrl = (url) => {
+    if (!url) return '';
+    return url.startsWith('http') ? url : `${API_BASE_URL}${url}`;
+  };
+
   const fetchHomepageContent = async () => {
     try {
       setLoading(true);
@@ -1511,7 +1516,7 @@ const saveFooterData = async () => {
                             }}
                           >
                             <img
-                              src={`${API_BASE_URL}${image.path}`}
+                              src={getProperImageUrl(image.path)}
                               alt={image.caption || `Carousel image ${index + 1}`}
                               style={{ 
                                 width: '300px', 
@@ -1597,7 +1602,7 @@ const saveFooterData = async () => {
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                               <Box 
                                 component="img" 
-                                src={`${API_BASE_URL}${image.path}`}
+                                src={getProperImageUrl(image.path)}
                                 alt={`Thumbnail ${index + 1}`}
                                 sx={{ 
                                   width: 50, 
@@ -1821,7 +1826,55 @@ const saveFooterData = async () => {
                 variant="contained"
                 color="primary"
                 startIcon={<AddIcon />}
-                onClick={() => uploadCarouselImages('append')}
+                onClick={() => {
+                  // Get admin name
+                  const adminName = localStorage.getItem('firstName') + ' ' + localStorage.getItem('lastName');
+                  
+                  // Create form data
+                  const formData = new FormData();
+                  
+                  // Add files
+                  selectedFiles.forEach(file => {
+                    formData.append('files', file);
+                  });
+                  
+                  // Add captions
+                  formData.append('captions', JSON.stringify(carouselCaptions));
+                  
+                  // Add action
+                  formData.append('action', 'append');
+                  
+                  // Add adminName - THIS IS THE KEY FIX
+                  formData.append('adminName', adminName);
+                  
+                  // Upload images
+                  setSaving(true);
+                  fetch(`${API_BASE_URL}/homepage/carousel`, {
+                    method: 'POST',
+                    body: formData
+                  })
+                  .then(response => {
+                    if (!response.ok) {
+                      throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                  })
+                  .then(data => {
+                    setHomepageContent(data);
+                    setCarouselImages(data.carouselImages || []);
+                    setSelectedFiles([]);
+                    setFilePreviewUrls([]);
+                    setCarouselCaptions([]);
+                    showAlert('Images added successfully!');
+                  })
+                  .catch(error => {
+                    console.error('Error uploading carousel images:', error);
+                    showAlert('Error uploading carousel images. Please try again.', 'error');
+                  })
+                  .finally(() => {
+                    setSaving(false);
+                  });
+                }}
                 disabled={saving || selectedFiles.length === 0}
                 sx={{ 
                   borderRadius: 1.5,
@@ -1840,7 +1893,55 @@ const saveFooterData = async () => {
                 variant="outlined"
                 color="warning"
                 startIcon={<RefreshIcon />}
-                onClick={() => uploadCarouselImages('replace')}
+                onClick={() => {
+                  // Get admin name
+                  const adminName = localStorage.getItem('firstName') + ' ' + localStorage.getItem('lastName');
+                  
+                  // Create form data
+                  const formData = new FormData();
+                  
+                  // Add files
+                  selectedFiles.forEach(file => {
+                    formData.append('files', file);
+                  });
+                  
+                  // Add captions
+                  formData.append('captions', JSON.stringify(carouselCaptions));
+                  
+                  // Add action
+                  formData.append('action', 'replace');
+                  
+                  // Add adminName - THIS IS THE KEY FIX
+                  formData.append('adminName', adminName);
+                  
+                  // Upload images
+                  setSaving(true);
+                  fetch(`${API_BASE_URL}/homepage/carousel`, {
+                    method: 'POST',
+                    body: formData
+                  })
+                  .then(response => {
+                    if (!response.ok) {
+                      throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                  })
+                  .then(data => {
+                    setHomepageContent(data);
+                    setCarouselImages(data.carouselImages || []);
+                    setSelectedFiles([]);
+                    setFilePreviewUrls([]);
+                    setCarouselCaptions([]);
+                    showAlert('Images replaced successfully!');
+                  })
+                  .catch(error => {
+                    console.error('Error uploading carousel images:', error);
+                    showAlert('Error uploading carousel images. Please try again.', 'error');
+                  })
+                  .finally(() => {
+                    setSaving(false);
+                  });
+                }}
                 disabled={saving || selectedFiles.length === 0}
                 sx={{ 
                   borderRadius: 1.5,
@@ -2354,7 +2455,7 @@ const saveFooterData = async () => {
                       >
                         {official.imageUrl ? (
                           <img
-                            src={`${API_BASE_URL}${official.imageUrl}`}
+                            src={getProperImageUrl(official.imageUrl)}
                             alt={official.name}
                             style={{ 
                               width: '200px', 
@@ -2554,7 +2655,7 @@ const saveFooterData = async () => {
                       />
                     ) : newOfficial.imageUrl ? (
                       <img 
-                        src={`${API_BASE_URL}${newOfficial.imageUrl}`} 
+                        src={getProperImageUrl(newOfficial.imageUrl)} 
                         alt="Current official" 
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         onError={(e) => {
@@ -2922,7 +3023,7 @@ const saveFooterData = async () => {
               }}
             >
               <img 
-                src={`${API_BASE_URL}${imageToDelete.path}`} 
+                src={getProperImageUrl(imageToDelete.path)} 
                 alt="Image to delete" 
                 style={{ 
                   width: '100%', 

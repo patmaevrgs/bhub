@@ -78,6 +78,11 @@ function AdminReport() {
     setFilteredReports(filtered);
   }, [reports, tabValue, searchTerm, issueTypeFilter]);
 
+  const getProperUrl = (path) => {
+    if (!path) return '';
+    return path.startsWith('http') ? path : `${API_BASE_URL}${path}`;
+  };
+
   const fetchReports = async () => {
     try {
       setLoading(true);
@@ -215,7 +220,7 @@ function AdminReport() {
                   <Card sx={{ height: '100%' }}>
                     <CardMedia
                       component="img"
-                      image={`${API_BASE_URL}${url}`}
+                      image={getProperUrl(url)}
                       alt={`Report image ${index + 1}`}
                       sx={{ 
                         height: 150, 
@@ -971,7 +976,7 @@ function AdminReport() {
                       >
                         <CardMedia
                           component="img"
-                          image={`${API_BASE_URL}${url}`}
+                          image={getProperUrl(url)}
                           alt={`Attachment ${index + 1}`}
                           sx={{ height: 200, objectFit: 'cover' }}
                         />

@@ -126,6 +126,11 @@ const ResidentTransaction = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const getProperImageUrl = (url) => {
+    if (!url) return '';
+    return url.startsWith('http') ? url : `${API_BASE_URL}${url}`;
+  };
+
   useEffect(() => {
     fetchTransactions();
   }, []);
@@ -2984,7 +2989,7 @@ const ResidentTransaction = () => {
                                     size="small"
                                     startIcon={<FileIcon />}
                                     component={Link}
-                                    href={`${API_BASE_URL}${selectedTransaction.referenceDetails.documentPath}`}
+                                    href={getProperImageUrl(selectedTransaction.referenceDetails.documentPath)}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     sx={{ mt: 2 }}
@@ -3204,7 +3209,7 @@ const ResidentTransaction = () => {
                                         <Button
                                             key={index}
                                             component="a" 
-                                            href={`${API_BASE_URL}${url}`} 
+                                            href={getProperImageUrl(url)} 
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             variant="outlined"
@@ -5468,7 +5473,7 @@ const ResidentTransaction = () => {
                                 size="small"
                                 startIcon={<FileIcon />}
                                 component={Link}
-                                href={`${API_BASE_URL}${selectedTransaction.referenceDetails.documentPath}`}
+                                href={getProperImageUrl(selectedTransaction.referenceDetails.documentPath)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 sx={{ mt: 2 }}
@@ -5688,7 +5693,7 @@ const ResidentTransaction = () => {
                                     <Button
                                         key={index}
                                         component="a" 
-                                        href={`${API_BASE_URL}${url}`} 
+                                        href={getProperImageUrl(url)} 
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         variant="outlined"

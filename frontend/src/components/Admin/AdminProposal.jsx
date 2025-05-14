@@ -110,6 +110,12 @@ function AdminProposal() {
     setFilteredProposals(filtered);
   }, [proposals, statusFilter, searchTerm, showArchived]);
 
+  // Add this helper function inside your component
+  const getProperUrl = (path) => {
+    if (!path) return '';
+    return path.startsWith('http') ? path : `${API_BASE_URL}${path}`;
+  };
+
   const fetchProposals = async () => {
     try {
       setLoading(true);
@@ -1181,7 +1187,7 @@ function AdminProposal() {
                       variant="contained"
                       size="small"
                       component="a"
-                      href={`${API_BASE_URL}${selectedProposal.documentPath}`}
+                      href={getProperUrl(selectedProposal.documentPath)}
                       target="_blank"
                       rel="noopener noreferrer"
                       sx={{ 

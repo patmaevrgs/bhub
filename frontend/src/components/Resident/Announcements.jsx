@@ -192,6 +192,11 @@ const Announcements = () => {
     setFilteredAnnouncements(result);
   }, [announcements, searchTerm, dateFilter]);
 
+  const getProperUrl = (path) => {
+    if (!path) return '';
+    return path.startsWith('http') ? path : `${API_BASE_URL}${path}`;
+  };
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -330,7 +335,7 @@ const Announcements = () => {
                 {mediaToShow === 'image' ? (
                   <CardMedia
                     component="img"
-                    image={`${API_BASE_URL}${announcement.images[0]}`}
+                    image={getProperUrl(announcement.images[0])}
                     alt="Featured announcement image"
                     sx={{ 
                       height: 300,
@@ -341,12 +346,12 @@ const Announcements = () => {
                   <Box sx={{ height: 300, width: '100%', bgcolor: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <CardMedia
                       component="video"
-                      src={`${API_BASE_URL}${announcement.videos[0].path}`}
+                      src={getProperUrl(announcement.videos[0].path || announcement.videos[0])}
                       sx={{ 
                         height: '100%',
                         maxWidth: '100%'
                       }}
-                      image={announcement.videos[0].thumbnail ? `${API_BASE_URL}${announcement.videos[0].thumbnail}` : ''}
+                      image={announcement.videos[0].thumbnail ? getProperUrl(announcement.videos[0].thumbnail) : ''}
                     />
                     <Box sx={{ position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <VideocamIcon sx={{ fontSize: 48, color: 'rgba(255,255,255,0.8)' }} />
@@ -550,7 +555,7 @@ const Announcements = () => {
                       {hasImages ? (
                         <CardMedia
                           component="img"
-                          image={`${API_BASE_URL}${announcement.images[0]}`}
+                          image={getProperUrl(announcement.images[0])}
                           alt={`Announcement image`}
                           sx={{ 
                             height: '100%',
@@ -797,7 +802,7 @@ const Announcements = () => {
               >
                 <CardMedia
                   component="img"
-                  image={`${API_BASE_URL}${selectedAnnouncement.images[selectedImageIndex]}`}
+                  image={getProperUrl(selectedAnnouncement.images[selectedImageIndex])}
                   alt={`Announcement image ${selectedImageIndex + 1}`}
                   sx={{ 
                     objectFit: 'contain',
@@ -881,7 +886,7 @@ const Announcements = () => {
                     icon={<AttachFileIcon />}
                     label={file.name}
                     component={Link}
-                    href={`${API_BASE_URL}${file.path}`}
+                    href={getProperUrl(file.path)}
                     target="_blank"
                     clickable
                     variant="outlined"
@@ -915,7 +920,7 @@ const Announcements = () => {
                           maxHeight: 200,
                         }}
                       >
-                        <source src={`${API_BASE_URL}${videoPath}`} />
+                        <source src={getProperUrl(typeof video === 'string' ? video : video.path)} />
                         Your browser does not support video playback.
                       </Box>
                       {/* <Typography variant="caption" sx={{ display: 'block', mt: 0.5 }}>

@@ -135,6 +135,11 @@ function AdminAnnouncements() {
       default: return 'primary';
     }
   };
+  
+  const getProperUrl = (path) => {
+    if (!path) return '';
+    return path.startsWith('http') ? path : `${API_BASE_URL}${path}`;
+  };
 
   useEffect(() => {
     // Get current admin's full name from localStorage
@@ -821,7 +826,7 @@ function AdminAnnouncements() {
                           <CardMedia
                             component="img"
                             height="120"
-                            image={`${API_BASE_URL}${path}`}
+                            image={getProperUrl(path)}
                             alt={`Existing image ${index}`}
                           />
                           <IconButton
@@ -1192,14 +1197,14 @@ function AdminAnnouncements() {
                         >
                           <Box
                             component="img"
-                            src={`${API_BASE_URL}${imgPath}`}
+                            src={getProperUrl(imgPath)}
                             alt={`Image ${index + 1}`}
                             sx={{
                               width: '100%',
                               height: 150,
                               objectFit: 'cover',
                             }}
-                            onClick={() => window.open(`${API_BASE_URL}${imgPath}`, '_blank')}
+                            onClick={() => window.open(getProperUrl(imgPath), '_blank')}
                           />
                         </Box>
                       </Grid>
@@ -1228,7 +1233,7 @@ function AdminAnnouncements() {
                             bgcolor: 'grey.900'
                           }}
                         >
-                          <source src={`${API_BASE_URL}${videoPath}`} />
+                          <source src={getProperUrl(videoPath)} />
                           Your browser does not support video playback.
                         </Box>
                       </Grid>
@@ -1251,7 +1256,7 @@ function AdminAnnouncements() {
                         label={file.name}
                         icon={<AttachFileIcon />}
                         component="a"
-                        href={`${API_BASE_URL}${file.path}`}
+                        href={getProperUrl(file.path)}
                         target="_blank"
                         clickable
                         sx={{ 
@@ -1691,7 +1696,7 @@ function AdminAnnouncements() {
                       <CardMedia
                         component="img"
                         height="100"
-                        image={`${API_BASE_URL}${path}`}
+                        image={getProperUrl(path)}
                         alt={`Image ${index}`}
                       />
                       <IconButton
