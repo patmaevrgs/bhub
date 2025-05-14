@@ -38,7 +38,8 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import LockPersonOutlinedIcon from '@mui/icons-material/LockPersonOutlined';
 import { alpha } from '@mui/material/styles';
-
+import API_BASE_URL from '../../config';
+import bhubLogo from '../assets/bhub-logo.png';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
@@ -100,7 +101,7 @@ export default function SignIn() {
 
   const loginUser = async () => {
     try {
-      const response = await fetch('http://localhost:3002/login', {
+      const response = await fetch(`${API_BASE_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -229,7 +230,6 @@ export default function SignIn() {
               left: 0,
               width: '100%',
               height: '100%',
-              backgroundImage: 'url("/src/assets/pattern-overlay.png")',
               backgroundSize: '400px',
               opacity: 0.05,
               zIndex: 2,
@@ -258,7 +258,7 @@ export default function SignIn() {
                 }}
               >
                 <img 
-                  src="/src/assets/bhub-logo.png" 
+                  src={bhubLogo} 
                   alt="Barangay Hub Logo" 
                   style={{ height: '50px' }} 
                 />
@@ -430,7 +430,7 @@ export default function SignIn() {
         <Box sx={{ mb: 4, textAlign: 'center' }}>
           {isMobile && (
             <img 
-              src="/src/assets/bhub-logo.png" 
+              src={bhubLogo}
               alt="Barangay Hub Logo" 
               style={{ height: '50px', marginBottom: '16px' }} 
             />

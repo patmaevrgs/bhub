@@ -47,6 +47,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { format } from 'date-fns';
+import API_BASE_URL from '../../../config';
 
 function RequestID() {
   const navigate = useNavigate();
@@ -173,7 +174,7 @@ function RequestID() {
         purpose: 'Barangay Identification Card'
       };
       
-      const response = await fetch('http://localhost:3002/documents', {
+      const response = await fetch(`${API_BASE_URL}/documents`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

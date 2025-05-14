@@ -21,6 +21,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import API_BASE_URL from '../../../config';
 
 function AdminReport() {
   const [loading, setLoading] = useState(true);
@@ -80,7 +81,7 @@ function AdminReport() {
   const fetchReports = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3002/reports');
+      const response = await fetch(`${API_BASE_URL}/reports`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch reports');
@@ -142,7 +143,7 @@ function AdminReport() {
       }
       
       const response = await fetch(
-        `http://localhost:3002/reports/${selectedReport._id}/status`, 
+        `${API_BASE_URL}/reports/${selectedReport._id}/status`, 
         {
           method: 'PUT',
           headers: {
@@ -214,7 +215,7 @@ function AdminReport() {
                   <Card sx={{ height: '100%' }}>
                     <CardMedia
                       component="img"
-                      image={`http://localhost:3002${url}`}
+                      image={`${API_BASE_URL}${url}`}
                       alt={`Report image ${index + 1}`}
                       sx={{ 
                         height: 150, 
@@ -224,7 +225,7 @@ function AdminReport() {
                           opacity: 0.9
                         }
                       }}
-                      onClick={() => window.open(`http://localhost:3002${url}`, '_blank')}
+                      onClick={() => window.open(`${API_BASE_URL}${url}`, '_blank')}
                     />
                   </Card>
                 </Grid>
@@ -966,11 +967,11 @@ function AdminReport() {
                             boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
                           }
                         }}
-                        onClick={() => window.open(`http://localhost:3002${url}`, '_blank')}
+                        onClick={() => window.open(`${API_BASE_URL}${url}`, '_blank')}
                       >
                         <CardMedia
                           component="img"
-                          image={`http://localhost:3002${url}`}
+                          image={`${API_BASE_URL}${url}`}
                           alt={`Attachment ${index + 1}`}
                           sx={{ height: 200, objectFit: 'cover' }}
                         />

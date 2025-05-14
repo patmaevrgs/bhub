@@ -39,6 +39,8 @@ import {
 import CircleIcon from '@mui/icons-material/Circle';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
+import API_BASE_URL from '../../../config';
+import bhubLogo from '../../assets/bhub-logo.png';
 
 const drawerWidth = 250;
 
@@ -126,19 +128,19 @@ export default function AdminSidebar() {
         };
 
         // Fetch ambulance bookings
-        const ambulanceData = await safeFetch('http://localhost:3002/ambulance?status=pending');
+        const ambulanceData = await safeFetch(`${API_BASE_URL}/ambulance?status=pending`);
         if (ambulanceData) {
           counts.ambulance = Array.isArray(ambulanceData) ? ambulanceData.length : 0;
         }
 
         // Fetch court reservations
-        const courtData = await safeFetch('http://localhost:3002/court?status=pending');
+        const courtData = await safeFetch(`${API_BASE_URL}/court?status=pending`);
         if (courtData) {
           counts.court = Array.isArray(courtData) ? courtData.length : 0;
         }
 
         // Fetch infrastructure reports
-        const reportsData = await safeFetch('http://localhost:3002/reports');
+        const reportsData = await safeFetch(`${API_BASE_URL}/reports`);
         if (reportsData && reportsData.reports) {
           counts.reports = reportsData.reports.filter(r => r.status === 'Pending').length;
         } else if (reportsData && Array.isArray(reportsData)) {
@@ -146,7 +148,7 @@ export default function AdminSidebar() {
         }
 
         // Fetch unread contact messages - add this after the documents fetch
-        const contactData = await safeFetch('http://localhost:3002/contact/unread-count');
+        const contactData = await safeFetch(`${API_BASE_URL}/contact/unread-count`);
         if (contactData && contactData.success) {
           counts.contact = contactData.count;
         } else {
@@ -154,7 +156,7 @@ export default function AdminSidebar() {
         }
 
         // Fetch project proposals
-        const projectsData = await safeFetch('http://localhost:3002/proposals?status=pending');
+        const projectsData = await safeFetch(`${API_BASE_URL}/proposals?status=pending`);
         if (projectsData && projectsData.proposals) {
           counts.projects = projectsData.proposals.length;
         } else if (projectsData && Array.isArray(projectsData)) {
@@ -163,7 +165,7 @@ export default function AdminSidebar() {
 
         // Fetch document requests - using the correct endpoint from your controller
         // Note: Your error showed this endpoint doesn't exist, so I'm using the endpoint from your controller
-        const formsData = await safeFetch('http://localhost:3002/documents?status=pending');
+        const formsData = await safeFetch(`${API_BASE_URL}/documents?status=pending`);
         if (formsData) {
           if (formsData.success && formsData.documentRequests) {
             // If the API returns {success: true, documentRequests: [...]}
@@ -181,7 +183,7 @@ export default function AdminSidebar() {
         }
         
         // Fetch unverified resident requests - this is the new part
-        const residentsData = await safeFetch('http://localhost:3002/residents?isVerified=false');
+        const residentsData = await safeFetch(`${API_BASE_URL}/residents?isVerified=false`);
         if (residentsData) {
           // Handle different response structures
           if (residentsData.success && residentsData.data) {
@@ -287,7 +289,7 @@ export default function AdminSidebar() {
         }}
       >
         <img
-          src="/src/assets/bhub-logo.png"
+          src={bhubLogo}
           alt="B-Hub Logo"
           style={{
             height: 'auto',

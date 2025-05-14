@@ -31,6 +31,7 @@ import {
   ErrorOutline as ErrorOutlineIcon
 } from '@mui/icons-material';
 import Avatar from '@mui/material/Avatar';
+import API_BASE_URL from '../../../config';
 
 function Contact() {
   const [loading, setLoading] = useState(false);
@@ -95,7 +96,7 @@ function Contact() {
       setSubmitStatus('loading');
       
       try {
-        const response = await fetch('http://localhost:3002/contact', {
+        const response = await fetch(`${API_BASE_URL}/contact`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

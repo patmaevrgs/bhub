@@ -77,6 +77,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import SearchIcon from '@mui/icons-material/Search';
 import { alpha } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
+import API_BASE_URL from '../../../config';
 
 // Tab panel component for the bookings tabs
 function TabPanel(props) {
@@ -196,7 +197,7 @@ const AdminAmbulance = () => {
   const fetchBookings = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3002/ambulance');
+      const response = await fetch(`${API_BASE_URL}/ambulance`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch bookings');
@@ -701,7 +702,7 @@ const handleChangeRowsPerPage = (event) => {
       if (comment !== null) updateData.adminComment = comment;
       if (dieselCost !== null) updateData.dieselCost = dieselCost;
       
-      const response = await fetch(`http://localhost:3002/ambulance/${id}/status`, {
+      const response = await fetch(`${API_BASE_URL}/ambulance/${id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'

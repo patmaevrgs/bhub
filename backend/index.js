@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url';
 // Get __dirname equivalent in ES module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/BHUB';
 
 const app = express();
 
@@ -27,7 +28,7 @@ if (!fs.existsSync(uploadsDir)) {
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-mongoose.connect('mongodb://localhost:27017/BHUB', {
+mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -42,7 +43,7 @@ db.once('open', () => {
 });
 
 app.use(cors({
-  origin: 'http://localhost:3000', 
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   credentials: true 
 }));
 

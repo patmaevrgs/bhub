@@ -48,10 +48,11 @@ import RequestObjection from './components/Resident/RequestObjection.jsx';
 import LandingRoot from './components/LandingRoot.jsx';
 import LandingPage from './components/LandingPage';
 import AdminContact from './components/Admin/AdminContact.jsx';
+import API_BASE_URL from '../config.js';
 
 const checkIfLoggedInOnHome = async () => {
 
-  const res = await fetch("http://localhost:3002/checkifloggedin",
+  const res = await fetch(`${API_BASE_URL}/checkifloggedin`,
     {
       method: "POST",
       credentials: "include" 
@@ -72,7 +73,7 @@ const checkIfLoggedInOnHome = async () => {
 }
 
 const checkIfLoggedInOnDash = async () => {
-  const res = await fetch("http://localhost:3002/checkifloggedin",
+  const res = await fetch(`${API_BASE_URL}/checkifloggedin`,
     {
       method: "POST",
       credentials: "include" 
@@ -88,7 +89,7 @@ const checkIfLoggedInOnDash = async () => {
 }
 
 const checkIfLoggedInOnResidentPage = async () => {
-  const res = await fetch("http://localhost:3002/checkifloggedin", {
+  const res = await fetch(`${API_BASE_URL}/checkifloggedin`, {
     method: "POST",
     credentials: "include"
   });
@@ -153,7 +154,7 @@ const router = createBrowserRouter([
       path: '/admin/manage-app', 
       element: <AdminManageHomepage />,
       loader: async () => {
-        const res = await fetch("http://localhost:3002/checkifloggedin", {
+        const res = await fetch(`${API_BASE_URL}/checkifloggedin`, {
           method: "POST",
           credentials: "include" 
         });

@@ -50,6 +50,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { format } from 'date-fns';
+import API_BASE_URL from '../../../config';
 
 function AdminProposal() {
   const theme = useTheme();
@@ -124,7 +125,7 @@ function AdminProposal() {
         queryParams.append('excludeStatus', 'rejected');
       }
       
-      const response = await fetch(`http://localhost:3002/proposals?${queryParams}`);
+      const response = await fetch(`${API_BASE_URL}/proposals?${queryParams}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -180,7 +181,7 @@ function AdminProposal() {
         adminName = localStorage.getItem("user") || "Unknown Admin";
       }
 
-      const response = await fetch(`http://localhost:3002/proposals/${selectedProposal._id}/status`, {
+      const response = await fetch(`${API_BASE_URL}/proposals/${selectedProposal._id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
@@ -247,7 +248,7 @@ function AdminProposal() {
         adminName = localStorage.getItem("user") || "Unknown Admin";
       }
 
-      const response = await fetch(`http://localhost:3002/proposals/${selectedProposal._id}`, {
+      const response = await fetch(`${API_BASE_URL}/proposals/${selectedProposal._id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -1180,7 +1181,7 @@ function AdminProposal() {
                       variant="contained"
                       size="small"
                       component="a"
-                      href={`http://localhost:3002${selectedProposal.documentPath}`}
+                      href={`${API_BASE_URL}${selectedProposal.documentPath}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       sx={{ 

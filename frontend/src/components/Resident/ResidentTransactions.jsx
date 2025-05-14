@@ -63,6 +63,7 @@ import {
 } from '@mui/icons-material';
 import InputAdornment from '@mui/material/InputAdornment';
 import { format } from 'date-fns';
+import API_BASE_URL from '../../../config';
 
 const ResidentTransaction = () => {
   // Get userId from localStorage
@@ -132,7 +133,7 @@ const ResidentTransaction = () => {
   const fetchTransactions = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:3002/transactions?userId=${userId}`);
+      const response = await fetch(`${API_BASE_URL}/transactions?userId=${userId}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -154,22 +155,22 @@ const ResidentTransaction = () => {
         let endpoint;
         switch(transaction.serviceType) {
           case SERVICE_TYPES.AMBULANCE:
-            endpoint = `http://localhost:3002/ambulance/${transaction.referenceId}`;
+            endpoint = `${API_BASE_URL}/ambulance/${transaction.referenceId}`;
             break;
           case SERVICE_TYPES.COURT:
-            endpoint = `http://localhost:3002/court/${transaction.referenceId}`;
+            endpoint = `${API_BASE_URL}/court/${transaction.referenceId}`;
             break;
           case SERVICE_TYPES.INFRASTRUCTURE:
-            endpoint = `http://localhost:3002/reports/${transaction.referenceId}`;
+            endpoint = `${API_BASE_URL}/reports/${transaction.referenceId}`;
             break;
           case SERVICE_TYPES.PROJECT_PROPOSAL:
-            endpoint = `http://localhost:3002/proposals/${transaction.referenceId}`;
+            endpoint = `${API_BASE_URL}/proposals/${transaction.referenceId}`;
             break;
           case SERVICE_TYPES.DOCUMENT:
-            endpoint = `http://localhost:3002/documents/${transaction.referenceId}`;
+            endpoint = `${API_BASE_URL}/documents/${transaction.referenceId}`;
             break;
           case SERVICE_TYPES.RESIDENT:
-            endpoint = `http://localhost:3002/residents/${transaction.referenceId}`;
+            endpoint = `${API_BASE_URL}/residents/${transaction.referenceId}`;
             break;
           default:
             endpoint = null;
@@ -221,7 +222,7 @@ const ResidentTransaction = () => {
   const handleViewDetails = async (transactionId) => {
     try {
       // First, get the transaction details
-      const response = await fetch(`http://localhost:3002/transactions/${transactionId}`);
+      const response = await fetch(`${API_BASE_URL}/transactions/${transactionId}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -233,12 +234,12 @@ const ResidentTransaction = () => {
       let referenceDetails = null;
       
       if (transaction.serviceType === 'court_reservation' && transaction.referenceId) {
-        const refResponse = await fetch(`http://localhost:3002/court/${transaction.referenceId}`);
+        const refResponse = await fetch(`${API_BASE_URL}/court/${transaction.referenceId}`);
         if (refResponse.ok) {
           referenceDetails = await refResponse.json();
         }
       } else if (transaction.serviceType === 'ambulance_booking' && transaction.referenceId) {
-        const refResponse = await fetch(`http://localhost:3002/ambulance/${transaction.referenceId}`);
+        const refResponse = await fetch(`${API_BASE_URL}/ambulance/${transaction.referenceId}`);
         if (refResponse.ok) {
           referenceDetails = await refResponse.json();
           console.log('Ambulance booking details:', referenceDetails); // Debug log
@@ -253,7 +254,7 @@ const ResidentTransaction = () => {
         }
         
         if (reportId) {
-          const refResponse = await fetch(`http://localhost:3002/reports/${reportId}`);
+          const refResponse = await fetch(`${API_BASE_URL}/reports/${reportId}`);
           if (refResponse.ok) {
             const reportData = await refResponse.json();
             if (reportData.success && reportData.report) {
@@ -263,7 +264,7 @@ const ResidentTransaction = () => {
         }
       }
       else if (transaction.serviceType === 'document_request' && transaction.referenceId) {
-        const refResponse = await fetch(`http://localhost:3002/documents/${transaction.referenceId}`);
+        const refResponse = await fetch(`${API_BASE_URL}/documents/${transaction.referenceId}`);
         if (refResponse.ok) {
           const documentData = await refResponse.json();
           if (documentData.success && documentData.documentRequest) {
@@ -272,7 +273,7 @@ const ResidentTransaction = () => {
         }
       }
       else if (transaction.serviceType === 'project_proposal' && transaction.referenceId) {
-        const refResponse = await fetch(`http://localhost:3002/proposals/${transaction.referenceId}`);
+        const refResponse = await fetch(`${API_BASE_URL}/proposals/${transaction.referenceId}`);
         if (refResponse.ok) {
           const proposalData = await refResponse.json();
           if (proposalData.success && proposalData.proposal) {
@@ -289,7 +290,7 @@ const ResidentTransaction = () => {
         }
       }
       else if (transaction.serviceType === 'resident_registration' && transaction.referenceId) {
-        const refResponse = await fetch(`http://localhost:3002/residents/${transaction.referenceId}`);
+        const refResponse = await fetch(`${API_BASE_URL}/residents/${transaction.referenceId}`);
         if (refResponse.ok) {
           const residentData = await refResponse.json();
           if (residentData.success && residentData.data) {
@@ -332,22 +333,22 @@ const ResidentTransaction = () => {
         let endpoint;
         switch(transaction.serviceType) {
           case SERVICE_TYPES.AMBULANCE:
-            endpoint = `http://localhost:3002/ambulance/${transaction.referenceId}`;
+            endpoint = `${API_BASE_URL}/ambulance/${transaction.referenceId}`;
             break;
           case SERVICE_TYPES.COURT:
-            endpoint = `http://localhost:3002/court/${transaction.referenceId}`;
+            endpoint = `${API_BASE_URL}/court/${transaction.referenceId}`;
             break;
           case SERVICE_TYPES.INFRASTRUCTURE:
-            endpoint = `http://localhost:3002/reports/${transaction.referenceId}`;
+            endpoint = `${API_BASE_URL}/reports/${transaction.referenceId}`;
             break;
           case SERVICE_TYPES.PROJECT_PROPOSAL:
-            endpoint = `http://localhost:3002/proposals/${transaction.referenceId}`;
+            endpoint = `${API_BASE_URL}/proposals/${transaction.referenceId}`;
             break;
           case SERVICE_TYPES.DOCUMENT:
-            endpoint = `http://localhost:3002/documents/${transaction.referenceId}`;
+            endpoint = `${API_BASE_URL}/documents/${transaction.referenceId}`;
             break;
           case SERVICE_TYPES.RESIDENT:
-            endpoint = `http://localhost:3002/residents/${transaction.referenceId}`;
+            endpoint = `${API_BASE_URL}/residents/${transaction.referenceId}`;
             break;
           default:
             endpoint = null;
@@ -423,7 +424,7 @@ const ResidentTransaction = () => {
     try {
       console.log('Submitting feedback for report:', feedbackReportId);
       
-      const response = await fetch(`http://localhost:3002/reports/${feedbackReportId}/feedback`, {
+      const response = await fetch(`${API_BASE_URL}/reports/${feedbackReportId}/feedback`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -474,20 +475,20 @@ const ResidentTransaction = () => {
       let method = 'PATCH'; // Default method for ambulance and court
       
       if (selectedTransaction.serviceType === 'ambulance_booking' && selectedTransaction.referenceId) {
-        cancelEndpoint = `http://localhost:3002/ambulance/${selectedTransaction.referenceId}/cancel`;
+        cancelEndpoint = `${API_BASE_URL}/ambulance/${selectedTransaction.referenceId}/cancel`;
       } else if (selectedTransaction.serviceType === 'court_reservation' && selectedTransaction.referenceId) {
-        cancelEndpoint = `http://localhost:3002/court/${selectedTransaction.referenceId}/cancel`;
+        cancelEndpoint = `${API_BASE_URL}/court/${selectedTransaction.referenceId}/cancel`;
       } else if (selectedTransaction.serviceType === 'infrastructure_report' && selectedTransaction.referenceId) {
-        cancelEndpoint = `http://localhost:3002/reports/${selectedTransaction.referenceId}/cancel`;
+        cancelEndpoint = `${API_BASE_URL}/reports/${selectedTransaction.referenceId}/cancel`;
         method = 'PUT'; // Use PUT for report cancellation as defined in your router
       } else if (selectedTransaction.serviceType === 'project_proposal' && selectedTransaction.referenceId) {
-        cancelEndpoint = `http://localhost:3002/proposals/${selectedTransaction.referenceId}/cancel`;
+        cancelEndpoint = `${API_BASE_URL}/proposals/${selectedTransaction.referenceId}/cancel`;
         method = 'PATCH';
       } else if (selectedTransaction.serviceType === 'document_request' && selectedTransaction.referenceId) {
-        cancelEndpoint = `http://localhost:3002/documents/${selectedTransaction.referenceId}/cancel`;
+        cancelEndpoint = `${API_BASE_URL}/documents/${selectedTransaction.referenceId}/cancel`;
         method = 'PATCH';
       } else if (selectedTransaction.serviceType === 'resident_registration' && selectedTransaction.referenceId) {
-          cancelEndpoint = `http://localhost:3002/residents/${selectedTransaction.referenceId}/cancel`;
+          cancelEndpoint = `${API_BASE_URL}/residents/${selectedTransaction.referenceId}/cancel`;
           method = 'PATCH';
       } else {
         throw new Error('Cannot cancel this type of transaction');
@@ -543,7 +544,7 @@ const ResidentTransaction = () => {
     setDieselResponseLoading(true);
     
     try {
-      const response = await fetch(`http://localhost:3002/ambulance/${selectedTransaction.referenceId}/resident-response`, {
+      const response = await fetch(`${API_BASE_URL}/ambulance/${selectedTransaction.referenceId}/resident-response`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
@@ -2983,7 +2984,7 @@ const ResidentTransaction = () => {
                                     size="small"
                                     startIcon={<FileIcon />}
                                     component={Link}
-                                    href={`http://localhost:3002${selectedTransaction.referenceDetails.documentPath}`}
+                                    href={`${API_BASE_URL}${selectedTransaction.referenceDetails.documentPath}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     sx={{ mt: 2 }}
@@ -3203,7 +3204,7 @@ const ResidentTransaction = () => {
                                         <Button
                                             key={index}
                                             component="a" 
-                                            href={`http://localhost:3002${url}`} 
+                                            href={`${API_BASE_URL}${url}`} 
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             variant="outlined"
@@ -5467,7 +5468,7 @@ const ResidentTransaction = () => {
                                 size="small"
                                 startIcon={<FileIcon />}
                                 component={Link}
-                                href={`http://localhost:3002${selectedTransaction.referenceDetails.documentPath}`}
+                                href={`${API_BASE_URL}${selectedTransaction.referenceDetails.documentPath}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 sx={{ mt: 2 }}
@@ -5687,7 +5688,7 @@ const ResidentTransaction = () => {
                                     <Button
                                         key={index}
                                         component="a" 
-                                        href={`http://localhost:3002${url}`} 
+                                        href={`${API_BASE_URL}${url}`} 
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         variant="outlined"

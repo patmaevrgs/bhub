@@ -49,6 +49,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import API_BASE_URL from '../../../config';
 
 // Dialog transition effect
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -87,7 +88,7 @@ const Announcements = () => {
     const fetchAnnouncements = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:3002/announcements', {
+        const response = await fetch(`${API_BASE_URL}/announcements`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -329,7 +330,7 @@ const Announcements = () => {
                 {mediaToShow === 'image' ? (
                   <CardMedia
                     component="img"
-                    image={`http://localhost:3002${announcement.images[0]}`}
+                    image={`${API_BASE_URL}${announcement.images[0]}`}
                     alt="Featured announcement image"
                     sx={{ 
                       height: 300,
@@ -340,12 +341,12 @@ const Announcements = () => {
                   <Box sx={{ height: 300, width: '100%', bgcolor: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <CardMedia
                       component="video"
-                      src={`http://localhost:3002${announcement.videos[0].path}`}
+                      src={`${API_BASE_URL}${announcement.videos[0].path}`}
                       sx={{ 
                         height: '100%',
                         maxWidth: '100%'
                       }}
-                      image={announcement.videos[0].thumbnail ? `http://localhost:3002${announcement.videos[0].thumbnail}` : ''}
+                      image={announcement.videos[0].thumbnail ? `${API_BASE_URL}${announcement.videos[0].thumbnail}` : ''}
                     />
                     <Box sx={{ position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <VideocamIcon sx={{ fontSize: 48, color: 'rgba(255,255,255,0.8)' }} />
@@ -549,7 +550,7 @@ const Announcements = () => {
                       {hasImages ? (
                         <CardMedia
                           component="img"
-                          image={`http://localhost:3002${announcement.images[0]}`}
+                          image={`${API_BASE_URL}${announcement.images[0]}`}
                           alt={`Announcement image`}
                           sx={{ 
                             height: '100%',
@@ -796,7 +797,7 @@ const Announcements = () => {
               >
                 <CardMedia
                   component="img"
-                  image={`http://localhost:3002${selectedAnnouncement.images[selectedImageIndex]}`}
+                  image={`${API_BASE_URL}${selectedAnnouncement.images[selectedImageIndex]}`}
                   alt={`Announcement image ${selectedImageIndex + 1}`}
                   sx={{ 
                     objectFit: 'contain',
@@ -880,7 +881,7 @@ const Announcements = () => {
                     icon={<AttachFileIcon />}
                     label={file.name}
                     component={Link}
-                    href={`http://localhost:3002${file.path}`}
+                    href={`${API_BASE_URL}${file.path}`}
                     target="_blank"
                     clickable
                     variant="outlined"
@@ -914,7 +915,7 @@ const Announcements = () => {
                           maxHeight: 200,
                         }}
                       >
-                        <source src={`http://localhost:3002${videoPath}`} />
+                        <source src={`${API_BASE_URL}${videoPath}`} />
                         Your browser does not support video playback.
                       </Box>
                       {/* <Typography variant="caption" sx={{ display: 'block', mt: 0.5 }}>

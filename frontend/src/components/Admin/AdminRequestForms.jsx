@@ -49,6 +49,7 @@ import {
   Comment as CommentIcon
 } from '@mui/icons-material';
 import { format } from 'date-fns';
+import API_BASE_URL from '../../../config';
 
 function AdminRequestForms() {
   // State for document requests
@@ -117,7 +118,7 @@ function AdminRequestForms() {
   const fetchRequests = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3002/documents');
+      const response = await fetch(`${API_BASE_URL}/documents`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -278,7 +279,7 @@ function AdminRequestForms() {
         adminName = localStorage.getItem("user") || "Unknown Admin";
       }
 
-      const response = await fetch(`http://localhost:3002/documents/${selectedRequest._id}/status`, {
+      const response = await fetch(`${API_BASE_URL}/documents/${selectedRequest._id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
@@ -369,7 +370,7 @@ function AdminRequestForms() {
       }
 
       // Generate a DOCX document
-      const response = await fetch('http://localhost:3002/documents/generate', {
+      const response = await fetch(`${API_BASE_URL}/documents/generate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -44,6 +44,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import InfoIcon from '@mui/icons-material/Info';
 import PhoneIcon from '@mui/icons-material/Phone';
 import { format, parseISO, isAfter, addHours, isBefore, startOfDay } from 'date-fns';
+import API_BASE_URL from '../../../config';
 
 function ResidentCourt() {
   const theme = useTheme();
@@ -105,7 +106,7 @@ function ResidentCourt() {
         
         if (!userId) return;
         
-        const response = await fetch(`http://localhost:3002/court?userId=${userId}`, {
+        const response = await fetch(`${API_BASE_URL}/court?userId=${userId}`, {
           headers: { 
             'Content-Type': 'application/json'
           }
@@ -134,7 +135,7 @@ function ResidentCourt() {
         const threeMonthsLater = new Date(today);
         threeMonthsLater.setMonth(today.getMonth() + 3);
         
-        const response = await fetch(`http://localhost:3002/court-calendar?start=${today.toISOString().split('T')[0]}&end=${threeMonthsLater.toISOString().split('T')[0]}`, {
+        const response = await fetch(`${API_BASE_URL}/court-calendar?start=${today.toISOString().split('T')[0]}&end=${threeMonthsLater.toISOString().split('T')[0]}`, {
           headers: { 
             'Content-Type': 'application/json'
           }
@@ -200,7 +201,7 @@ function ResidentCourt() {
       });
       
       const response = await fetch(
-        `http://localhost:3002/court-conflict?date=${formattedDate}&startTime=${formattedTime}&duration=${formData.duration}`,
+        `${API_BASE_URL}/court-conflict?date=${formattedDate}&startTime=${formattedTime}&duration=${formData.duration}`,
         {
           headers: { 'Content-Type': 'application/json' }
         }
@@ -281,7 +282,7 @@ function ResidentCourt() {
       
       console.log('Submitting reservation data:', formattedData);
       
-      const response = await fetch('http://localhost:3002/court', {
+      const response = await fetch(`${API_BASE_URL}/court`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -328,7 +329,7 @@ function ResidentCourt() {
     try {
       setLoading(true);
       
-      const response = await fetch(`http://localhost:3002/court/${id}/cancel`, {
+      const response = await fetch(`${API_BASE_URL}/court/${id}/cancel`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'

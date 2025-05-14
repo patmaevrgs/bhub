@@ -31,6 +31,7 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import EditIcon from '@mui/icons-material/Edit';
 import InfoIcon from '@mui/icons-material/Info';
 import { Chip } from '@mui/material';
+import API_BASE_URL from '../../../config';
 
 function AdminProfile() {
   // State for user profile
@@ -95,7 +96,7 @@ function AdminProfile() {
       const token = getToken();
       console.log('Using token:', token ? 'Token exists' : 'No token found');
       
-      const response = await fetch('http://localhost:3002/profile', {
+      const response = await fetch(`${API_BASE_URL}/profile`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -172,7 +173,7 @@ function AdminProfile() {
     
     try {
       const token = getToken();
-      const response = await fetch('http://localhost:3002/profile/update', {
+      const response = await fetch(`${API_BASE_URL}/profile/update`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -221,7 +222,7 @@ function AdminProfile() {
     
     try {
       const token = getToken();
-      const response = await fetch('http://localhost:3002/profile/password', {
+      const response = await fetch(`${API_BASE_URL}/profile/password`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

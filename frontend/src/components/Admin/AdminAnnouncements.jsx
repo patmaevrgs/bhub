@@ -55,6 +55,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useMemo } from 'react';
+import API_BASE_URL from '../../../config';
 
 function AdminAnnouncements() {
   const [title, setTitle] = useState('Brgy Maahas Update'); // New title state
@@ -157,7 +158,7 @@ function AdminAnnouncements() {
   const fetchAnnouncements = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:3002/announcements');
+      const res = await fetch(`${API_BASE_URL}/announcements`);
       const data = await res.json();
       if (Array.isArray(data)) {
         setAnnouncements(data.reverse()); // show latest first
@@ -264,8 +265,8 @@ function AdminAnnouncements() {
     setError('');
 
     const url = editingId
-      ? `http://localhost:3002/announcements/${editingId}`
-      : 'http://localhost:3002/announcements';
+      ? `${API_BASE_URL}/announcements/${editingId}`
+      : `${API_BASE_URL}/announcements`;
 
     const method = editingId ? 'PATCH' : 'POST';
 
@@ -348,7 +349,7 @@ function AdminAnnouncements() {
   // Add this new function for confirmed deletion:
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:3002/announcements/${deleteId}`, {
+      const response = await fetch(`${API_BASE_URL}/announcements/${deleteId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -495,7 +496,7 @@ function AdminAnnouncements() {
       formData.append('keepFiles', JSON.stringify(editDialogExistingFiles));
       formData.append('links', JSON.stringify([]));
 
-      const response = await fetch(`http://localhost:3002/announcements/${editDialogData.id}`, {
+      const response = await fetch(`${API_BASE_URL}/announcements/${editDialogData.id}`, {
         method: 'PATCH',
         body: formData,
       });
@@ -820,7 +821,7 @@ function AdminAnnouncements() {
                           <CardMedia
                             component="img"
                             height="120"
-                            image={`http://localhost:3002${path}`}
+                            image={`${API_BASE_URL}${path}`}
                             alt={`Existing image ${index}`}
                           />
                           <IconButton
@@ -1191,14 +1192,14 @@ function AdminAnnouncements() {
                         >
                           <Box
                             component="img"
-                            src={`http://localhost:3002${imgPath}`}
+                            src={`${API_BASE_URL}${imgPath}`}
                             alt={`Image ${index + 1}`}
                             sx={{
                               width: '100%',
                               height: 150,
                               objectFit: 'cover',
                             }}
-                            onClick={() => window.open(`http://localhost:3002${imgPath}`, '_blank')}
+                            onClick={() => window.open(`${API_BASE_URL}${imgPath}`, '_blank')}
                           />
                         </Box>
                       </Grid>
@@ -1227,7 +1228,7 @@ function AdminAnnouncements() {
                             bgcolor: 'grey.900'
                           }}
                         >
-                          <source src={`http://localhost:3002${videoPath}`} />
+                          <source src={`${API_BASE_URL}${videoPath}`} />
                           Your browser does not support video playback.
                         </Box>
                       </Grid>
@@ -1250,7 +1251,7 @@ function AdminAnnouncements() {
                         label={file.name}
                         icon={<AttachFileIcon />}
                         component="a"
-                        href={`http://localhost:3002${file.path}`}
+                        href={`${API_BASE_URL}${file.path}`}
                         target="_blank"
                         clickable
                         sx={{ 
@@ -1690,7 +1691,7 @@ function AdminAnnouncements() {
                       <CardMedia
                         component="img"
                         height="100"
-                        image={`http://localhost:3002${path}`}
+                        image={`${API_BASE_URL}${path}`}
                         alt={`Image ${index}`}
                       />
                       <IconButton

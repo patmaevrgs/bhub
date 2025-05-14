@@ -37,6 +37,7 @@ import SortIcon from '@mui/icons-material/Sort';
 import InputAdornment from '@mui/material/InputAdornment';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
+import API_BASE_URL from '../../../config';
 
 function AdminAccounts() {
   const [users, setUsers] = useState([]);
@@ -104,7 +105,7 @@ function AdminAccounts() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3002/users', {
+      const response = await fetch(`${API_BASE_URL}/users`, {
         method: 'GET',
         credentials: 'include' // Include cookies
       });
@@ -141,7 +142,7 @@ function AdminAccounts() {
 
   const handleUpdateUserType = async () => {
     try {
-      const response = await fetch('http://localhost:3002/users/updateType', {
+      const response = await fetch(`${API_BASE_URL}/users/updateType`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

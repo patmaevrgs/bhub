@@ -31,6 +31,7 @@ import {
 } from '@mui/icons-material';
 import { ThemeProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
+import API_BASE_URL from '../../../config';
 
 // Date formatter
 const formatDate = (date) => {
@@ -40,9 +41,6 @@ const formatDate = (date) => {
     day: 'numeric'
   });
 };
-
-// API base URL
-const API_BASE_URL = 'http://localhost:3002'; // Change this to match your backend URL
 
 const QuickStats = () => {
   const [loading, setLoading] = useState(true);

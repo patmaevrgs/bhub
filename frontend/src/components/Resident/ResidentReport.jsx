@@ -30,6 +30,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import CancelIcon from '@mui/icons-material/Cancel';
+import API_BASE_URL from '../../../config';
 
 function ResidentReport() {
   const [loading, setLoading] = useState(false);
@@ -65,7 +66,7 @@ function ResidentReport() {
         return;
       }
 
-      const response = await fetch(`http://localhost:3002/reports/user?userId=${userId}`);
+      const response = await fetch(`${API_BASE_URL}/reports/user?userId=${userId}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch reports');
@@ -220,7 +221,7 @@ function ResidentReport() {
         formDataToSubmit.append('media', file);
       });
 
-      const response = await fetch('http://localhost:3002/reports', {
+      const response = await fetch(`${API_BASE_URL}/reports`, {
         method: 'POST',
         body: formDataToSubmit
       });
@@ -246,7 +247,7 @@ function ResidentReport() {
   // Submit feedback for a report
   const submitFeedback = async (reportId, satisfied, comments) => {
     try {
-      const response = await fetch(`http://localhost:3002/reports/${reportId}/feedback`, {
+      const response = await fetch(`${API_BASE_URL}/reports/${reportId}/feedback`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -392,7 +393,7 @@ function ResidentReport() {
   // Add this method to your existing ResidentReport component
   const cancelReport = async (reportId) => {
     try {
-      const response = await fetch(`http://localhost:3002/reports/${reportId}/cancel`, {
+      const response = await fetch(`${API_BASE_URL}/reports/${reportId}/cancel`, {
         method: 'PUT', // or 'PATCH' depending on your backend route
         headers: {
           'Content-Type': 'application/json'
@@ -426,7 +427,7 @@ function ResidentReport() {
                   <Card sx={{ height: '100%' }}>
                     <CardMedia
                       component="img"
-                      image={`http://localhost:3002${imgPath}`}
+                      image={`${API_BASE_URL}${imgPath}`}
                       alt={`Report image ${index + 1}`}
                       sx={{ 
                         height: 200, 
@@ -436,7 +437,7 @@ function ResidentReport() {
                           opacity: 0.9
                         }
                       }}
-                      onClick={() => window.open(`http://localhost:3002${imgPath}`, '_blank')}
+                      onClick={() => window.open(`${API_BASE_URL}${imgPath}`, '_blank')}
                     />
                   </Card>
                 </Grid>

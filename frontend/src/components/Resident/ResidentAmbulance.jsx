@@ -36,6 +36,7 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { format, addMonths } from 'date-fns';
+import API_BASE_URL from '../../../config';
 
 // Icons
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -121,7 +122,7 @@ const ResidentAmbulance = () => {
         const year = currentDate.getFullYear();
         
         // Use your existing ambulance-calendar endpoint
-        const response = await fetch(`http://localhost:3002/ambulance-calendar?month=${month}&year=${year}&userType=resident`);
+        const response = await fetch(`${API_BASE_URL}/ambulance-calendar?month=${month}&year=${year}&userType=resident`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch calendar data');
@@ -183,7 +184,7 @@ const ResidentAmbulance = () => {
       const month = currentDate.getMonth() + 1;
       const year = currentDate.getFullYear();
       
-      const response = await fetch(`http://localhost:3002/ambulance-calendar?month=${month}&year=${year}`);
+      const response = await fetch(`${API_BASE_URL}/ambulance-calendar?month=${month}&year=${year}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch calendar data');
@@ -200,7 +201,7 @@ const ResidentAmbulance = () => {
   const fetchUserBookings = async (userId) => {
     setLoadingBookings(true);
     try {
-      const response = await fetch(`http://localhost:3002/ambulance?userId=${userId}`);
+      const response = await fetch(`${API_BASE_URL}/ambulance?userId=${userId}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch bookings');
@@ -252,7 +253,7 @@ const ResidentAmbulance = () => {
       const formattedTime = format(formData.pickupTime, 'HH:mm');
       
       const response = await fetch(
-        `http://localhost:3002/ambulance-conflict?pickupDate=${formattedDate}&pickupTime=${formattedTime}&duration=${formData.duration}`
+        `${API_BASE_URL}/ambulance-conflict?pickupDate=${formattedDate}&pickupTime=${formattedTime}&duration=${formData.duration}`
       );
       
       if (!response.ok) {
@@ -345,7 +346,7 @@ const ResidentAmbulance = () => {
         userId: userId // Include userId in the request body
       };
       
-      const response = await fetch('http://localhost:3002/ambulance', {
+      const response = await fetch(`${API_BASE_URL}/ambulance`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -398,7 +399,7 @@ const ResidentAmbulance = () => {
         throw new Error('Missing required data');
       }
       
-      const response = await fetch(`http://localhost:3002/ambulance/${currentBooking._id}/resident-response`, {
+      const response = await fetch(`${API_BASE_URL}/ambulance/${currentBooking._id}/resident-response`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
@@ -435,7 +436,7 @@ const ResidentAmbulance = () => {
         throw new Error('Missing required data');
       }
       
-      const response = await fetch(`http://localhost:3002/ambulance/${currentBooking._id}/cancel`, {
+      const response = await fetch(`${API_BASE_URL}/ambulance/${currentBooking._id}/cancel`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'

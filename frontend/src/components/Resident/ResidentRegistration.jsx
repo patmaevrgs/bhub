@@ -34,6 +34,7 @@ import {
   ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import API_BASE_URL from '../../../config';
 
 // Resident type options - keeping original values
 const residentTypes = ['Minor', '18-30', 'Illiterate', 'PWD', 'Senior Citizen', 'Indigent'];
@@ -103,7 +104,7 @@ function ResidentRegistration() {
     if (!data.firstName || !data.lastName) return;
     
     try {
-      const response = await fetch(`http://localhost:3002/residents/check-duplicate?firstName=${encodeURIComponent(data.firstName)}&lastName=${encodeURIComponent(data.lastName)}`, {
+      const response = await fetch(`${API_BASE_URL}/residents/check-duplicate?firstName=${encodeURIComponent(data.firstName)}&lastName=${encodeURIComponent(data.lastName)}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -140,7 +141,7 @@ function ResidentRegistration() {
     }
   
     try {
-      const response = await fetch('http://localhost:3002/residents/request', {
+      const response = await fetch(`${API_BASE_URL}/residents/request`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

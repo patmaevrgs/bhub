@@ -24,7 +24,7 @@ import HelpIcon from '@mui/icons-material/Help';
 import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import bhubLogo from '/src/assets/bhub-logo.png';
+import bhubLogo from '../assets/bhub-logo.png';
 
 // Styled components for better readability
 const NavLink = styled(Link)(({ theme, active }) => ({

@@ -4,6 +4,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import ResidentNav from '../components/Resident/ResidentNav';
 import Footer from '../components/Resident/Footer';
 import { Box, Container } from '@mui/material';
+import API_BASE_URL from '../../config';
 
 function ResidentRoot() {
   const [ResidentFirstName, setResidentFirstName] = useState('');
@@ -23,7 +24,7 @@ function ResidentRoot() {
 
   const fetchHomepageData = async () => {
     try {
-      const response = await fetch('http://localhost:3002/homepage');
+      const response = await fetch(`${API_BASE_URL}/homepage`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }

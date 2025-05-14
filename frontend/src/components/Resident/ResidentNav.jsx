@@ -37,7 +37,8 @@ import SportsIcon from '@mui/icons-material/SportsCricket';
 import ReportIcon from '@mui/icons-material/Report';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import bhubLogo from '/src/assets/bhub-logo.png';
+import bhubLogo from '../../assets/bhub-logo.png';
+import API_BASE_URL from '../../../config';
 
 // Styled components for better readability
 const NavLink = styled(Link)(({ theme, active }) => ({

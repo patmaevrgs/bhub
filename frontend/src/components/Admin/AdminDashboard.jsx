@@ -84,10 +84,7 @@ import {
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
-
-
-// API base URL - change this to match your backend URL
-const API_BASE_URL = 'http://localhost:3002';
+import API_BASE_URL from '../../../config';
 
 // Utility function to format date
 const formatDate = (dateString) => {

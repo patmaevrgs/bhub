@@ -71,6 +71,7 @@ import SecurityIcon from '@mui/icons-material/Security';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import GroupsIcon from '@mui/icons-material/Groups';
 import { format } from 'date-fns';
+import API_BASE_URL from '../../../config';
 
 function ResidentProposal() {
   const theme = useTheme();
@@ -119,7 +120,7 @@ function ResidentProposal() {
     
     setProposalsLoading(true);
     try {
-      const response = await fetch(`http://localhost:3002/proposals?userId=${userId}`);
+      const response = await fetch(`${API_BASE_URL}/proposals?userId=${userId}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -232,7 +233,7 @@ function ResidentProposal() {
       formData.append('document', file);
       
       // Submit the proposal
-      const response = await fetch('http://localhost:3002/proposals', {
+      const response = await fetch(`${API_BASE_URL}/proposals`, {
         method: 'POST',
         body: formData,
       });
@@ -296,7 +297,7 @@ function ResidentProposal() {
     setCancelLoading(true);
     
     try {
-      const response = await fetch(`http://localhost:3002/proposals/${selectedProposal._id}/cancel`, {
+      const response = await fetch(`${API_BASE_URL}/proposals/${selectedProposal._id}/cancel`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

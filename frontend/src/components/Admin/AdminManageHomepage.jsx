@@ -74,6 +74,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import AlertTitle from '@mui/material/AlertTitle';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import API_BASE_URL from '../../../config';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -177,7 +178,7 @@ function AdminManageHomepage() {
   const fetchHomepageContent = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3002/homepage');
+      const response = await fetch(`${API_BASE_URL}/homepage`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -253,7 +254,7 @@ function AdminManageHomepage() {
       setSaving(true);
       const adminName = localStorage.getItem('firstName') + ' ' + localStorage.getItem('lastName');
       
-      const response = await fetch('http://localhost:3002/homepage/welcome', {
+      const response = await fetch(`${API_BASE_URL}/homepage/welcome`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -294,7 +295,7 @@ const saveFooterData = async () => {
     setSaving(true);
     const adminName = localStorage.getItem('firstName') + ' ' + localStorage.getItem('lastName');
     
-    const response = await fetch('http://localhost:3002/homepage/footer', {
+    const response = await fetch(`${API_BASE_URL}/homepage/footer`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -326,7 +327,7 @@ const saveFooterData = async () => {
       setSaving(true);
       const adminName = localStorage.getItem('firstName') + ' ' + localStorage.getItem('lastName');
       
-      const response = await fetch('http://localhost:3002/homepage/about', {
+      const response = await fetch(`${API_BASE_URL}/homepage/about`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -366,7 +367,7 @@ const saveFooterData = async () => {
       setSaving(true);
       const adminName = localStorage.getItem('firstName') + ' ' + localStorage.getItem('lastName');
       
-      const response = await fetch('http://localhost:3002/homepage/summary', {
+      const response = await fetch(`${API_BASE_URL}/homepage/summary`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -432,7 +433,7 @@ const saveFooterData = async () => {
       formData.append('adminName', adminName);
       formData.append('action', action);
       
-      const response = await fetch('http://localhost:3002/homepage/carousel', {
+      const response = await fetch(`${API_BASE_URL}/homepage/carousel`, {
         method: 'POST',
         body: formData,
       });
@@ -471,7 +472,7 @@ const saveFooterData = async () => {
       setSaving(true);
       const adminName = localStorage.getItem('firstName') + ' ' + localStorage.getItem('lastName');
       
-      const response = await fetch('http://localhost:3002/homepage/carousel', {
+      const response = await fetch(`${API_BASE_URL}/homepage/carousel`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -520,7 +521,7 @@ const saveFooterData = async () => {
       
       console.log("Saving hotlines to backend:", hotlinesToSave);
       
-      const response = await fetch('http://localhost:3002/homepage/hotlines', {
+      const response = await fetch(`${API_BASE_URL}/homepage/hotlines`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -651,7 +652,7 @@ const saveFooterData = async () => {
       setSaving(true);
       const adminName = localStorage.getItem('firstName') + ' ' + localStorage.getItem('lastName');
       
-      const response = await fetch('http://localhost:3002/homepage/map', {
+      const response = await fetch(`${API_BASE_URL}/homepage/map`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -717,7 +718,7 @@ const saveFooterData = async () => {
         formData.append('image', selectedOfficialImage);
         formData.append('adminName', adminName);
         
-        const response = await fetch('http://localhost:3002/homepage/official-image', {
+        const response = await fetch(`${API_BASE_URL}/homepage/official-image`, {
           method: 'POST',
           body: formData,
         });
@@ -771,7 +772,7 @@ const saveFooterData = async () => {
       
       console.log("Saving officials to backend:", officialsToSave);
       
-      const response = await fetch('http://localhost:3002/homepage/officials', {
+      const response = await fetch(`${API_BASE_URL}/homepage/officials`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -1458,7 +1459,7 @@ const saveFooterData = async () => {
                             }}
                           >
                             <img
-                              src={`http://localhost:3002${image.path}`}
+                              src={`${API_BASE_URL}${image.path}`}
                               alt={image.caption || `Carousel image ${index + 1}`}
                               style={{ 
                                 width: '300px', 
@@ -1544,7 +1545,7 @@ const saveFooterData = async () => {
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                               <Box 
                                 component="img" 
-                                src={`http://localhost:3002${image.path}`}
+                                src={`${API_BASE_URL}${image.path}`}
                                 alt={`Thumbnail ${index + 1}`}
                                 sx={{ 
                                   width: 50, 
@@ -2301,7 +2302,7 @@ const saveFooterData = async () => {
                       >
                         {official.imageUrl ? (
                           <img
-                            src={`http://localhost:3002${official.imageUrl}`}
+                            src={`${API_BASE_URL}${official.imageUrl}`}
                             alt={official.name}
                             style={{ 
                               width: '200px', 
@@ -2501,7 +2502,7 @@ const saveFooterData = async () => {
                       />
                     ) : newOfficial.imageUrl ? (
                       <img 
-                        src={`http://localhost:3002${newOfficial.imageUrl}`} 
+                        src={`${API_BASE_URL}${newOfficial.imageUrl}`} 
                         alt="Current official" 
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         onError={(e) => {
@@ -2869,7 +2870,7 @@ const saveFooterData = async () => {
               }}
             >
               <img 
-                src={`http://localhost:3002${imageToDelete.path}`} 
+                src={`${API_BASE_URL}${imageToDelete.path}`} 
                 alt="Image to delete" 
                 style={{ 
                   width: '100%', 

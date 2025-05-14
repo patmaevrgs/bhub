@@ -48,6 +48,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import Avatar from '@mui/material/Avatar';
 import { formatDistanceToNow } from 'date-fns';
+import API_BASE_URL from '../../../config';
 
 function AdminContact() {
   const [messages, setMessages] = useState([]);
@@ -74,7 +75,7 @@ function AdminContact() {
   const fetchMessages = async (page = 1, status = '', search = '') => {
     try {
       setLoading(true);
-      let url = `http://localhost:3002/contact?page=${page}&limit=10`;
+      let url = `${API_BASE_URL}/contact?page=${page}&limit=10`;
       
       if (status && status !== 'all') {
         url += `&status=${status}`;
@@ -127,7 +128,7 @@ function AdminContact() {
     if (message.status === 'unread') {
       try {
         const token = localStorage.getItem('token');
-        await fetch(`http://localhost:3002/contact/${message._id}/read`, {
+        await fetch(`${API_BASE_URL}/contact/${message._id}/read`, {
           method: 'PATCH',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -153,7 +154,7 @@ function AdminContact() {
     try {
         setDeleteLoading(true);
         const token = localStorage.getItem('token');
-        await fetch(`http://localhost:3002/contact/${messageToDelete._id}`, {
+        await fetch(`${API_BASE_URL}/contact/${messageToDelete._id}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`

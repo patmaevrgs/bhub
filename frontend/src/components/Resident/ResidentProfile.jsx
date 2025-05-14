@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff, Edit } from '@mui/icons-material';
 import Cookies from 'universal-cookie'; // Import Cookies
+import API_BASE_URL from '../../../config';
 
 function ResidentProfile() {
   // State for user profile
@@ -81,7 +82,7 @@ function ResidentProfile() {
       const token = getToken();
       console.log('Using token:', token ? 'Token exists' : 'No token found');
       
-      const response = await fetch('http://localhost:3002/profile', {
+      const response = await fetch(`${API_BASE_URL}/profile`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -158,7 +159,7 @@ function ResidentProfile() {
     
     try {
       const token = getToken();
-      const response = await fetch('http://localhost:3002/profile/update', {
+      const response = await fetch(`${API_BASE_URL}/profile/update`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -207,7 +208,7 @@ function ResidentProfile() {
     
     try {
       const token = getToken();
-      const response = await fetch('http://localhost:3002/profile/password', {
+      const response = await fetch(`${API_BASE_URL}/profile/password`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

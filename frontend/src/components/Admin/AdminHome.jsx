@@ -24,9 +24,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import AdminDashboard from './AdminDashboard';
 import QuickStats from './QuickStats';
-
-// Define the API base URL to match your other components
-const API_BASE_URL = 'http://localhost:3002';
+import API_BASE_URL from '../../../config';
 
 function AdminHome() {
   const theme = useTheme();

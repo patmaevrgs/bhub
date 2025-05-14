@@ -59,7 +59,7 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import { alpha } from '@mui/material/styles';
 import PendingIcon from '@mui/icons-material/Pending';
 import Avatar from '@mui/material/Avatar';
-
+import API_BASE_URL from '../../../config';
 
 
 // Resident type options
@@ -155,7 +155,7 @@ function AdminDatabase() {
       //   queryParams.append('sortBy', sortField);
       //   queryParams.append('sortOrder', sortOrder);
       // }
-      const response = await fetch(`http://localhost:3002/residents?${queryParams.toString()}`, {
+      const response = await fetch(`${API_BASE_URL}/residents?${queryParams.toString()}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -191,7 +191,7 @@ function AdminDatabase() {
   // Fetch precinct and address options
   const fetchOptions = async () => {
     try {
-      const response = await fetch('http://localhost:3002/residents?limit=1000&isVerified=true', {
+      const response = await fetch(`${API_BASE_URL}/residents?limit=1000&isVerified=true`, {
         method: 'GET',
         credentials: 'include' // Important for sending cookies
       });
@@ -214,7 +214,7 @@ function AdminDatabase() {
   // Fetch pending resident requests
   const fetchPendingRequests = async () => {
     try {
-      const response = await fetch('http://localhost:3002/residents?isVerified=false', {
+      const response = await fetch(`${API_BASE_URL}/residents?isVerified=false`, {
         method: 'GET',
         credentials: 'include' // Important for sending cookies
       });
@@ -354,7 +354,7 @@ function AdminDatabase() {
     
     try {
       // First try an exact match (case insensitive)
-      const exactMatches = await fetch(`http://localhost:3002/residents/check-duplicate?firstName=${encodeURIComponent(data.firstName)}&lastName=${encodeURIComponent(data.lastName)}&isVerified=true`, {
+      const exactMatches = await fetch(`${API_BASE_URL}/residents/check-duplicate?firstName=${encodeURIComponent(data.firstName)}&lastName=${encodeURIComponent(data.lastName)}&isVerified=true`, {
         method: 'GET',
         credentials: 'include'
       });
@@ -380,7 +380,7 @@ function AdminDatabase() {
       // For now, we'll just check for partial last name matches as an example
       const partialLastName = data.lastName.length > 3 ? data.lastName.substring(0, Math.floor(data.lastName.length * 0.7)) : data.lastName;
       
-      const partialMatches = await fetch(`http://localhost:3002/residents?name=${encodeURIComponent(partialLastName)}&limit=5&isVerified=true`, {
+      const partialMatches = await fetch(`${API_BASE_URL}/residents?name=${encodeURIComponent(partialLastName)}&limit=5&isVerified=true`, {
         method: 'GET',
         credentials: 'include'
       });
@@ -423,7 +423,7 @@ function AdminDatabase() {
   // Create new resident - without password verification
   const handleAddResident = async () => {
     try {
-      const response = await fetch('http://localhost:3002/residents', {
+      const response = await fetch(`${API_BASE_URL}/residents`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -472,7 +472,7 @@ function AdminDatabase() {
   
     try {
       // This is the correct URL and method
-      const response = await fetch(`http://localhost:3002/residents/${selectedResident._id}`, {
+      const response = await fetch(`${API_BASE_URL}/residents/${selectedResident._id}`, {
         method: 'PUT', // Using correct method
         headers: {
           'Content-Type': 'application/json'
@@ -526,7 +526,7 @@ function AdminDatabase() {
 
     try {
       // This is the correct URL and method
-      const response = await fetch(`http://localhost:3002/residents/${selectedResident._id}`, {
+      const response = await fetch(`${API_BASE_URL}/residents/${selectedResident._id}`, {
         method: 'DELETE', // Using correct method
         headers: {
           'Content-Type': 'application/json'
@@ -597,7 +597,7 @@ function AdminDatabase() {
     try {
       setLoading(true); // Add loading state while importing
 
-      const response = await fetch('http://localhost:3002/residents/import', {
+      const response = await fetch(`${API_BASE_URL}/residents/import`, {
         method: 'POST',
         credentials: 'include',
         body: formData
@@ -657,7 +657,7 @@ function AdminDatabase() {
   // Verify resident - FIX
   const handleVerifyResident = async () => {
     try {
-      const response = await fetch(`http://localhost:3002/residents/${selectedResident._id}/verify`, {
+      const response = await fetch(`${API_BASE_URL}/residents/${selectedResident._id}/verify`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
@@ -706,7 +706,7 @@ function AdminDatabase() {
         return;
       }
       
-      const response = await fetch(`http://localhost:3002/residents/${selectedResident._id}/reject`, {
+      const response = await fetch(`${API_BASE_URL}/residents/${selectedResident._id}/reject`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'

@@ -51,10 +51,8 @@ import CommentIcon from '@mui/icons-material/Comment';
 import PersonIcon from '@mui/icons-material/Person';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-
 import InfoIcon from '@mui/icons-material/Info';
-
-
+import API_BASE_URL from '../../../config';
 import { format } from 'date-fns';
 
 function AdminCourt() {
@@ -90,7 +88,7 @@ function AdminCourt() {
       const token = localStorage.getItem('token');
       const adminName = `${localStorage.getItem('firstName')} ${localStorage.getItem('lastName')}`;
       
-      await fetch('http://localhost:3002/logs', {
+      await fetch(`${API_BASE_URL}/logs`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -115,7 +113,7 @@ function AdminCourt() {
       const token = localStorage.getItem('token');
       
       // First, fetch all reservations for badges/counts
-      const allResponse = await fetch('http://localhost:3002/court', {
+      const allResponse = await fetch(`${API_BASE_URL}/court`, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -139,7 +137,7 @@ function AdminCourt() {
       setAllReservations(sortedAllData);
       
       // Build query parameters for filtered view
-      let url = 'http://localhost:3002/court';
+      let url = `${API_BASE_URL}/court`;
       const params = new URLSearchParams();
       if (dateFilter) {
         // Format date as YYYY-MM-DD for startDate and endDate to get exact date
@@ -296,7 +294,7 @@ function AdminCourt() {
         userType: 'admin'
       });
       
-      const url = `http://localhost:3002/court-calendar?start=${startDate}&end=${endDate}&userType=admin`;
+      const url = `${API_BASE_URL}/court-calendar?start=${startDate}&end=${endDate}&userType=admin`;
       
       const response = await fetch(url);
       
@@ -356,7 +354,7 @@ function AdminCourt() {
     useEffect(() => {
       if (reservation && reservation._id) {
         setLoading(true);
-        fetch(`http://localhost:3002/court/${reservation._id}`)
+        fetch(`${API_BASE_URL}/court/${reservation._id}`)
           .then(res => res.ok ? res.json() : null)
           .then(data => {
             if (data && data.serviceId) {
@@ -423,7 +421,7 @@ function AdminCourt() {
       console.log(`Processing reservation ${selectedReservation._id} with status: ${status}`);
       
       // Update reservation status
-      const response = await fetch(`http://localhost:3002/court/${selectedReservation._id}/status`, {
+      const response = await fetch(`${API_BASE_URL}/court/${selectedReservation._id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

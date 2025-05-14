@@ -37,6 +37,8 @@ import ReportIcon from '@mui/icons-material/Report';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CircularProgress from '@mui/material/CircularProgress';
+import API_BASE_URL from '../../config';
+import bhubLogo from '../assets/bhub-logo.png';
 
 function SignUp() {
   const [firstName, setFirstName] = useState('');
@@ -117,7 +119,7 @@ function SignUp() {
       });
       
       try {
-        const response = await fetch('http://localhost:3002/signup', {
+        const response = await fetch(`${API_BASE_URL}/signup`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -196,7 +198,7 @@ function SignUp() {
           }}
         >
           <img 
-            src="/src/assets/bhub-logo.png" 
+            src={bhubLogo} 
             alt="B-Hub Logo" 
             style={{ height: '30px' }}
           />
