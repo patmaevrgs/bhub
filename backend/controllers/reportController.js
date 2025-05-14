@@ -5,7 +5,7 @@ const API_URL = process.env.API_URL || 'http://localhost:3002';
 
 const createAdminLog = async (adminName, action, details, entityId) => {
   try {
-    const response = await fetch(`${API_URL}`, {
+    const response = await fetch(`${API_URL}/logs`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

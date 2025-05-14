@@ -414,51 +414,103 @@ const saveFooterData = async () => {
     setCarouselCaptions(newCaptions);
   };
   
-  const uploadCarouselImages = async (action = 'append') => {
-    if (selectedFiles.length === 0) {
-      showAlert('Please select files to upload', 'warning');
-      return;
+  const uploadCarouselImages = async (req, res) => {
+  try {
+    const { adminName } = req.body;
+    
+    if (!adminName) {
+      return res.status(400).json({ message: 'Admin name is required for logging' });
     }
     
-    try {
-      setSaving(true);
-      const adminName = localStorage.getItem('firstName') + ' ' + localStorage.getItem('lastName');
+    let homepageContent = await HomepageContent.findOne();
+    
+    if (!homepageContent) {
+      homepageContent = await HomepageContent.createDefaultIfNone();
+    }
+    
+    const uploadedImages = [];
+    
+    if (req.files && req.files.length > 0) {
+      console.log(`Processing ${req.files.length} carousel images`);
       
-      const formData = new FormData();
-      selectedFiles.forEach((file) => {
-        formData.append('images', file);
+      for (const file of req.files) {
+        try {
+          console.log(`Uploading carousel image: ${file.originalname}, size: ${file.size} bytes, type: ${file.mimetype}`);
+          
+          // Upload to Supabase
+          const publicUrl = await uploadFile(
+            'homepage',
+            file.originalname,
+            file.buffer,
+            file.mimetype
+          );
+          
+          console.log(`Image uploaded successfully, URL: ${publicUrl}`);
+          
+          // Add to carousel images array
+          uploadedImages.push({
+            name: file.originalname,
+            path: publicUrl,
+            caption: req.body.captions ? JSON.parse(req.body.captions)[uploadedImages.length] || '' : ''
+          });
+        } catch (uploadError) {
+          console.error(`Error uploading image ${file.originalname}:`, uploadError);
+          // Continue with the next image instead of failing the entire request
+        }
+      }
+    } else {
+      console.log('No files provided for carousel upload');
+    }
+    
+    // If no images were successfully uploaded, return error
+    if (uploadedImages.length === 0 && req.files && req.files.length > 0) {
+      return res.status(500).json({ 
+        message: 'Failed to upload any images. Please check server logs for details.' 
       });
-      
-      formData.append('captions', JSON.stringify(carouselCaptions));
-      formData.append('adminName', adminName);
-      formData.append('action', action);
-      
-      const response = await fetch(`${API_BASE_URL}/homepage/carousel`, {
-        method: 'POST',
-        body: formData,
-      });
-      
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+    }
+    
+    // Update or replace carousel images based on action
+    if (req.body.action === 'replace') {
+      // Delete old images first
+      for (const image of homepageContent.carouselImages) {
+        try {
+          // Only delete from Supabase if the path contains supabase.co
+          if (image.path && image.path.includes('supabase.co')) {
+            await deleteFile('homepage', image.path);
+          }
+        } catch (deleteError) {
+          console.error(`Error deleting old image: ${image.path}`, deleteError);
+          // Continue even if deletion fails
+        }
       }
       
-      const data = await response.json();
-      setHomepageContent(data);
-      setCarouselImages(data.carouselImages || []);
-      
-      // Reset file selection state
-      setSelectedFiles([]);
-      setFilePreviewUrls([]);
-      setCarouselCaptions([]);
-      
-      showAlert(`Carousel images ${action === 'replace' ? 'replaced' : 'added'} successfully!`);
-    } catch (error) {
-      console.error('Error uploading carousel images:', error);
-      showAlert('Error uploading carousel images. Please try again.', 'error');
-    } finally {
-      setSaving(false);
+      homepageContent.carouselImages = uploadedImages;
+    } else {
+      // Append new images
+      homepageContent.carouselImages = [...homepageContent.carouselImages, ...uploadedImages];
     }
-  };
+    
+    homepageContent.lastUpdatedBy = adminName;
+    homepageContent.lastUpdatedAt = new Date();
+    
+    await homepageContent.save();
+    
+    await logAdminAction(
+      adminName,
+      'UPDATE_HOMEPAGE_CAROUSEL',
+      `${req.body.action === 'replace' ? 'Replaced' : 'Added'} carousel images`,
+      homepageContent._id
+    );
+    
+    res.status(200).json(homepageContent);
+  } catch (error) {
+    console.error('Error uploading carousel images:', error);
+    res.status(500).json({ 
+      message: 'Error uploading carousel images. Please try again.', 
+      error: error.message 
+    });
+  }
+};
   
   const handleDeleteImageClick = (image) => {
     setImageToDelete(image);

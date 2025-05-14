@@ -206,6 +206,12 @@ function ResidentReport() {
       // Get user ID from local storage
       const userId = localStorage.getItem('userId') || localStorage.getItem('user');
 
+      if (!userId) {
+        handleAlert('User ID not available. Please log in again.', 'error');
+        setLoading(false);
+        return;
+      }
+
       const formDataToSubmit = new FormData();
       
       // Add user ID to form data
@@ -217,14 +223,31 @@ function ResidentReport() {
       });
       
       // Add files to FormData
-      files.forEach((file) => {
-        formDataToSubmit.append('media', file);
-      });
+      if (files.length > 0) {
+        console.log(`Attempting to upload ${files.length} files`);
+        
+        files.forEach((file, index) => {
+          console.log(`Adding file to form: ${file.name}, size: ${file.size}, type: ${file.type}`);
+          formDataToSubmit.append('media', file);
+        });
+      } else {
+        console.log('No files to upload');
+      }
 
+      console.log('Submitting report data...');
+      
       const response = await fetch(`${API_BASE_URL}/reports`, {
         method: 'POST',
         body: formDataToSubmit
       });
+
+      console.log('Response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        throw new Error(`Server error: ${response.status} ${errorText}`);
+      }
 
       const data = await response.json();
 

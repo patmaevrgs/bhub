@@ -113,11 +113,12 @@ function AdminLogs() {
       if (filters.endDate) params.append('endDate', filters.endDate);
       if (filters.adminName) params.append('adminName', filters.adminName);
       if (filters.action) params.append('action', filters.action);
-      if (filters.entityType) params.append('entityType', filters.entityType); // Add entity type to query params
+      if (filters.entityType) params.append('entityType', filters.entityType);
       if (filters.serviceId) params.append('serviceId', filters.serviceId);
 
       const queryString = params.toString() ? `?${params.toString()}` : '';
-      const response = await fetch(`${API_BASE_URL}${queryString}`);
+      // Fix the URL by adding the '/logs' endpoint
+      const response = await fetch(`${API_BASE_URL}/logs${queryString}`);
       
       if (!response.ok) {
         throw new Error(`Failed to fetch logs: ${response.statusText}`);

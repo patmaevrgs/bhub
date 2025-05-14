@@ -7,7 +7,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import { MONGODB_URI, PORT, FRONTEND_URL } from './config.js';
+import { MONGODB_URI, PORT, FRONTEND_URL, SUPABASE_URL, SUPABASE_KEY } from './config.js';
 
 // Load environment variables
 dotenv.config();
@@ -88,6 +88,12 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+console.log('Environment:', process.env.NODE_ENV || 'development');
+console.log('MongoDB URI:', MONGODB_URI ? 'Set' : 'Not set');
+console.log('Supabase URL:', SUPABASE_URL ? 'Set' : 'Not set');
+console.log('Supabase Key:', SUPABASE_KEY ? 'Set (length: ' + SUPABASE_KEY.length + ')' : 'Not set');
+console.log('Frontend URL:', FRONTEND_URL);
 
 // Routes
 app.use(router);
