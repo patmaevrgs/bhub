@@ -36,14 +36,36 @@ function ResidentRoot() {
     }
   };
 
-  const handleLogout = () => {
-    const cookies = new Cookies();
-    cookies.remove('authToken', { path: '/' });
-    localStorage.removeItem('userType');
-    localStorage.removeItem('firstName');
-    localStorage.removeItem('email');
-    localStorage.removeItem('user');
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      // Call the logout API endpoint
+      const response = await fetch(`${API_BASE_URL}/logout`, {
+        method: 'POST',
+        credentials: 'include', // Important for cookies to be sent
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      // Clear local storage
+      localStorage.removeItem('userType');
+      localStorage.removeItem('firstName');
+      localStorage.removeItem('lastName');
+      localStorage.removeItem('email');
+      localStorage.removeItem('user');
+      
+      // Navigate to home page
+      navigate('/');
+    } catch (error) {
+      console.error('Error during logout:', error);
+      // Even if there's an error, still clear local storage and navigate away
+      localStorage.removeItem('userType');
+      localStorage.removeItem('firstName');
+      localStorage.removeItem('lastName');
+      localStorage.removeItem('email');
+      localStorage.removeItem('user');
+      navigate('/');
+    }
   };
 
   return (

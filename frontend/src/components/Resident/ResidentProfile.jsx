@@ -79,14 +79,10 @@ function ResidentProfile() {
   const fetchUserProfile = async () => {
     setLoading(true);
     try {
-      const token = getToken();
-      console.log('Using token:', token ? 'Token exists' : 'No token found');
-      
       const response = await fetch(`${API_BASE_URL}/profile`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         credentials: 'include' // Include cookies in the request
       });
@@ -158,14 +154,12 @@ function ResidentProfile() {
     setLoading(true);
     
     try {
-      const token = getToken();
       const response = await fetch(`${API_BASE_URL}/profile/update`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
-        credentials: 'include',
+        credentials: 'include', // Include cookies
         body: JSON.stringify(formData)
       });
       
@@ -207,14 +201,12 @@ function ResidentProfile() {
     setLoading(true);
     
     try {
-      const token = getToken();
       const response = await fetch(`${API_BASE_URL}/profile/password`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
-        credentials: 'include',
+        credentials: 'include', // Include cookies
         body: JSON.stringify({
           currentPassword: passwordData.currentPassword,
           newPassword: passwordData.newPassword

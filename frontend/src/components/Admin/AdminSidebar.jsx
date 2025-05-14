@@ -63,21 +63,45 @@ export default function AdminSidebar() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Get user type from localStorage
-    const storedUserType = localStorage.getItem('userType');
-    if (storedUserType) {
-      setUserType(storedUserType);
-    }
+  // Get user type from localStorage
+  const storedUserType = localStorage.getItem('userType');
+  if (storedUserType) {
+    setUserType(storedUserType);
+    console.log('User type from localStorage:', storedUserType);
+  } else {
+    // If not in localStorage, try to get it from the server
+    const checkUserType = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/checkifloggedin`, {
+          method: 'POST',
+          credentials: 'include'
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.isLoggedIn && data.userType) {
+            setUserType(data.userType);
+            localStorage.setItem('userType', data.userType);
+            console.log('User type from server:', data.userType);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching user type:', error);
+      }
+    };
     
-    // Check if we should expand the services menu initially
-    const isServiceActive = navItems.some(item => 
-      item.submenu && item.submenu.some(sub => location.pathname === sub.path)
-    );
-    
-    if (isServiceActive) {
-      setOpenServices(true);
-    }
-  }, [location.pathname]);
+    checkUserType();
+  }
+  
+  // Check if we should expand the services menu initially
+  const isServiceActive = navItems.some(item => 
+    item.submenu && item.submenu.some(sub => location.pathname === sub.path)
+  );
+  
+  if (isServiceActive) {
+    setOpenServices(true);
+  }
+}, [location.pathname]);
 
   // New useEffect to fetch pending counts
   useEffect(() => {
@@ -748,16 +772,36 @@ export default function AdminSidebar() {
 
           {/* Logout Button */}
           <ListItemButton
-            onClick={() => {
-              // Use the same logout logic as in AdminRoot
-              const cookies = new Cookies();
-              cookies.remove('authToken', { path: '/' });
-              localStorage.removeItem('userType');
-              localStorage.removeItem('firstName');
-              localStorage.removeItem('lastName');
-              localStorage.removeItem('email');
-              localStorage.removeItem('user');
-              window.location.href = '/'; // Redirect to login page
+            onClick={async () => {
+              try {
+                // Call the logout API endpoint
+                await fetch(`${API_BASE_URL}/logout`, {
+                  method: 'POST',
+                  credentials: 'include',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                });
+                
+                // Clear local storage
+                localStorage.removeItem('userType');
+                localStorage.removeItem('firstName');
+                localStorage.removeItem('lastName');
+                localStorage.removeItem('email');
+                localStorage.removeItem('user');
+                
+                // Navigate to home page
+                window.location.href = '/';
+              } catch (error) {
+                console.error('Error during logout:', error);
+                // Even if there's an error, still try to navigate away
+                localStorage.removeItem('userType');
+                localStorage.removeItem('firstName');
+                localStorage.removeItem('lastName');
+                localStorage.removeItem('email');
+                localStorage.removeItem('user');
+                window.location.href = '/';
+              }
             }}
             sx={{
               mx: 0.5,

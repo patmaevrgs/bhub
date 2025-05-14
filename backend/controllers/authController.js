@@ -135,6 +135,30 @@ const addAdmin = async (req, res) => {
     }
 }
 
+const logout = async (req, res) => {
+  try {
+    // Clear the authentication cookie
+    res.clearCookie('authToken', {
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax'
+    });
+    
+    return res.status(200).json({
+      success: true,
+      message: 'Logged out successfully'
+    });
+  } catch (error) {
+    console.error('Error during logout:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error during logout'
+    });
+  }
+};
+
+
 const addSuperAdmin = async (req, res) => {
   const superAdminExists = await User.findOne({ userType: 'superadmin' });
   if(!superAdminExists){
@@ -151,4 +175,4 @@ const addSuperAdmin = async (req, res) => {
   }
 }
 
-export { signUp, login, checkIfLoggedIn, addAdmin, addSuperAdmin };
+export { signUp, login, checkIfLoggedIn, addAdmin, addSuperAdmin, logout };

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { signUp, login, checkIfLoggedIn, addAdmin, addSuperAdmin } from './controllers/authController.js';
+import { signUp, login, checkIfLoggedIn, addAdmin, addSuperAdmin, logout } from './controllers/authController.js';
 import { createAnnouncement, getAnnouncements, deleteAnnouncement, updateAnnouncement } from './controllers/announcementController.js';
 import { createLog, getLogs, deleteOldLogs } from './controllers/userLogController.js';
 import { 
@@ -125,11 +125,25 @@ router.post('/signup', signUp);
 router.post('/login', login);
 router.post('/checkifloggedin', checkIfLoggedIn);
 router.post('/addadmin', addAdmin);
+router.post('/logout', logout);
 
 // User Profile Routes
 router.get('/profile', getUserProfile);
-router.put('/profile/update', updateUserProfile);
-router.put('/profile/password', updateUserPassword);
+router.put('/profile/update', (req, res, next) => {
+  // Extract token from cookie for backward compatibility
+  if (req.cookies && req.cookies.authToken && !req.headers.authorization) {
+    req.headers.authorization = `Bearer ${req.cookies.authToken}`;
+  }
+  next();
+}, updateUserProfile);
+
+router.put('/profile/password', (req, res, next) => {
+  // Extract token from cookie for backward compatibility
+  if (req.cookies && req.cookies.authToken && !req.headers.authorization) {
+    req.headers.authorization = `Bearer ${req.cookies.authToken}`;
+  }
+  next();
+}, updateUserPassword);
 
 // Announcements
 router.post('/announcements', upload.array('files'), createAnnouncement);

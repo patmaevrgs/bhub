@@ -114,15 +114,46 @@ const updateUserType = async (req, res) => {
 // Get profile of the currently logged-in user
 const getUserProfile = async (req, res) => {
   try {
-    // Extract user ID from JWT token
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, 'THIS_IS_A_SECRET_STRING');
-    const userId = decoded._id;
+    // Extract user ID from JWT token in the cookie
+    let userId;
+    
+    // Check for token in cookies first (preferred method)
+    if (req.cookies && req.cookies.authToken) {
+      try {
+        const decoded = jwt.verify(req.cookies.authToken, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
+        userId = decoded._id;
+      } catch (err) {
+        console.error('Error verifying cookie token:', err);
+      }
+    }
+    
+    // If not found in cookies, try Authorization header as fallback
+    if (!userId && req.headers.authorization) {
+      try {
+        const token = req.headers.authorization.split(' ')[1]; // Extract the token from Bearer token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
+        userId = decoded._id;
+      } catch (err) {
+        console.error('Error verifying header token:', err);
+      }
+    }
+    
+    // If no valid token found
+    if (!userId) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Authentication required. Please log in.' 
+      });
+    }
 
     // Find user by ID
     const user = await User.findById(userId);
+    
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+      return res.status(404).json({ 
+        success: false, 
+        message: 'User not found' 
+      });
     }
 
     // Return user data without password
@@ -139,7 +170,11 @@ const getUserProfile = async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching user profile:', error);
-    return res.status(500).json({ success: false, message: 'Error fetching user profile' });
+    return res.status(500).json({ 
+      success: false, 
+      message: 'Error fetching user profile',
+      error: error.message 
+    });
   }
 };
 
@@ -147,9 +182,36 @@ const getUserProfile = async (req, res) => {
 const updateUserProfile = async (req, res) => {
   try {
     // Extract user ID from JWT token
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, 'THIS_IS_A_SECRET_STRING');
-    const userId = decoded._id;
+    let userId;
+    
+    // Check for token in Auth header (from Bearer token)
+    if (req.headers.authorization) {
+      try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
+        userId = decoded._id;
+      } catch (err) {
+        console.error('Error verifying header token:', err);
+      }
+    }
+    
+    // If not found in auth header, try cookies
+    if (!userId && req.cookies && req.cookies.authToken) {
+      try {
+        const decoded = jwt.verify(req.cookies.authToken, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
+        userId = decoded._id;
+      } catch (err) {
+        console.error('Error verifying cookie token:', err);
+      }
+    }
+    
+    // If no valid token found
+    if (!userId) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Authentication required. Please log in.' 
+      });
+    }
 
     // Find user by ID
     const user = await User.findById(userId);
@@ -198,9 +260,36 @@ const updateUserProfile = async (req, res) => {
 const updateUserPassword = async (req, res) => {
   try {
     // Extract user ID from JWT token
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = jwt.verify(token, 'THIS_IS_A_SECRET_STRING');
-    const userId = decoded._id;
+    let userId;
+    
+    // Check for token in Auth header (from Bearer token)
+    if (req.headers.authorization) {
+      try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
+        userId = decoded._id;
+      } catch (err) {
+        console.error('Error verifying header token:', err);
+      }
+    }
+    
+    // If not found in auth header, try cookies
+    if (!userId && req.cookies && req.cookies.authToken) {
+      try {
+        const decoded = jwt.verify(req.cookies.authToken, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
+        userId = decoded._id;
+      } catch (err) {
+        console.error('Error verifying cookie token:', err);
+      }
+    }
+    
+    // If no valid token found
+    if (!userId) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Authentication required. Please log in.' 
+      });
+    }
 
     // Find user by ID
     const user = await User.findById(userId);
