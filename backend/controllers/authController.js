@@ -134,18 +134,33 @@ const checkIfLoggedIn = async (req, res) => {
 };
 
 const addAdmin = async (req, res) => {
-    const adminExists = await User.findOne({ userType: 'admin' });
-    if(!adminExists){
-        const hashedPassword = await bcrypt.hash('admin123', 10);
-        const admin = new User({
-        firstName: 'Admin',
-        middleName: 'User',
-        lastName: 'User',
-        email: 'admin@123.com',
-        userType: 'admin',
-        password: hashedPassword,
-        });
-        admin.save();
+    try {
+        // Check if admin exists by email specifically
+        const adminExists = await User.findOne({ email: 'admin@123.com' });
+        
+        if(!adminExists){
+            const hashedPassword = await bcrypt.hash('admin123', 10);
+            const admin = new User({
+                firstName: 'Admin',
+                middleName: 'User',
+                lastName: 'User',
+                email: 'admin@123.com',
+                userType: 'admin',
+                password: hashedPassword,
+            });
+            await admin.save();
+            
+            if (res) {
+                res.status(201).json({ success: true, message: "Admin user created successfully" });
+            }
+        } else if (res) {
+            res.status(200).json({ success: true, message: "Admin user already exists" });
+        }
+    } catch (error) {
+        console.error("Error adding admin:", error);
+        if (res) {
+            res.status(500).json({ success: false, message: "Error adding admin user" });
+        }
     }
 }
 

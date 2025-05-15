@@ -494,6 +494,7 @@ export const cancelCourtReservation = async (req, res) => {
   };
 
 // Get court reservations calendar data
+// Get court reservations calendar data
 export const getCourtReservationsCalendar = async (req, res) => {
   try {
     const { start, end, userType } = req.query;
@@ -525,24 +526,47 @@ export const getCourtReservationsCalendar = async (req, res) => {
     
     console.log(`Found ${reservations.length} reservations for calendar`);
     
-    // Format for calendar
+    // Format for calendar - IMPROVED FORMATTING
     const calendarData = reservations.map(reservation => {
-      // Parse the reservation date and time
-      const datePart = reservation.reservationDate.toISOString().split('T')[0];
-      const [hours, minutes] = reservation.startTime.split(':');
+      // Parse the reservation date and time properly
+      const reservationDate = reservation.reservationDate;
+      const datePart = reservationDate.toISOString().split('T')[0];
       
-      // Create JavaScript Date objects for start and end times
-      const startDateTime = new Date(`${datePart}T${reservation.startTime}:00`);
-      const endDateTime = new Date(startDateTime.getTime() + (reservation.duration * 60 * 60 * 1000));
+      // Ensure startTime has proper format (HH:MM)
+      let startTime = reservation.startTime;
+      if (!startTime.includes(':')) {
+        startTime = `${startTime}:00`;
+      }
+      
+      // Parse hours and minutes properly
+      const [hours, minutes] = startTime.split(':').map(Number);
+      
+      // Create proper ISO datetime strings for start and end
+      const startDateTime = new Date(`${datePart}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`);
+      
+      // Calculate end time based on duration
+      const endDateTime = new Date(startDateTime);
+      endDateTime.setHours(startDateTime.getHours() + Number(reservation.duration));
+      
+      // Format title based on userType
+      const title = userType === 'admin' 
+        ? `${reservation.representativeName} - ${reservation.purpose}` 
+        : 'Reserved';
+      
+      console.log('Event being created:', {
+        id: reservation._id,
+        title,
+        start: startDateTime.toISOString(),
+        end: endDateTime.toISOString(),
+      });
       
       return {
         id: reservation._id,
-        title: userType === 'admin' 
-          ? `${reservation.representativeName} - ${reservation.purpose}` 
-          : 'Reserved',
-        start: startDateTime.toISOString(),
-        end: endDateTime.toISOString(),
-        status: reservation.status
+        title,
+        start: startDateTime.toISOString(), // Full ISO format with time
+        end: endDateTime.toISOString(),     // Full ISO format with time
+        status: reservation.status,
+        allDay: false                        // Explicitly mark as not all-day
       };
     });
     
