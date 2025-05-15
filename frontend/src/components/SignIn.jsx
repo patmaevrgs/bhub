@@ -119,7 +119,7 @@ export default function SignIn() {
       
       // Store token if the backend provides it
       if (body.token) {
-        localStorage.setItem('token', body.token);
+        localStorage.setItem('authToken', body.token);
       }
       
       return true;

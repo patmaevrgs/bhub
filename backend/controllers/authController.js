@@ -85,7 +85,7 @@ const login = async (req, res) => {
   return res.send({ 
     success: true, 
     userType: user.userType, 
-    token: token,
+    token, 
     user: user._id, 
     firstName: user.firstName, 
     lastName: user.lastName, 
