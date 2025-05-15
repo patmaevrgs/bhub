@@ -859,19 +859,25 @@ function AdminRequestForms() {
                         <TableCell sx={{ fontSize: '0.85rem' }}>
                           <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <Avatar 
-  sx={{ 
-    width: 24, 
-    height: 24, 
-    mr: 1, 
-    bgcolor: 'primary.light',
-    fontSize: '0.7rem'
-  }}
->
-  {request.formData.fullName ? 
-    request.formData.fullName.split(' ').map(name => name.charAt(0)).join('').substring(0, 2) : 
-    'U'}
-</Avatar>
-                            {request.formData.fullName}
+                              sx={{ 
+                                width: 24, 
+                                height: 24, 
+                                mr: 1, 
+                                bgcolor: 'primary.light',
+                                fontSize: '0.7rem'
+                              }}
+                            >
+                              {request.formData.fullName ? 
+                                request.formData.fullName.split(' ').map(name => name.charAt(0)).join('').substring(0, 2) :
+                                request.formData.firstName ? 
+                                  (request.formData.firstName.charAt(0) + (request.formData.lastName ? request.formData.lastName.charAt(0) : '')) :
+                                  'U'
+                              }
+                            </Avatar>
+                            {request.formData.fullName || 
+                              (request.formData.firstName && request.formData.lastName ? 
+                                `${request.formData.firstName} ${request.formData.lastName}` : 
+                                'Unknown User')}
                           </Box>
                         </TableCell>
                         <TableCell sx={{ fontSize: '0.85rem', whiteSpace: 'nowrap' }}>
