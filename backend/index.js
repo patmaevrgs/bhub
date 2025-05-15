@@ -18,6 +18,9 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// Enable trust proxy - add this EARLY
+app.enable('trust proxy');
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -37,14 +40,7 @@ mongoose.connect(MONGODB_URI, {
   console.error('MongoDB connection error:', err);
 });
 
-// CORS configuration
-// CORS configuration
-app.use(cors({
-  origin: [FRONTEND_URL, 'https://bhub-maahas.netlify.app'],
-  credentials: true
-}));
-
-// For better flexibility, you can do this:
+// CORS configuration - keep only ONE CORS setup
 const allowedOrigins = [
   FRONTEND_URL,
   'https://bhub-maahas.netlify.app',
@@ -61,31 +57,33 @@ app.use(cors({
     }
     return callback(null, true);
   },
-  credentials: true // This is essential for cookies to work cross-origin
+  credentials: true, // This is essential for cookies to work cross-origin
+  exposedHeaders: ['set-cookie'] // Expose cookie headers
 }));
 
+// Additional headers for better CORS support
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS,POST,DELETE,PUT");
-  res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers,Access-Control-Allow-Methods,Origin,Accept,Content-Type,X-Requested-With,Cookie");
+  res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers,Access-Control-Allow-Methods,Origin,Accept,Content-Type,X-Requested-With,Cookie,Authorization");
   res.setHeader("Access-Control-Allow-Credentials", "true");
   next();
 });
 
-
-// Set secure cookie settings for production
+// Set secure cookie settings for ALL environments, not just production
 app.use((req, res, next) => {
-  if (process.env.NODE_ENV === 'production') {
-    res.originalCookie = res.cookie;
-    res.cookie = function(name, value, options) {
-      const productionOptions = {
-        ...options,
-        sameSite: 'None',
-        secure: true,
-        httpOnly: true
-      };
-      return res.originalCookie(name, value, productionOptions);
+  res.originalCookie = res.cookie;
+  res.cookie = function(name, value, options) {
+    const enhancedOptions = {
+      ...options,
+      sameSite: 'None',
+      secure: true,
+      httpOnly: options?.httpOnly !== false,
+      // Don't set domain explicitly unless you have a specific reason
+      // as it can cause issues with subdomains
+      path: options?.path || '/'
     };
-  }
+    return res.originalCookie(name, value, enhancedOptions);
+  };
   next();
 });
 
