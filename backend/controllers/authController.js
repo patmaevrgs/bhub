@@ -148,15 +148,20 @@ const addAdmin = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    // Updated cookie clearing for cross-domain compatibility
+    // Get the auth token from multiple places
+    const authToken = req.cookies.authToken || 
+                     (req.headers.authorization && req.headers.authorization.split(' ')[1]);
+    
+    // Clear the authentication cookie - IMPORTANT: Updated settings for cross-domain cookies
     res.clearCookie('authToken', {
       path: '/',
       httpOnly: true,
-      secure: true, // Always use secure for cross-domain
-      sameSite: 'None' // Required for cross-domain
+      secure: true, // Always use secure for cross-domain cookies
+      sameSite: 'None' // Required for cross-domain cookies
     });
     
-    // Clear localStorage token through client-side handling
+    // If you're using other cookies, clear them too using the same settings
+    
     return res.status(200).json({
       success: true,
       message: 'Logged out successfully'
@@ -169,7 +174,6 @@ const logout = async (req, res) => {
     });
   }
 };
-
 
 const addSuperAdmin = async (req, res) => {
   const superAdminExists = await User.findOne({ userType: 'superadmin' });

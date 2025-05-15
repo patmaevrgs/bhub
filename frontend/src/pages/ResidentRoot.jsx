@@ -38,33 +38,42 @@ function ResidentRoot() {
 
   const handleLogout = async () => {
     try {
-      // Call the logout API endpoint
+      // Get the token from localStorage for the authorization header
+      const token = localStorage.getItem('token');
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      
+      // Add token to Authorization header if it exists
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
+      // Call the logout API endpoint with proper headers
       const response = await fetch(`${API_BASE_URL}/logout`, {
         method: 'POST',
-        credentials: 'include', // Important for cookies to be sent
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        credentials: 'include',
+        headers: headers
       });
       
-      // Clear local storage
+      // Clear ALL localStorage items to ensure complete logout
+      localStorage.clear();
+      
+      // For safety, explicitly remove important items
+      localStorage.removeItem('token');
       localStorage.removeItem('userType');
       localStorage.removeItem('firstName');
       localStorage.removeItem('lastName');
       localStorage.removeItem('email');
       localStorage.removeItem('user');
       
-      // Navigate to home page
-      navigate('/');
+      // Force a full page reload to clear any in-memory state
+      window.location.href = '/';
     } catch (error) {
       console.error('Error during logout:', error);
-      // Even if there's an error, still clear local storage and navigate away
-      localStorage.removeItem('userType');
-      localStorage.removeItem('firstName');
-      localStorage.removeItem('lastName');
-      localStorage.removeItem('email');
-      localStorage.removeItem('user');
-      navigate('/');
+      // Even if there's an error, still clear everything
+      localStorage.clear();
+      window.location.href = '/';
     }
   };
 

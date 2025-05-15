@@ -773,36 +773,45 @@ export default function AdminSidebar() {
           {/* Logout Button */}
           <ListItemButton
             onClick={async () => {
-              try {
-                // Call the logout API endpoint
-                await fetch(`${API_BASE_URL}/logout`, {
-                  method: 'POST',
-                  credentials: 'include',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  }
-                });
-                
-                // Clear local storage
-                localStorage.removeItem('userType');
-                localStorage.removeItem('firstName');
-                localStorage.removeItem('lastName');
-                localStorage.removeItem('email');
-                localStorage.removeItem('user');
-                
-                // Navigate to home page
-                window.location.href = '/';
-              } catch (error) {
-                console.error('Error during logout:', error);
-                // Even if there's an error, still try to navigate away
-                localStorage.removeItem('userType');
-                localStorage.removeItem('firstName');
-                localStorage.removeItem('lastName');
-                localStorage.removeItem('email');
-                localStorage.removeItem('user');
-                window.location.href = '/';
+            try {
+              // Get the token from localStorage for the authorization header
+              const token = localStorage.getItem('token');
+              const headers = {
+                'Content-Type': 'application/json'
+              };
+              
+              // Add token to Authorization header if it exists
+              if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
               }
-            }}
+              
+              // Call the logout API endpoint with proper headers
+              const response = await fetch(`${API_BASE_URL}/logout`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: headers
+              });
+              
+              // Clear ALL localStorage items, including the token
+              localStorage.clear();
+              
+              // Explicitly remove the auth token
+              localStorage.removeItem('token');
+              localStorage.removeItem('userType');
+              localStorage.removeItem('firstName');
+              localStorage.removeItem('lastName');
+              localStorage.removeItem('email');
+              localStorage.removeItem('user');
+              
+              // Force a full page reload to clear any in-memory state
+              window.location.href = '/';
+            } catch (error) {
+              console.error('Error during logout:', error);
+              // Even if there's an error, still try to clear everything and navigate away
+              localStorage.clear();
+              window.location.href = '/';
+            }
+          }}
             sx={{
               mx: 0.5,
               borderRadius: 2,
