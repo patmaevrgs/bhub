@@ -309,53 +309,55 @@ function AdminCourt() {
     console.log('Raw calendar data from API:', data);
     
     // FIXED: Ensure all events have time components
-    const validEvents = data
-      .filter(event => event.start && event.end)
-      .map((event, index) => {
-        // Add default time for events without time components
-        let eventStart = event.start;
-        let eventEnd = event.end;
-        
-        // If start doesn't have time component, add a default time
-        if (eventStart && !eventStart.includes('T')) {
-          // For events without time, use the reservation's startTime if available
-          // or default to 8:00 AM
-          if (event.startTime) {
-            eventStart = `${eventStart}T${event.startTime}:00`;
-          } else {
-            eventStart = `${eventStart}T08:00:00`;
-          }
-        }
-        
-        // If end doesn't have time component, add a default time
-        if (eventEnd && !eventEnd.includes('T')) {
-          // If we have duration and startTime, calculate the end time
-          if (event.startTime && event.duration) {
-            const [hours, minutes] = event.startTime.split(':').map(Number);
-            const endHours = hours + event.duration;
-            eventEnd = `${eventEnd}T${String(endHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`;
-          } else if (eventStart.includes('T')) {
-            // If we don't have duration, make end time +1 hour from start time
-            const startDateTime = new Date(eventStart);
-            const endDateTime = new Date(startDateTime);
-            endDateTime.setHours(startDateTime.getHours() + 1);
-            eventEnd = endDateTime.toISOString().slice(0, 19);
-          } else {
-            // Default end time if nothing else works
-            eventEnd = `${eventEnd}T09:00:00`;
-          }
-        }
-        
-        return {
-          id: event.id || `event-${index}`,
-          title: event.title || 'Reserved',
-          start: eventStart, // Use processed start time
-          end: eventEnd,     // Use processed end time
-          backgroundColor: event.status === 'approved' ? '#4caf50' : '#ff9800',
-          borderColor: event.status === 'approved' ? '#4caf50' : '#ff9800',
-          textColor: 'white'
-        };
-      });
+    // IMPROVED: Ensure all events have time components
+const validEvents = data
+  .filter(event => event.start && event.end)
+  .map((event, index) => {
+    // Add default time for events without time components
+    let eventStart = event.start;
+    let eventEnd = event.end;
+    
+    // If start doesn't have time component, add a default time
+    if (eventStart && !eventStart.includes('T')) {
+      // For events without time, use the reservation's startTime if available
+      if (event.startTime) {
+        eventStart = `${eventStart}T${event.startTime}:00`;
+      } else {
+        eventStart = `${eventStart}T08:00:00`;
+      }
+    }
+    
+    // If end doesn't have time component, add a default time
+    if (eventEnd && !eventEnd.includes('T')) {
+      // If we have duration and startTime, calculate the end time
+      if (event.startTime && event.duration) {
+        const [hours, minutes] = event.startTime.split(':').map(Number);
+        const endHours = hours + Number(event.duration);
+        eventEnd = `${eventEnd}T${String(endHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`;
+      } else if (eventStart.includes('T')) {
+        // If we don't have duration, make end time +1 hour from start time
+        const startDateTime = new Date(eventStart);
+        const endDateTime = new Date(startDateTime);
+        endDateTime.setHours(startDateTime.getHours() + 1);
+        eventEnd = endDateTime.toISOString().slice(0, 19);
+      } else {
+        // Default end time if nothing else works
+        eventEnd = `${eventEnd}T09:00:00`;
+      }
+    }
+    
+    return {
+      id: event.id || `event-${index}`,
+      title: event.title || 'Reserved',
+      start: eventStart, // Use processed start time
+      end: eventEnd,     // Use processed end time
+      backgroundColor: event.status === 'approved' ? '#4caf50' : '#ff9800',
+      borderColor: event.status === 'approved' ? '#4caf50' : '#ff9800',
+      textColor: 'white',
+      // This is important to tell FullCalendar the event spans time rather than all day
+      allDay: false
+    };
+  });
     
     console.log('Formatted calendar events:', validEvents);
     
