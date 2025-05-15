@@ -46,6 +46,11 @@ function SimpleCarousel({ images }) {
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
   
+  const getProperImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    return imagePath.startsWith('http') ? imagePath : `${API_BASE_URL}${imagePath}`;
+  };
+
   // Auto-advance with simple state update (more efficient)
   useEffect(() => {
     if (!images || images.length <= 1) return;
@@ -70,12 +75,6 @@ function SimpleCarousel({ images }) {
     setCurrentIndex(prev => (prev - 1 + images.length) % images.length);
   };
   
-  const getProperImageUrl = (imagePath) => {
-    if (!imagePath) return '';
-    return typeof imagePath === 'string' 
-      ? (imagePath.startsWith('http') ? imagePath : `${API_BASE_URL}${imagePath}`)
-      : '';
-  };
   // Touch handling for mobile swipe
   const handleTouchStart = (e) => {
     setTouchStart(e.targetTouches[0].clientX);
@@ -134,7 +133,7 @@ function SimpleCarousel({ images }) {
       {/* Static image - no animations or fancy transitions for speed */}
       <Box
         component="img"
-        src={getProperImageUrl(images[currentIndex] || '')}
+        src={getProperImageUrl(images[currentIndex]?.path || '')}
         alt={images[currentIndex]?.caption || 'Carousel image'}
         onError={(e) => {
           e.target.src = '/placeholder-image.jpg';
@@ -547,7 +546,7 @@ function LandingPage() {
                       component="img"
                       height="120"
                       image={announcement.images && announcement.images.length > 0 
-                        ? getProperUrl(announcement.images[0])
+                        ? getProperImageUrl(announcement.images[0]) 
                         : '/placeholder-image.jpg'
                       }
                       alt={announcement.title}

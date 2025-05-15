@@ -281,15 +281,20 @@ function AdminCourt() {
   try {
     setCalendarLoading(true);
     
-    // Get current date and calculate end date (same logic as your ambulance component)
-    const currentDate = new Date();
-    const month = currentDate.getMonth() + 1;
-    const year = currentDate.getFullYear();
+    const today = new Date();
+    const threeMonthsLater = new Date(today);
+    threeMonthsLater.setMonth(today.getMonth() + 3);
     
-    console.log('Fetching calendar data from API...');
+    const startDate = today.toISOString().split('T')[0];
+    const endDate = threeMonthsLater.toISOString().split('T')[0];
     
-    // Use month/year instead of start/end dates - this is how your ambulance component does it
-    const url = `${API_BASE_URL}/court-calendar?month=${month}&year=${year}&userType=admin`;
+    console.log('Fetching calendar data from API...', {
+      start: startDate,
+      end: endDate,
+      userType: 'admin'
+    });
+    
+    const url = `${API_BASE_URL}/court-calendar?start=${startDate}&end=${endDate}&userType=admin`;
     
     const response = await fetch(url);
     
@@ -303,10 +308,60 @@ function AdminCourt() {
     
     console.log('Raw calendar data from API:', data);
     
-    // Process the events with the same format as your ambulance component
-    setCalendarEvents(data);
+    // FIXED: Ensure all events have time components
+    const validEvents = data
+      .filter(event => event.start && event.end)
+      .map((event, index) => {
+        // Add default time for events without time components
+        let eventStart = event.start;
+        let eventEnd = event.end;
+        
+        // If start doesn't have time component, add a default time
+        if (eventStart && !eventStart.includes('T')) {
+          // For events without time, use the reservation's startTime if available
+          // or default to 8:00 AM
+          if (event.startTime) {
+            eventStart = `${eventStart}T${event.startTime}:00`;
+          } else {
+            eventStart = `${eventStart}T08:00:00`;
+          }
+        }
+        
+        // If end doesn't have time component, add a default time
+        if (eventEnd && !eventEnd.includes('T')) {
+          // If we have duration and startTime, calculate the end time
+          if (event.startTime && event.duration) {
+            const [hours, minutes] = event.startTime.split(':').map(Number);
+            const endHours = hours + event.duration;
+            eventEnd = `${eventEnd}T${String(endHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`;
+          } else if (eventStart.includes('T')) {
+            // If we don't have duration, make end time +1 hour from start time
+            const startDateTime = new Date(eventStart);
+            const endDateTime = new Date(startDateTime);
+            endDateTime.setHours(startDateTime.getHours() + 1);
+            eventEnd = endDateTime.toISOString().slice(0, 19);
+          } else {
+            // Default end time if nothing else works
+            eventEnd = `${eventEnd}T09:00:00`;
+          }
+        }
+        
+        return {
+          id: event.id || `event-${index}`,
+          title: event.title || 'Reserved',
+          start: eventStart, // Use processed start time
+          end: eventEnd,     // Use processed end time
+          backgroundColor: event.status === 'approved' ? '#4caf50' : '#ff9800',
+          borderColor: event.status === 'approved' ? '#4caf50' : '#ff9800',
+          textColor: 'white'
+        };
+      });
     
-    // Force calendar refetch if needed
+    console.log('Formatted calendar events:', validEvents);
+    
+    setCalendarEvents(validEvents);
+    
+    // Force calendar refetch
     if (calendarRef.current) {
       const calendarApi = calendarRef.current.getApi();
       calendarApi.refetchEvents();
@@ -687,6 +742,13 @@ function AdminCourt() {
                 right: isMobile ? 'timeGridDay,timeGridWeek,dayGridMonth' : 'dayGridMonth,timeGridWeek,timeGridDay'
               }}
               events={calendarEvents}
+              height="100%"
+              eventDisplay="block"
+              displayEventTime={true}
+              displayEventEnd={true}
+              allDaySlot={false}
+              slotMinTime="06:00:00"
+              slotMaxTime="22:00:00"
               eventClick={(info) => {
                 console.log('Event clicked:', info.event);
                 const reservationId = info.event.id;
@@ -697,13 +759,6 @@ function AdminCourt() {
                   console.log('Could not find matching reservation for event', reservationId);
                 }
               }}
-              height="100%"
-              eventDisplay="block"
-              displayEventTime={true}
-              displayEventEnd={true}
-              allDaySlot={false}
-              slotMinTime="06:00:00"
-              slotMaxTime="22:00:00"
             />
           </Box>
         </Paper>
