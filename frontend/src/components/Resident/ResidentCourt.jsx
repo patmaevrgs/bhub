@@ -778,20 +778,19 @@ useEffect(() => {
               
               <Box sx={{ height: '450px' }}>
                 <FullCalendar
-                  ref={calendarRef}
                   plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                   initialView={isMobile ? "timeGridDay" : "timeGridWeek"}
                   headerToolbar={{
                     left: 'prev,next today',
                     center: 'title',
-                    right: isMobile ? 'timeGridDay,timeGridWeek,dayGridMonth' : 'dayGridMonth,timeGridWeek,timeGridDay'
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
                   }}
                   events={calendarEvents}
                   height="100%"
                   eventDisplay="block"
                   displayEventTime={true}
                   displayEventEnd={true}
-                  allDaySlot={false}  // This will remove the "all day" row at the top
+                  allDaySlot={false}
                   slotMinTime="06:00:00"
                   slotMaxTime="22:00:00"
                   eventTimeFormat={{
@@ -799,7 +798,7 @@ useEffect(() => {
                     minute: '2-digit',
                     hour12: true
                   }}
-                  nowIndicator={true}  // Shows a line for the current time
+                  nowIndicator={true}
                 />
               </Box>
             </Paper>
