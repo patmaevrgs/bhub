@@ -45,6 +45,11 @@ function SimpleCarousel({ images }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
+
+  const getProperImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    return imagePath.startsWith('http') ? imagePath : `${API_BASE_URL}${imagePath}`;
+  };
   
   // Auto-advance with simple state update (more efficient)
   useEffect(() => {
