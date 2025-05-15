@@ -1827,15 +1827,20 @@ const saveFooterData = async () => {
                 color="primary"
                 startIcon={<AddIcon />}
                 onClick={() => {
+                  if (selectedFiles.length === 0) {
+                    showAlert('Please select at least one image', 'warning');
+                    return;
+                  }
+                  
                   // Get admin name
                   const adminName = localStorage.getItem('firstName') + ' ' + localStorage.getItem('lastName');
                   
                   // Create form data
                   const formData = new FormData();
                   
-                  // Add files
+                  // Add files - CHANGED 'files' to 'images' to match the server route
                   selectedFiles.forEach(file => {
-                    formData.append('files', file);
+                    formData.append('images', file);
                   });
                   
                   // Add captions
@@ -1894,15 +1899,20 @@ const saveFooterData = async () => {
                 color="warning"
                 startIcon={<RefreshIcon />}
                 onClick={() => {
+                  if (selectedFiles.length === 0) {
+                    showAlert('Please select at least one image', 'warning');
+                    return;
+                  }
+                  
                   // Get admin name
                   const adminName = localStorage.getItem('firstName') + ' ' + localStorage.getItem('lastName');
                   
                   // Create form data
                   const formData = new FormData();
                   
-                  // Add files
+                  // Add files - CHANGED 'files' to 'images' to match the server route
                   selectedFiles.forEach(file => {
-                    formData.append('files', file);
+                    formData.append('images', file);
                   });
                   
                   // Add captions

@@ -230,7 +230,7 @@ function AdminReport() {
                           opacity: 0.9
                         }
                       }}
-                      onClick={() => window.open(`${API_BASE_URL}${url}`, '_blank')}
+                      onClick={() => window.open(getProperUrl(url), '_blank')}
                     />
                   </Card>
                 </Grid>
@@ -972,7 +972,7 @@ function AdminReport() {
                             boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
                           }
                         }}
-                        onClick={() => window.open(`${API_BASE_URL}${url}`, '_blank')}
+                        onClick={() => window.open(getProperUrl(url), '_blank')}
                       >
                         <CardMedia
                           component="img"
