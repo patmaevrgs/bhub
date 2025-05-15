@@ -203,12 +203,26 @@ const router = createBrowserRouter([
       path: '/admin/manage-app', 
       element: <AdminManageHomepage />,
       loader: async () => {
+        // Get auth token from localStorage as fallback
+        const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+        const headers = {
+          'Content-Type': 'application/json'
+        };
+        
+        // Add token to Authorization header if it exists
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+        
         const res = await fetch(`${API_BASE_URL}/checkifloggedin`, {
           method: "POST",
-          credentials: "include" 
+          credentials: "include",
+          headers: headers
         });
-    
+
         const payload = await res.json();
+        console.log("Manage app access check:", payload);
+        
         if (payload.isLoggedIn && payload.userType === "superadmin") {
           return true;
         } else {
