@@ -94,15 +94,17 @@ const login = async (req, res) => {
 };
 
 const checkIfLoggedIn = async (req, res) => {
-  let token;
+  // Check all possible token locations
+  let token = null;
   
-  // First check cookie
-  if (req.cookies && req.cookies.authToken) {
-    token = req.cookies.authToken;
+  // Check Authorization header first (for mobile)
+  if (req.headers.authorization) {
+    const authHeader = req.headers.authorization;
+    token = authHeader.startsWith('Bearer ') ? authHeader.substring(7) : authHeader;
   } 
-  // Then check Authorization header (for mobile fallback)
-  else if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
-    token = req.headers.authorization.split(' ')[1];
+  // Then check cookie (for desktop)
+  else if (req.cookies && req.cookies.authToken) {
+    token = req.cookies.authToken;
   }
 
   // If no token found in either place
@@ -115,13 +117,14 @@ const checkIfLoggedIn = async (req, res) => {
     const tokenPayload = jwt.verify(token, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
 
     // Check if the _id in the payload is an existing user id
-    const user = await User.findById(tokenPayload._id)
+    const user = await User.findById(tokenPayload._id);
+    
     if (user) {
       // SUCCESS Scenario - User is found
       return res.send({ isLoggedIn: true, userType: user.userType });
     } else {
       // FAIL Scenario - Token is valid but user id not found
-      return res.send({ isLoggedIn: false })
+      return res.send({ isLoggedIn: false });
     }
   } catch (error) {
     console.error('Token verification error:', error);

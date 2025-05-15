@@ -117,9 +117,11 @@ export default function SignIn() {
       localStorage.setItem('lastName', body.lastName);
       localStorage.setItem('email', body.email);
       
-      // Store token if the backend provides it
+      // IMPORTANT: Always store token in localStorage for mobile compatibility
       if (body.token) {
         localStorage.setItem('authToken', body.token);
+        // Also add to Authorization header for future requests
+        window.sessionStorage.setItem('authToken', body.token);
       }
       
       return true;

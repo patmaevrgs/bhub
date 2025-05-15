@@ -6,33 +6,52 @@ const API_URL = process.env.API_URL || 'http://localhost:3002';
 // Get all users (for admin dashboard)
 const getAllUsers = async (req, res) => {
   try {
-    // Check if user is logged in and is admin/superadmin
-    if (!req.cookies || !req.cookies.authToken) {
-      return res.status(401).json({ success: false, message: 'Unauthorized access' });
+    // Check for authentication in multiple places
+    let adminId = null;
+    
+    // First try Authorization header (for mobile)
+    if (req.headers.authorization) {
+      try {
+        const token = req.headers.authorization.startsWith('Bearer ') 
+          ? req.headers.authorization.substring(7) 
+          : req.headers.authorization;
+          
+        const tokenPayload = jwt.verify(token, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
+        adminId = tokenPayload._id;
+      } catch (error) {
+        console.error('Error verifying auth header token:', error);
+      }
     }
     
-    try {
-      // Verify the token
-      const tokenPayload = jwt.verify(req.cookies.authToken, 'THIS_IS_A_SECRET_STRING');
-      const adminId = tokenPayload._id;
-
-      // Find the admin user to check their type
-      const adminUser = await User.findById(adminId);
-      if (!adminUser || (adminUser.userType !== 'admin' && adminUser.userType !== 'superadmin')) {
-        return res.status(403).json({ success: false, message: 'Unauthorized access' });
+    // If not found in Authorization header, try cookie
+    if (!adminId && req.cookies && req.cookies.authToken) {
+      try {
+        const tokenPayload = jwt.verify(req.cookies.authToken, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
+        adminId = tokenPayload._id;
+      } catch (error) {
+        console.error('Error verifying cookie token:', error);
       }
-
-      // Get all users, excluding password field
-      const users = await User.find({}, '-password');
-      
-      return res.status(200).json({
-        success: true,
-        users,
-        isSuper: adminUser.userType === 'superadmin' // Send flag if current user is superadmin
-      });
-    } catch (error) {
-      return res.status(401).json({ success: false, message: 'Invalid token' });
     }
+    
+    // If no valid authentication found
+    if (!adminId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized access' });
+    }
+
+    // Find the admin user to check their type
+    const adminUser = await User.findById(adminId);
+    if (!adminUser || (adminUser.userType !== 'admin' && adminUser.userType !== 'superadmin')) {
+      return res.status(403).json({ success: false, message: 'Unauthorized access' });
+    }
+
+    // Get all users, excluding password field
+    const users = await User.find({}, '-password');
+    
+    return res.status(200).json({
+      success: true,
+      users,
+      isSuper: adminUser.userType === 'superadmin' // Send flag if current user is superadmin
+    });
   } catch (error) {
     console.error('Error fetching users:', error);
     return res.status(500).json({ success: false, message: 'Error fetching users' });
@@ -112,32 +131,19 @@ const updateUserType = async (req, res) => {
 };
 
 // Get profile of the currently logged-in user
-// Get profile of the currently logged-in user
 const getUserProfile = async (req, res) => {
   try {
-    // Extract user ID from JWT token in the cookie or Authorization header
-    let userId;
+    // First try authorization header (more reliable for mobile)
+    let token = null;
+    let userId = null;
     
-    // Check for token in cookies first (preferred method)
-    if (req.cookies && req.cookies.authToken) {
+    // Check for token in Authorization header first (prioritize this for mobile)
+    if (req.headers.authorization) {
       try {
-        const decoded = jwt.verify(req.cookies.authToken, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
-        userId = decoded._id;
-      } catch (err) {
-        console.error('Error verifying cookie token:', err);
-      }
-    }
-    
-    // If not found in cookies, try Authorization header as fallback
-    if (!userId && req.headers.authorization) {
-      try {
-        // Fix the token extraction - properly handle the Bearer prefix
-        let token;
-        if (req.headers.authorization.startsWith('Bearer ')) {
-          token = req.headers.authorization.substring(7); // Extract after "Bearer "
-        } else {
-          token = req.headers.authorization; // Use directly if no Bearer prefix
-        }
+        // Handle both formats: with or without "Bearer " prefix
+        token = req.headers.authorization.startsWith('Bearer ') 
+          ? req.headers.authorization.substring(7) 
+          : req.headers.authorization;
         
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
         userId = decoded._id;
@@ -146,9 +152,19 @@ const getUserProfile = async (req, res) => {
       }
     }
     
+    // If not found in Authorization header, try cookies as fallback
+    if (!userId && req.cookies && req.cookies.authToken) {
+      try {
+        const decoded = jwt.verify(req.cookies.authToken, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
+        userId = decoded._id;
+      } catch (err) {
+        console.error('Error verifying cookie token:', err);
+      }
+    }
+    
     // If no valid token found
     if (!userId) {
-      console.log('No valid token found in cookies or headers'); // Debug log
+      console.log('No valid token found in headers or cookies');
       return res.status(401).json({ 
         success: false, 
         message: 'Authentication required. Please log in.' 

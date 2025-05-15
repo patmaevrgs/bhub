@@ -77,52 +77,53 @@ function ResidentProfile() {
   };
 
   const fetchUserProfile = async () => {
-    setLoading(true);
-    try {
-      // Get token from localStorage if available
-      const token = localStorage.getItem('token');
-      
-      // Set up headers with Authorization if token exists
-      const headers = {
-        'Content-Type': 'application/json'
-      };
-      
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-      
-      const response = await fetch(`${API_BASE_URL}/profile`, {
-        method: 'GET',
-        headers: headers,
-        credentials: 'include' // Include cookies in the request
-      });
-      
-      if (!response.ok) {
-        console.error('Response not OK:', response.status);
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      console.log('Profile data received:', data); // For debugging
-      
-      if (data.success) {
-        setProfile(data.user);
-        setFormData({
-          firstName: data.user.firstName,
-          middleName: data.user.middleName || '',
-          lastName: data.user.lastName,
-          email: data.user.email
-        });
-      } else {
-        showSnackbar(data.message || 'Failed to load profile data', 'error');
-      }
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-      showSnackbar('Error connecting to server', 'error');
-    } finally {
-      setLoading(false);
+  setLoading(true);
+  try {
+    // First try to get token from localStorage (for mobile compatibility)
+    const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+    
+    // Prepare headers with Authorization if token exists
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+      console.log('Using Authorization header with token');
     }
-  };
+    
+    const response = await fetch(`${API_BASE_URL}/profile`, {
+      method: 'GET',
+      headers: headers,
+      credentials: 'include'  // Still include cookies as fallback for desktop
+    });
+    
+    if (!response.ok) {
+      console.error('Response not OK:', response.status, response.statusText);
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log('Profile data received:', data);
+    
+    if (data.success) {
+      setProfile(data.user);
+      setFormData({
+        firstName: data.user.firstName,
+        middleName: data.user.middleName || '',
+        lastName: data.user.lastName,
+        email: data.user.email
+      });
+    } else {
+      showSnackbar(data.message || 'Failed to load profile data', 'error');
+    }
+  } catch (error) {
+    console.error('Error fetching profile:', error);
+    showSnackbar('Error connecting to server. Please try refreshing the page.', 'error');
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Handle profile form input changes
   const handleProfileChange = (e) => {
@@ -164,10 +165,10 @@ function ResidentProfile() {
   setLoading(true);
   
   try {
-    // Get token from localStorage
-    const token = localStorage.getItem('token');
+    // Get token from localStorage for mobile compatibility
+    const token = localStorage.getItem('authToken') || localStorage.getItem('token');
     
-    // Set up headers
+    // Prepare headers
     const headers = {
       'Content-Type': 'application/json'
     };
@@ -180,7 +181,7 @@ function ResidentProfile() {
     const response = await fetch(`${API_BASE_URL}/profile/update`, {
       method: 'PUT',
       headers: headers,
-      credentials: 'include', // Include cookies
+      credentials: 'include', // Include cookies for desktop
       body: JSON.stringify(formData)
     });
     
@@ -222,10 +223,10 @@ function ResidentProfile() {
   setLoading(true);
   
   try {
-    // Get token from localStorage
-    const token = localStorage.getItem('token');
+    // Get token from localStorage - check both possible keys for maximum compatibility
+    const token = localStorage.getItem('authToken') || localStorage.getItem('token');
     
-    // Set up headers
+    // Set up headers with proper Authorization
     const headers = {
       'Content-Type': 'application/json'
     };
@@ -238,12 +239,19 @@ function ResidentProfile() {
     const response = await fetch(`${API_BASE_URL}/profile/password`, {
       method: 'PUT',
       headers: headers,
-      credentials: 'include', // Include cookies
+      credentials: 'include', // Include cookies as fallback for desktop
       body: JSON.stringify({
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword
       })
     });
+    
+    // Check if response is OK
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Error response:', response.status, errorText);
+      throw new Error(`Server error: ${response.status}`);
+    }
     
     const data = await response.json();
     
@@ -268,7 +276,7 @@ function ResidentProfile() {
     }
   } catch (error) {
     console.error('Error updating password:', error);
-    showSnackbar('Error connecting to server', 'error');
+    showSnackbar('Error connecting to server. Please try again.', 'error');
   } finally {
     setLoading(false);
   }
