@@ -278,66 +278,69 @@ function AdminCourt() {
 
 
   const fetchCalendarData = useCallback(async () => {
-    try {
-      setCalendarLoading(true);
-      
-      const today = new Date();
-      const threeMonthsLater = new Date(today);
-      threeMonthsLater.setMonth(today.getMonth() + 3);
-      
-      const startDate = today.toISOString().split('T')[0];
-      const endDate = threeMonthsLater.toISOString().split('T')[0];
-      
-      console.log('Fetching calendar data from API...', {
-        start: startDate,
-        end: endDate,
-        userType: 'admin'
-      });
-      
-      const url = `${API_BASE_URL}/court-calendar?start=${startDate}&end=${endDate}&userType=admin`;
-      
-      const response = await fetch(url);
-      
-      console.log('Calendar API response status:', response.status);
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch calendar data: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      console.log('Raw calendar data from API:', data);
-      
-      // Verify and format events
-      const validEvents = data
-        .filter(event => event.start && event.end)
-        .map((event, index) => ({
-          id: event.id || `event-${index}`,
-          title: event.title || 'Reserved',
-          start: event.start,
-          end: event.end,
-          backgroundColor: event.status === 'approved' ? '#4caf50' : '#ff9800', // Green for approved, orange for pending
-          borderColor: event.status === 'approved' ? '#4caf50' : '#ff9800',
-          textColor: 'white'
-        }));
-      
-      console.log('Formatted calendar events:', validEvents);
-      
-      setCalendarEvents(validEvents);
-      
-      // Force calendar refetch
-      if (calendarRef.current) {
-        const calendarApi = calendarRef.current.getApi();
-        calendarApi.refetchEvents();
-      }
-      
-    } catch (error) {
-      console.error('Error fetching calendar data:', error);
-      setError('Failed to load calendar data: ' + error.message);
-    } finally {
-      setCalendarLoading(false);
+  try {
+    setCalendarLoading(true);
+    
+    const today = new Date();
+    const threeMonthsLater = new Date(today);
+    threeMonthsLater.setMonth(today.getMonth() + 3);
+    
+    const startDate = today.toISOString().split('T')[0];
+    const endDate = threeMonthsLater.toISOString().split('T')[0];
+    
+    console.log('Fetching calendar data from API...', {
+      start: startDate,
+      end: endDate,
+      userType: 'admin'
+    });
+    
+    const url = `${API_BASE_URL}/court-calendar?start=${startDate}&end=${endDate}&userType=admin`;
+    
+    const response = await fetch(url);
+    
+    console.log('Calendar API response status:', response.status);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch calendar data: ${response.status}`);
     }
-  }, []);
+    
+    const data = await response.json();
+    
+    console.log('Raw calendar data from API:', data);
+    
+    // Process the events to ensure they work in all views
+    const validEvents = data
+      .filter(event => event.start && event.end)
+      .map((event, index) => ({
+        id: event.id || `event-${index}`,
+        title: event.title || 'Reserved',
+        start: event.start, // Should already be ISO format from API
+        end: event.end,     // Should already be ISO format from API
+        backgroundColor: event.status === 'approved' ? '#4caf50' : '#ff9800',
+        borderColor: event.status === 'approved' ? '#4caf50' : '#ff9800',
+        textColor: 'white',
+        allDay: false, // Important for time-based events
+        // Include any additional data for click handling
+        extendedProps: event.extendedProps || {}
+      }));
+    
+    console.log('Formatted calendar events:', validEvents);
+    
+    setCalendarEvents(validEvents);
+    
+    // Force calendar refetch
+    if (calendarRef.current) {
+      const calendarApi = calendarRef.current.getApi();
+      calendarApi.refetchEvents();
+    }
+    
+  } catch (error) {
+    console.error('Error fetching calendar data:', error);
+    setError('Failed to load calendar data: ' + error.message);
+  } finally {
+    setCalendarLoading(false);
+  }
+}, []);
   
   // Fetch calendar data when calendar view is toggled
   useEffect(() => {

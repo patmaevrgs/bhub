@@ -502,7 +502,7 @@ export const getCourtReservationsCalendar = async (req, res) => {
     // When getting calendar data for admin, show only approved reservations
     // When getting for a regular user, show both pending and approved
     const statusFilter = userType === 'admin' 
-      ? ['approved'] 
+      ? ['approved', 'pending'] // Modified to show pending for admin too (more visibility)
       : ['pending', 'approved'];
       
     const filter = {
@@ -520,29 +520,41 @@ export const getCourtReservationsCalendar = async (req, res) => {
     
     // Fetch reservations for calendar
     const reservations = await CourtReservation.find(filter)
-      .select('_id reservationDate startTime duration status representativeName purpose')
+      .select('_id reservationDate startTime duration status representativeName purpose serviceId')
       .sort({ reservationDate: 1, startTime: 1 });
     
     console.log(`Found ${reservations.length} reservations for calendar`);
     
-    // Format for calendar
+    // Format for calendar - THIS IS THE CRITICAL PART THAT NEEDS FIXING
     const calendarData = reservations.map(reservation => {
-      // Parse the reservation date and time
+      // Parse the reservation date
       const datePart = reservation.reservationDate.toISOString().split('T')[0];
       const [hours, minutes] = reservation.startTime.split(':');
       
-      // Create JavaScript Date objects for start and end times
-      const startDateTime = new Date(`${datePart}T${reservation.startTime}:00`);
+      // Create proper ISO datetime strings for start and end
+      // This format is critical for proper display in week/day views
+      const startDateTime = new Date(`${datePart}T${hours}:${minutes}:00`);
       const endDateTime = new Date(startDateTime.getTime() + (reservation.duration * 60 * 60 * 1000));
+      
+      // Ensure proper ISO format with Z for UTC
+      const startISOString = startDateTime.toISOString();
+      const endISOString = endDateTime.toISOString();
       
       return {
         id: reservation._id,
         title: userType === 'admin' 
-          ? `${reservation.representativeName} - ${reservation.purpose}` 
+          ? `${reservation.representativeName || 'Unknown'} - ${reservation.purpose || 'No purpose'}` 
           : 'Reserved',
-        start: startDateTime.toISOString(),
-        end: endDateTime.toISOString(),
-        status: reservation.status
+        start: startISOString, // Proper ISO format for week/day views
+        end: endISOString,     // Proper ISO format for week/day views
+        status: reservation.status,
+        // Adding extendedProps for additional data that might be useful
+        extendedProps: {
+          serviceId: reservation.serviceId || reservation._id,
+          representativeName: reservation.representativeName,
+          purpose: reservation.purpose,
+          duration: reservation.duration
+        }
       };
     });
     

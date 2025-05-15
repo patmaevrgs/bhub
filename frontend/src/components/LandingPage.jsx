@@ -46,6 +46,10 @@ function SimpleCarousel({ images }) {
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
   
+  const getProperImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    return imagePath.startsWith('http') ? imagePath : `${API_BASE_URL}${imagePath}`;
+  };
   // Auto-advance with simple state update (more efficient)
   useEffect(() => {
     if (!images || images.length <= 1) return;
@@ -1063,7 +1067,7 @@ function LandingPage() {
                           }}
                         >
                           <Avatar
-                            src={official.imageUrl ? `${API_BASE_URL}${official.imageUrl}` : ''}
+                            src={getProperImageUrl(official.imageUrl)}
                             alt={official.name}
                             sx={{ 
                               width: 120, 

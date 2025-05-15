@@ -129,36 +129,48 @@ function ResidentCourt() {
   
   // Fetch calendar data
   useEffect(() => {
-    const fetchCalendarData = async () => {
-      try {
-        const today = new Date();
-        const threeMonthsLater = new Date(today);
-        threeMonthsLater.setMonth(today.getMonth() + 3);
-        
-        const response = await fetch(`${API_BASE_URL}/court-calendar?start=${today.toISOString().split('T')[0]}&end=${threeMonthsLater.toISOString().split('T')[0]}`, {
-          headers: { 
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch calendar data');
+  const fetchCalendarData = async () => {
+    try {
+      const today = new Date();
+      const threeMonthsLater = new Date(today);
+      threeMonthsLater.setMonth(today.getMonth() + 3);
+      
+      const response = await fetch(`${API_BASE_URL}/court-calendar?start=${today.toISOString().split('T')[0]}&end=${threeMonthsLater.toISOString().split('T')[0]}`, {
+        headers: { 
+          'Content-Type': 'application/json'
         }
-        
-        const data = await response.json();
-        setCalendarEvents(data.map(event => ({
-          ...event,
-          backgroundColor: event.status === 'approved' ? '#4caf50' : '#ff9800'
-        })));
-      } catch (error) {
-        console.error('Error fetching calendar data:', error);
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch calendar data');
       }
-    };
-    
-    if (showCalendar) {
-      fetchCalendarData();
+      
+      const data = await response.json();
+      
+      // Process the event data to ensure it's properly formatted for all views
+      const formattedEvents = data.map(event => ({
+        ...event,
+        id: event.id,
+        title: event.title,
+        start: event.start, // This should already be in ISO format from the API
+        end: event.end,     // This should already be in ISO format from the API
+        backgroundColor: event.status === 'approved' ? '#4caf50' : '#ff9800',
+        borderColor: event.status === 'approved' ? '#4caf50' : '#ff9800',
+        textColor: 'white',
+        allDay: false // Set to false for time-based events in day/week views
+      }));
+      
+      console.log('Formatted calendar events:', formattedEvents);
+      setCalendarEvents(formattedEvents);
+    } catch (error) {
+      console.error('Error fetching calendar data:', error);
     }
-  }, [showCalendar]);
+  };
+  
+  if (showCalendar) {
+    fetchCalendarData();
+  }
+}, [showCalendar]);
   
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -743,6 +755,10 @@ function ResidentCourt() {
                   height="100%"
                   slotMinTime="06:00:00"
                   slotMaxTime="22:00:00"
+                  eventDisplay="block"    
+                  displayEventTime={true}  
+                  displayEventEnd={true}
+                  allDaySlot={false}   
                 />
               </Box>
             </Paper>
