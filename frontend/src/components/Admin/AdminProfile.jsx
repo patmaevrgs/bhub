@@ -91,42 +91,53 @@ function AdminProfile() {
   };
 
   const fetchUserProfile = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${API_BASE_URL}/profile`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include' // Include cookies in the request
-      });
-      
-      if (!response.ok) {
-        console.error('Response not OK:', response.status);
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      console.log('Profile data received:', data); // For debugging
-      
-      if (data.success) {
-        setProfile(data.user);
-        setFormData({
-          firstName: data.user.firstName,
-          middleName: data.user.middleName || '',
-          lastName: data.user.lastName,
-          email: data.user.email
-        });
-      } else {
-        showSnackbar(data.message || 'Failed to load profile data', 'error');
-      }
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-      showSnackbar('Error connecting to server', 'error');
-    } finally {
-      setLoading(false);
+  setLoading(true);
+  try {
+    // Get token from localStorage if available
+    const token = localStorage.getItem('token');
+    
+    // Set up headers
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    
+    // Add Authorization header if token exists
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
     }
-  };
+    
+    const response = await fetch(`${API_BASE_URL}/profile`, {
+      method: 'GET',
+      headers: headers,
+      credentials: 'include' // For cookies
+    });
+    
+    if (!response.ok) {
+      console.error('Response not OK:', response.status);
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log('Profile data received:', data); // For debugging
+    
+    if (data.success) {
+      setProfile(data.user);
+      setFormData({
+        firstName: data.user.firstName,
+        middleName: data.user.middleName || '',
+        lastName: data.user.lastName,
+        email: data.user.email
+      });
+    } else {
+      showSnackbar(data.message || 'Failed to load profile data', 'error');
+    }
+  } catch (error) {
+    console.error('Error fetching profile:', error);
+    showSnackbar('Error connecting to server', 'error');
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Handle profile form input changes
   const handleProfileChange = (e) => {
@@ -164,98 +175,119 @@ function AdminProfile() {
 
   // Handle profile update submission
   const handleProfileSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
+  
+  try {
+    // Get token from localStorage
+    const token = localStorage.getItem('token');
     
-    try {
-      const response = await fetch(`${API_BASE_URL}/profile/update`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include', // Include cookies
-        body: JSON.stringify(formData)
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        setProfile(data.user);
-        setEditingProfile(false);
-        // Update local storage with new values
-        localStorage.setItem('firstName', data.user.firstName);
-        localStorage.setItem('lastName', data.user.lastName);
-        localStorage.setItem('email', data.user.email);
-        showSnackbar('Profile updated successfully', 'success');
-      } else {
-        showSnackbar(data.message || 'Failed to update profile', 'error');
-      }
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      showSnackbar('Error connecting to server', 'error');
-    } finally {
-      setLoading(false);
+    // Set up headers
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    
+    // Add Authorization header if token exists
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
     }
-  };
+    
+    const response = await fetch(`${API_BASE_URL}/profile/update`, {
+      method: 'PUT',
+      headers: headers,
+      credentials: 'include', // Include cookies
+      body: JSON.stringify(formData)
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      setProfile(data.user);
+      setEditingProfile(false);
+      // Update local storage with new values
+      localStorage.setItem('firstName', data.user.firstName);
+      localStorage.setItem('lastName', data.user.lastName);
+      localStorage.setItem('email', data.user.email);
+      showSnackbar('Profile updated successfully', 'success');
+    } else {
+      showSnackbar(data.message || 'Failed to update profile', 'error');
+    }
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    showSnackbar('Error connecting to server', 'error');
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Handle password update submission
   const handlePasswordSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
+  
+  // Validate passwords match
+  if (passwordData.newPassword !== passwordData.confirmPassword) {
+    showSnackbar('New passwords do not match', 'error');
+    return;
+  }
+  
+  setLoading(true);
+  
+  try {
+    // Get token from localStorage
+    const token = localStorage.getItem('token');
     
-    // Validate passwords match
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      showSnackbar('New passwords do not match', 'error');
-      return;
+    // Set up headers
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    
+    // Add Authorization header if token exists
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
     }
     
-    setLoading(true);
+    const response = await fetch(`${API_BASE_URL}/profile/password`, {
+      method: 'PUT',
+      headers: headers,
+      credentials: 'include', // Include cookies
+      body: JSON.stringify({
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword
+      })
+    });
     
-    try {
-      const response = await fetch(`${API_BASE_URL}/profile/password`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include', // Include cookies
-        body: JSON.stringify({
-          currentPassword: passwordData.currentPassword,
-          newPassword: passwordData.newPassword
-        })
+    const data = await response.json();
+    
+    if (data.success) {
+      setChangingPassword(false);
+      setPasswordData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
       });
-      
-      const data = await response.json();
-      console.log('Password update response:', data);
-      
-      if (data.success) {
-        setChangingPassword(false);
-        setPasswordData({
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: ''
-        });
-        showSnackbar('Password updated successfully', 'success');
+      showSnackbar('Password updated successfully', 'success');
+    } else {
+      // Check for specific error messages from the server
+      if (data.message && (
+          data.message.includes('incorrect') || 
+          data.message.includes('Current password is incorrect')
+      )) {
+        showSnackbar('Current password is incorrect', 'error');
       } else {
-        // Check for specific error messages from the server
-        if (data.message && (
-            data.message.includes('incorrect') || 
-            data.message.includes('Current password is incorrect')
-        )) {
-          showSnackbar('Current password is incorrect', 'error');
-        } else {
-          showSnackbar(data.message || 'Failed to update password', 'error');
-        }
+        showSnackbar(data.message || 'Failed to update password', 'error');
       }
-    } catch (error) {
-      console.error('Error updating password:', error);
-      showSnackbar('Error connecting to server', 'error');
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (error) {
+    console.error('Error updating password:', error);
+    showSnackbar('Error connecting to server', 'error');
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Handle snackbar display
   const showSnackbar = (message, severity) => {

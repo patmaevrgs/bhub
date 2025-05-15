@@ -112,9 +112,10 @@ const updateUserType = async (req, res) => {
 };
 
 // Get profile of the currently logged-in user
+// Get profile of the currently logged-in user
 const getUserProfile = async (req, res) => {
   try {
-    // Extract user ID from JWT token in the cookie
+    // Extract user ID from JWT token in the cookie or Authorization header
     let userId;
     
     // Check for token in cookies first (preferred method)
@@ -130,7 +131,14 @@ const getUserProfile = async (req, res) => {
     // If not found in cookies, try Authorization header as fallback
     if (!userId && req.headers.authorization) {
       try {
-        const token = req.headers.authorization.split(' ')[1]; // Extract the token from Bearer token
+        // Fix the token extraction - properly handle the Bearer prefix
+        let token;
+        if (req.headers.authorization.startsWith('Bearer ')) {
+          token = req.headers.authorization.substring(7); // Extract after "Bearer "
+        } else {
+          token = req.headers.authorization; // Use directly if no Bearer prefix
+        }
+        
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
         userId = decoded._id;
       } catch (err) {
@@ -140,6 +148,7 @@ const getUserProfile = async (req, res) => {
     
     // If no valid token found
     if (!userId) {
+      console.log('No valid token found in cookies or headers'); // Debug log
       return res.status(401).json({ 
         success: false, 
         message: 'Authentication required. Please log in.' 
