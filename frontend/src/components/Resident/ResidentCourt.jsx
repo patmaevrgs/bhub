@@ -126,20 +126,18 @@ function ResidentCourt() {
     
     fetchReservations();
   }, []);
-  
+
   // Fetch calendar data
   useEffect(() => {
   const fetchCalendarData = async () => {
     try {
-      const today = new Date();
-      const threeMonthsLater = new Date(today);
-      threeMonthsLater.setMonth(today.getMonth() + 3);
+      // Get current date and calculate 2 months later
+      const currentDate = new Date();
+      const month = currentDate.getMonth() + 1;
+      const year = currentDate.getFullYear();
       
-      const response = await fetch(`${API_BASE_URL}/court-calendar?start=${today.toISOString().split('T')[0]}&end=${threeMonthsLater.toISOString().split('T')[0]}`, {
-        headers: { 
-          'Content-Type': 'application/json'
-        }
-      });
+      // Use your existing court-calendar endpoint
+      const response = await fetch(`${API_BASE_URL}/court-calendar?month=${month}&year=${year}&userType=resident`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch calendar data');
@@ -147,21 +145,32 @@ function ResidentCourt() {
       
       const data = await response.json();
       
-      // Process the event data to ensure it's properly formatted for all views
-      const formattedEvents = data.map(event => ({
-        ...event,
-        id: event.id,
-        title: event.title,
-        start: event.start, // This should already be in ISO format from the API
-        end: event.end,     // This should already be in ISO format from the API
-        backgroundColor: event.status === 'approved' ? '#4caf50' : '#ff9800',
-        borderColor: event.status === 'approved' ? '#4caf50' : '#ff9800',
-        textColor: 'white',
-        allDay: false // Set to false for time-based events in day/week views
-      }));
+      // Convert the reservations to calendar events
+      const events = data.map(reservation => {
+        // Parse the date and time
+        const bookingDate = new Date(reservation.reservationDate);
+        const [hours, minutes] = reservation.startTime.split(':').map(Number);
+        
+        // Set the correct time on the date
+        bookingDate.setHours(hours, minutes, 0, 0);
+        
+        // Calculate end time based on duration
+        const endDate = new Date(bookingDate);
+        const duration = Number(reservation.duration) || 1; // Default to 1 hour
+        endDate.setHours(endDate.getHours() + duration);
+        
+        return {
+          id: reservation._id,
+          title: 'Reserved', // No personal info shown
+          start: bookingDate.toISOString(),
+          end: endDate.toISOString(),
+          backgroundColor: reservation.status === 'approved' ? '#4caf50' : '#ff9800', // Green for approved, Orange for pending
+          borderColor: reservation.status === 'approved' ? '#2e7d32' : '#f57c00',
+          textColor: '#ffffff'
+        };
+      });
       
-      console.log('Formatted calendar events:', formattedEvents);
-      setCalendarEvents(formattedEvents);
+      setCalendarEvents(events);
     } catch (error) {
       console.error('Error fetching calendar data:', error);
     }
@@ -693,75 +702,64 @@ function ResidentCourt() {
         <Box sx={{ mb: 3 }} />
         {/* Calendar Section */}
         <Grid item xs={12} md={6}>
-          {showCalendar ? (
-            <Paper sx={{ p: 3, height: '100%', borderRadius: 1 }}>
-              <Box sx={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'center', 
-                mb: 2,
-                pb: 0.5,
-                borderBottom: '1px solid',
-                borderColor: 'divider'
-              }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <CalendarMonthIcon sx={{ mr: 1, color: 'primary.main', fontSize: 20 }} />
-                  <Typography 
-                    variant="subtitle1" 
-                    sx={{ fontWeight: 600 }}
-                  >
-                    Court Availability Calendar
-                  </Typography>
-                </Box>
-                <Button 
-                  size="small"
-                  startIcon={<InfoIcon />}
-                  onClick={() => setEventInfoOpen(true)}
-                  sx={{ height: 28 }}
-                >
-                  Legend
-                </Button>
-              </Box>
-              
-              <Alert severity="info" sx={{ mb: 2 }}>
-                <Typography variant="body2">
-                  This calendar shows all existing court reservations. Select different views (month/week/day) 
-                  to check availability before making your booking.
-                </Typography>
-              </Alert>
-              
-              {/* Legend Section */}
-              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#4caf50', mr: 0.5 }} />
-                  <Typography variant="caption">Approved</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#ff9800', mr: 0.5 }} />
-                  <Typography variant="caption">Pending</Typography>
-                </Box>
-              </Box>
-              
-              <Box sx={{ height: '450px' }}>
-                <FullCalendar
-                  plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                  initialView={isMobile ? "timeGridDay" : "timeGridWeek"}
-                  headerToolbar={{
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                  }}
-                  events={calendarEvents}
-                  height="100%"
-                  slotMinTime="06:00:00"
-                  slotMaxTime="22:00:00"
-                  eventDisplay="block"    
-                  displayEventTime={true}  
-                  displayEventEnd={true}
-                  allDaySlot={false}   
-                />
-              </Box>
-            </Paper>
+          {showCalendar && (
+  <Paper sx={{ p: 3, borderRadius: 1, mb: 4 }}>
+    <Box sx={{ 
+      display: 'flex', 
+      justifyContent: 'space-between', 
+      alignItems: 'center', 
+      mb: 2,
+      pb: 0.5,
+      borderBottom: '1px solid',
+      borderColor: 'divider'
+    }}>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <CalendarMonthIcon sx={{ mr: 1, color: 'primary.main', fontSize: 20 }} />
+        <Typography 
+          variant="subtitle1" 
+          sx={{ fontWeight: 600 }}
+        >
+          Court Availability Calendar
+        </Typography>
+      </Box>
+    </Box>
+    
+    <Alert severity="info" sx={{ mb: 2 }}>
+      <Typography variant="body2">
+        This calendar shows all existing court reservations. Reserved time slots may not be available.
+        No personal information is displayed to protect privacy.
+      </Typography>
+    </Alert>
+    
+    {/* Legend Section */}
+    <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#4caf50', mr: 0.5 }} />
+        <Typography variant="caption">Approved</Typography>
+      </Box>
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: '#ff9800', mr: 0.5 }} />
+        <Typography variant="caption">Pending</Typography>
+      </Box>
+    </Box>
+    
+    <Box sx={{ height: '450px' }}>
+      <FullCalendar
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        initialView={isMobile ? "timeGridDay" : "timeGridWeek"}
+        headerToolbar={{
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        }}
+        events={calendarEvents}
+        height="100%"
+        slotMinTime="06:00:00"
+        slotMaxTime="22:00:00"
+      />
+    </Box>
+  </Paper>
+)}
           ) : (
             <Paper sx={{ p: 3, height: '100%', borderRadius: 1 }}>
               <Box sx={{ 
@@ -832,7 +830,7 @@ function ResidentCourt() {
                 </Grid>
               </Box>
             </Paper>
-          )}
+          )
         </Grid>
       {/* </Grid> */}
       {/* Dialogs */}

@@ -496,69 +496,89 @@ export const cancelCourtReservation = async (req, res) => {
 // Get court reservations calendar data
 export const getCourtReservationsCalendar = async (req, res) => {
   try {
-    const { start, end, userType } = req.query;
-    console.log('Calendar Query Parameters:', { start, end, userType });
+    const { month, year, startDate, endDate, view, start, end, userType } = req.query;
     
-    // When getting calendar data for admin, show only approved reservations
-    // When getting for a regular user, show both pending and approved
-    const statusFilter = userType === 'admin' 
-      ? ['approved', 'pending'] // Modified to show pending for admin too (more visibility)
-      : ['pending', 'approved'];
-      
-    const filter = {
-      status: { $in: statusFilter }
-    };
+    // Use the same filtering logic as in your ambulance controller
+    let dateFilter = {};
     
-    // Date range filter
-    if (start || end) {
-      filter.reservationDate = {};
-      if (start) filter.reservationDate.$gte = new Date(start);
-      if (end) filter.reservationDate.$lte = new Date(end);
+    // For specific date range (used in week and day views)
+    if (start && end) {
+      dateFilter = {
+        reservationDate: {
+          $gte: new Date(start),
+          $lte: new Date(end)
+        }
+      };
+    } else if (startDate && endDate) {
+      dateFilter = {
+        reservationDate: {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate)
+        }
+      };
+    } else if (month && year) {
+      // If month and year are provided, filter by that month (used in month view)
+      const startOfMonth = new Date(year, month - 1, 1);
+      const endOfMonth = new Date(year, month, 0);
+      dateFilter = {
+        reservationDate: {
+          $gte: startOfMonth,
+          $lte: endOfMonth
+        }
+      };
     }
     
-    console.log('Calendar filter:', JSON.stringify(filter, null, 2));
+    // Determine which statuses to include based on userType
+    let statusFilter;
+    let fieldsToSelect;
     
-    // Fetch reservations for calendar
-    const reservations = await CourtReservation.find(filter)
-      .select('_id reservationDate startTime duration status representativeName purpose serviceId')
-      .sort({ reservationDate: 1, startTime: 1 });
+    if (userType === 'resident') {
+      // For residents, show approved and pending (to help avoid conflicts)
+      statusFilter = { $in: ['approved', 'pending'] };
+      // Residents don't need to see reservation details
+      fieldsToSelect = 'reservationDate startTime duration status _id';
+    } else {
+      // For admin and superadmin, show approved and pending
+      statusFilter = { $in: ['approved', 'pending'] };
+      // Admins can see all details
+      fieldsToSelect = 'reservationDate startTime duration status representativeName purpose';
+    }
     
-    console.log(`Found ${reservations.length} reservations for calendar`);
+    // Fetch reservations with applied filters
+    const reservations = await CourtReservation.find({
+      ...dateFilter,
+      status: statusFilter
+    }).select(fieldsToSelect);
     
-    // Format for calendar - THIS IS THE CRITICAL PART THAT NEEDS FIXING
+    // For debugging
+    console.log(`Calendar view: ${view || 'not specified'}, Found ${reservations.length} reservations within date range, User type: ${userType || 'admin'}`);
+    
+    // Format for calendar - Using the exact same pattern as your ambulance controller
     const calendarData = reservations.map(reservation => {
-      // Parse the reservation date
-      const datePart = reservation.reservationDate.toISOString().split('T')[0];
-      const [hours, minutes] = reservation.startTime.split(':');
+      // Format the date and time
+      const bookingDate = new Date(reservation.reservationDate);
+      const [hours, minutes] = reservation.startTime.split(':').map(Number);
       
-      // Create proper ISO datetime strings for start and end
-      // This format is critical for proper display in week/day views
-      const startDateTime = new Date(`${datePart}T${hours}:${minutes}:00`);
-      const endDateTime = new Date(startDateTime.getTime() + (reservation.duration * 60 * 60 * 1000));
+      // Set the correct time on the date
+      bookingDate.setHours(hours, minutes, 0, 0);
       
-      // Ensure proper ISO format with Z for UTC
-      const startISOString = startDateTime.toISOString();
-      const endISOString = endDateTime.toISOString();
+      // Calculate end time based on duration
+      const endDate = new Date(bookingDate);
+      const duration = Number(reservation.duration) || 1; // Default to 1 hour if missing
+      endDate.setHours(endDate.getHours() + duration);
       
       return {
         id: reservation._id,
-        title: userType === 'admin' 
-          ? `${reservation.representativeName || 'Unknown'} - ${reservation.purpose || 'No purpose'}` 
-          : 'Reserved',
-        start: startISOString, // Proper ISO format for week/day views
-        end: endISOString,     // Proper ISO format for week/day views
-        status: reservation.status,
-        // Adding extendedProps for additional data that might be useful
-        extendedProps: {
-          serviceId: reservation.serviceId || reservation._id,
-          representativeName: reservation.representativeName,
-          purpose: reservation.purpose,
-          duration: reservation.duration
-        }
+        title: userType === 'admin' ? 
+          `${reservation.representativeName || 'Reserved'} - ${reservation.purpose || 'Court use'}` : 
+          'Reserved', // No personal info shown for residents
+        start: bookingDate.toISOString(), // Convert to ISO string format
+        end: endDate.toISOString(),     // Convert to ISO string format
+        backgroundColor: reservation.status === 'approved' ? '#4caf50' : '#ff9800', // Green for approved, Orange for pending
+        borderColor: reservation.status === 'approved' ? '#2e7d32' : '#f57c00',
+        textColor: '#ffffff'
       };
     });
-    
-    console.log(`Returning ${calendarData.length} calendar events`);
     
     res.status(200).json(calendarData);
   } catch (error) {

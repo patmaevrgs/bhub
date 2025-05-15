@@ -281,20 +281,15 @@ function AdminCourt() {
   try {
     setCalendarLoading(true);
     
-    const today = new Date();
-    const threeMonthsLater = new Date(today);
-    threeMonthsLater.setMonth(today.getMonth() + 3);
+    // Get current date and calculate end date (same logic as your ambulance component)
+    const currentDate = new Date();
+    const month = currentDate.getMonth() + 1;
+    const year = currentDate.getFullYear();
     
-    const startDate = today.toISOString().split('T')[0];
-    const endDate = threeMonthsLater.toISOString().split('T')[0];
+    console.log('Fetching calendar data from API...');
     
-    console.log('Fetching calendar data from API...', {
-      start: startDate,
-      end: endDate,
-      userType: 'admin'
-    });
-    
-    const url = `${API_BASE_URL}/court-calendar?start=${startDate}&end=${endDate}&userType=admin`;
+    // Use month/year instead of start/end dates - this is how your ambulance component does it
+    const url = `${API_BASE_URL}/court-calendar?month=${month}&year=${year}&userType=admin`;
     
     const response = await fetch(url);
     
@@ -308,27 +303,10 @@ function AdminCourt() {
     
     console.log('Raw calendar data from API:', data);
     
-    // Process the events to ensure they work in all views
-    const validEvents = data
-      .filter(event => event.start && event.end)
-      .map((event, index) => ({
-        id: event.id || `event-${index}`,
-        title: event.title || 'Reserved',
-        start: event.start, // Should already be ISO format from API
-        end: event.end,     // Should already be ISO format from API
-        backgroundColor: event.status === 'approved' ? '#4caf50' : '#ff9800',
-        borderColor: event.status === 'approved' ? '#4caf50' : '#ff9800',
-        textColor: 'white',
-        allDay: false, // Important for time-based events
-        // Include any additional data for click handling
-        extendedProps: event.extendedProps || {}
-      }));
+    // Process the events with the same format as your ambulance component
+    setCalendarEvents(data);
     
-    console.log('Formatted calendar events:', validEvents);
-    
-    setCalendarEvents(validEvents);
-    
-    // Force calendar refetch
+    // Force calendar refetch if needed
     if (calendarRef.current) {
       const calendarApi = calendarRef.current.getApi();
       calendarApi.refetchEvents();
@@ -709,13 +687,6 @@ function AdminCourt() {
                 right: isMobile ? 'timeGridDay,timeGridWeek,dayGridMonth' : 'dayGridMonth,timeGridWeek,timeGridDay'
               }}
               events={calendarEvents}
-              height="100%"
-              eventDisplay="block"
-              displayEventTime={true}
-              displayEventEnd={true}
-              allDaySlot={false}
-              slotMinTime="06:00:00"
-              slotMaxTime="22:00:00"
               eventClick={(info) => {
                 console.log('Event clicked:', info.event);
                 const reservationId = info.event.id;
@@ -726,6 +697,13 @@ function AdminCourt() {
                   console.log('Could not find matching reservation for event', reservationId);
                 }
               }}
+              height="100%"
+              eventDisplay="block"
+              displayEventTime={true}
+              displayEventEnd={true}
+              allDaySlot={false}
+              slotMinTime="06:00:00"
+              slotMaxTime="22:00:00"
             />
           </Box>
         </Paper>

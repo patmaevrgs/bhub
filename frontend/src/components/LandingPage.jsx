@@ -46,10 +46,6 @@ function SimpleCarousel({ images }) {
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
   
-  const getProperImageUrl = (imagePath) => {
-    if (!imagePath) return '';
-    return imagePath.startsWith('http') ? imagePath : `${API_BASE_URL}${imagePath}`;
-  };
   // Auto-advance with simple state update (more efficient)
   useEffect(() => {
     if (!images || images.length <= 1) return;
@@ -74,6 +70,12 @@ function SimpleCarousel({ images }) {
     setCurrentIndex(prev => (prev - 1 + images.length) % images.length);
   };
   
+  const getProperImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    return typeof imagePath === 'string' 
+      ? (imagePath.startsWith('http') ? imagePath : `${API_BASE_URL}${imagePath}`)
+      : '';
+  };
   // Touch handling for mobile swipe
   const handleTouchStart = (e) => {
     setTouchStart(e.targetTouches[0].clientX);
