@@ -76,8 +76,8 @@ const login = async (req, res) => {
   // Set the token as a cookie
   res.cookie('authToken', token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+    secure: true,
+    sameSite: 'None',
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   });
 
@@ -94,28 +94,39 @@ const login = async (req, res) => {
 };
 
 const checkIfLoggedIn = async (req, res) => {
+  let token;
+  
+  // First check cookie
+  if (req.cookies && req.cookies.authToken) {
+    token = req.cookies.authToken;
+  } 
+  // Then check Authorization header (for mobile fallback)
+  else if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+    token = req.headers.authorization.split(' ')[1];
+  }
 
-  if (!req.cookies || !req.cookies.authToken) {
-    // FAIL Scenario 1 - No cookies / no authToken cookie sent
+  // If no token found in either place
+  if (!token) {
     return res.send({ isLoggedIn: false });
   }
 
   try {
-    // try to verify the token
-    const tokenPayload = jwt.verify(req.cookies.authToken, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
+    // Try to verify the token
+    const tokenPayload = jwt.verify(token, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
 
-    // check if the _id in the payload is an existing user id
+    // Check if the _id in the payload is an existing user id
     const user = await User.findById(tokenPayload._id)
     if (user) {
-    // SUCCESS Scenario - User is found
+      // SUCCESS Scenario - User is found
       return res.send({ isLoggedIn: true, userType: user.userType });
     } else {
-    // FAIL Scenario 2 - Token is valid but user id not found
+      // FAIL Scenario - Token is valid but user id not found
       return res.send({ isLoggedIn: false })
     }
-  } catch {
-      // FAIL Scenario 3 - Error in validating token / Token is not valid
-      return res.send({ isLoggedIn: false });
+  } catch (error) {
+    console.error('Token verification error:', error);
+    // FAIL Scenario - Error in validating token / Token is not valid
+    return res.send({ isLoggedIn: false });
   }
 };
 
@@ -137,14 +148,15 @@ const addAdmin = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    // Clear the authentication cookie
+    // Updated cookie clearing for cross-domain compatibility
     res.clearCookie('authToken', {
       path: '/',
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax'
+      secure: true, // Always use secure for cross-domain
+      sameSite: 'None' // Required for cross-domain
     });
     
+    // Clear localStorage token through client-side handling
     return res.status(200).json({
       success: true,
       message: 'Logged out successfully'

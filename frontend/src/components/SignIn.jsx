@@ -100,35 +100,42 @@ export default function SignIn() {
   };
 
   const loginUser = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-        credentials: 'include'  // Very important for cookies to be sent and received
-      });
-      const body = await response.json();
-      if (body.success) {
-        // Store user data in localStorage
-        localStorage.setItem('user', body.user);
-        localStorage.setItem('userType', body.userType);
-        localStorage.setItem('firstName', body.firstName);
-        localStorage.setItem('lastName', body.lastName);
-        localStorage.setItem('email', body.email);
-        return true;
-      } else {
-        // Set form error and show error dialog
-        setFormError(body.message || 'Invalid email or password');
-        setShowErrorDialog(true);
-        return false;
+  try {
+    const response = await fetch(`${API_BASE_URL}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+      credentials: 'include'  // Keep this for cookies
+    });
+    
+    const body = await response.json();
+    if (body.success) {
+      // Store user data in localStorage
+      localStorage.setItem('user', body.user);
+      localStorage.setItem('userType', body.userType);
+      localStorage.setItem('firstName', body.firstName);
+      localStorage.setItem('lastName', body.lastName);
+      localStorage.setItem('email', body.email);
+      
+      // Store token if the backend provides it
+      if (body.token) {
+        localStorage.setItem('authToken', body.token);
       }
-    } catch (error) {
-      console.error('Error logging in:', error);
-      setFormError('Connection error. Please try again later.');
+      
+      return true;
+    } else {
+      // Set form error and show error dialog
+      setFormError(body.message || 'Invalid email or password');
       setShowErrorDialog(true);
       return false;
     }
-  };
+  } catch (error) {
+    console.error('Error logging in:', error);
+    setFormError('Connection error. Please try again later.');
+    setShowErrorDialog(true);
+    return false;
+  }
+};
 
   return (
   <Box

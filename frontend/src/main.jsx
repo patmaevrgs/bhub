@@ -52,9 +52,21 @@ import API_BASE_URL from './config.js';
 
 const checkIfLoggedInOnHome = async () => {
   try {
+    // Get auth token from localStorage as fallback
+    const token = localStorage.getItem('authToken');
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    
+    // Add token to Authorization header if it exists
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
     const res = await fetch(`${API_BASE_URL}/checkifloggedin`, {
       method: "POST",
-      credentials: "include" // Very important for cookies to be sent
+      credentials: "include",
+      headers: headers
     });
 
     const payload = await res.json();
@@ -77,9 +89,21 @@ const checkIfLoggedInOnHome = async () => {
 
 const checkIfLoggedInOnDash = async () => {
   try {
+    // Get auth token from localStorage as fallback
+    const token = localStorage.getItem('authToken');
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    
+    // Add token to Authorization header if it exists
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
     const res = await fetch(`${API_BASE_URL}/checkifloggedin`, {
       method: "POST",
-      credentials: "include" // Very important for cookies to be sent
+      credentials: "include",
+      headers: headers
     });
 
     const payload = await res.json();
@@ -98,9 +122,21 @@ const checkIfLoggedInOnDash = async () => {
 
 const checkIfLoggedInOnResidentPage = async () => {
   try {
+    // Get auth token from localStorage as fallback
+    const token = localStorage.getItem('authToken');
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    
+    // Add token to Authorization header if it exists
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
     const res = await fetch(`${API_BASE_URL}/checkifloggedin`, {
       method: "POST",
-      credentials: "include" // Very important for cookies to be sent
+      credentials: "include",
+      headers: headers
     });
 
     const payload = await res.json();
