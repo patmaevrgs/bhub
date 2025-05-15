@@ -61,69 +61,88 @@ const getAllUsers = async (req, res) => {
 // Update user's userType (superadmin only)
 const updateUserType = async (req, res) => {
   try {
-    // Check if user is logged in
-    if (!req.cookies || !req.cookies.authToken) {
-      return res.status(401).json({ success: false, message: 'Unauthorized access' });
+    // Check for authentication in multiple places
+    let adminId = null;
+    
+    // First try Authorization header (for mobile)
+    if (req.headers.authorization) {
+      try {
+        const token = req.headers.authorization.startsWith('Bearer ') 
+          ? req.headers.authorization.substring(7) 
+          : req.headers.authorization;
+          
+        const tokenPayload = jwt.verify(token, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
+        adminId = tokenPayload._id;
+      } catch (error) {
+        console.error('Error verifying auth header token:', error);
+      }
     }
     
-    try {
-      // Verify the token
-      const tokenPayload = jwt.verify(req.cookies.authToken, 'THIS_IS_A_SECRET_STRING');
-      const adminId = tokenPayload._id;
-
-      // Find the admin to check if they're a superadmin
-      const adminUser = await User.findById(adminId);
-      if (!adminUser || adminUser.userType !== 'superadmin') {
-        return res.status(403).json({ success: false, message: 'Unauthorized: Superadmin access required' });
-      }
-
-      // Get the user ID and new userType from request body
-      const { userId, userType } = req.body;
-      
-      // Validate userType
-      if (!['resident', 'admin', 'superadmin'].includes(userType)) {
-        return res.status(400).json({ success: false, message: 'Invalid user type' });
-      }
-
-      // Find and update the user
-      const user = await User.findByIdAndUpdate(
-        userId,
-        { userType },
-        { new: true, select: '-password' }
-      );
-
-      if (!user) {
-        return res.status(404).json({ success: false, message: 'User not found' });
-      }
-
-      // Create log entry for this admin action
+    // If not found in Authorization header, try cookie
+    if (!adminId && req.cookies && req.cookies.authToken) {
       try {
-        await fetch(`${API_URL}/logs`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include', // Include cookies
-          body: JSON.stringify({
-            action: `Updated user type`,
-            adminId: adminId,
-            adminName: `${adminUser.firstName} ${adminUser.lastName}`,
-            details: `Changed ${user.firstName} ${user.lastName}'s user type from ${user.userType} to ${userType}`
-          })
-        });
-      } catch (logError) {
-        console.error('Error creating log:', logError);
-        // Continue execution even if logging fails
+        const tokenPayload = jwt.verify(req.cookies.authToken, process.env.JWT_SECRET || 'THIS_IS_A_SECRET_STRING');
+        adminId = tokenPayload._id;
+      } catch (error) {
+        console.error('Error verifying cookie token:', error);
       }
-
-      return res.status(200).json({
-        success: true,
-        message: 'User type updated successfully',
-        user
-      });
-    } catch (error) {
-      return res.status(401).json({ success: false, message: 'Invalid token' });
     }
+    
+    // If no valid authentication found
+    if (!adminId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized access' });
+    }
+
+    // Find the admin to check if they're a superadmin
+    const adminUser = await User.findById(adminId);
+    if (!adminUser || adminUser.userType !== 'superadmin') {
+      return res.status(403).json({ success: false, message: 'Unauthorized: Superadmin access required' });
+    }
+
+    // Get the user ID and new userType from request body
+    const { userId, userType } = req.body;
+    
+    // Validate userType
+    if (!['resident', 'admin', 'superadmin'].includes(userType)) {
+      return res.status(400).json({ success: false, message: 'Invalid user type' });
+    }
+
+    // Find and update the user
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { userType },
+      { new: true, select: '-password' }
+    );
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Create log entry for this admin action
+    try {
+      await fetch(`${API_URL}/logs`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Include cookies
+        body: JSON.stringify({
+          action: `Updated user type`,
+          adminId: adminId,
+          adminName: `${adminUser.firstName} ${adminUser.lastName}`,
+          details: `Changed ${user.firstName} ${user.lastName}'s user type from ${user.userType} to ${userType}`
+        })
+      });
+    } catch (logError) {
+      console.error('Error creating log:', logError);
+      // Continue execution even if logging fails
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'User type updated successfully',
+      user
+    });
   } catch (error) {
     console.error('Error updating user type:', error);
     return res.status(500).json({ success: false, message: 'Error updating user type' });

@@ -105,16 +105,35 @@ function AdminAccounts() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
+      // Get token from localStorage (for mobile compatibility)
+      const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+      
+      // Set up request headers
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      
+      // Add Authorization header if token exists
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+        console.log('Using Authorization header for fetch users');
+      }
+      
       const response = await fetch(`${API_BASE_URL}/users`, {
         method: 'GET',
-        credentials: 'include' // Include cookies
+        headers: headers,
+        credentials: 'include' // Keep this for cookies (desktop)
       });
       
       if (!response.ok) {
-        throw new Error('Failed to fetch users');
+        console.error('Response status:', response.status);
+        console.error('Response status text:', response.statusText);
+        throw new Error(`Failed to fetch users: ${response.status} ${response.statusText}`);
       }
       
       const data = await response.json();
+      console.log('Fetched users data:', data);
+      
       if (data.success) {
         setUsers(data.users);
         setIsSuperAdmin(data.isSuper);
@@ -142,17 +161,35 @@ function AdminAccounts() {
 
   const handleUpdateUserType = async () => {
     try {
+      // Get token from localStorage
+      const token = localStorage.getItem('authToken') || localStorage.getItem('token');
+      
+      // Set up headers
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      
+      // Add Authorization header if token exists
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
       const response = await fetch(`${API_BASE_URL}/users/updateType`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // Include cookies
+        headers: headers,
+        credentials: 'include', // Include cookies for desktop
         body: JSON.stringify({
           userId: selectedUser._id,
           userType: newUserType
         })
       });
+
+      // Check if response is OK
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error response:', response.status, errorText);
+        throw new Error(`Server error: ${response.status}`);
+      }
 
       const data = await response.json();
       
