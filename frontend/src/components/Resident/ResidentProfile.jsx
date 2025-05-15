@@ -82,19 +82,19 @@ function ResidentProfile() {
       // Get token from localStorage if available
       const token = localStorage.getItem('token');
       
-      // Set up headers with Authorization if token exists
-      const headers = {
-        'Content-Type': 'application/json'
-      };
+      // Try one more option - maybe it was stored with a different key
+      const altToken = localStorage.getItem('authToken');
       
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
+      // Use whichever token is available
+      const authToken = token || altToken || '';
       
       const response = await fetch(`${API_BASE_URL}/profile`, {
         method: 'GET',
-        headers: headers,
-        credentials: 'include' // Include cookies in the request
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': authToken ? `Bearer ${authToken}` : ''
+        },
+        credentials: 'include' // Include cookies for desktop browsers
       });
       
       if (!response.ok) {
