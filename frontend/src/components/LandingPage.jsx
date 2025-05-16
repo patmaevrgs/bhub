@@ -663,7 +663,7 @@ function LandingPage() {
             }}>
               <Button 
                 component={RouterLink} 
-                to="/resident/announcements" 
+                to="/announcements" 
                 variant="outlined"
                 color="primary"
                 endIcon={<ArrowForwardIcon />}
