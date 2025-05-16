@@ -263,7 +263,7 @@ function RequestResidency() {
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ mb: 3 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   required
@@ -285,7 +285,7 @@ function RequestResidency() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   required
@@ -308,7 +308,7 @@ function RequestResidency() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   required
@@ -332,7 +332,7 @@ function RequestResidency() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   required
@@ -354,7 +354,7 @@ function RequestResidency() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   required
@@ -376,7 +376,7 @@ function RequestResidency() {
                 />
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   required
@@ -399,7 +399,7 @@ function RequestResidency() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: '150px'}}}>
                 <FormControl 
                   fullWidth 
                   required 
@@ -431,7 +431,7 @@ function RequestResidency() {
                 </FormControl>
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   required
@@ -463,7 +463,7 @@ function RequestResidency() {
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ mb: 3 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   required
@@ -485,7 +485,7 @@ function RequestResidency() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   required

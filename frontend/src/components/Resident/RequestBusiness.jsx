@@ -211,7 +211,7 @@ function RequestBusiness() {
             </Typography>
             <Divider sx={{ mb: 2 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Business Name"
@@ -233,7 +233,7 @@ function RequestBusiness() {
                 />
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Business Address"
@@ -254,7 +254,7 @@ function RequestBusiness() {
                   }}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: '310px'}}}>
                 <TextField
                   fullWidth
                   label="Line of Business"
@@ -273,10 +273,6 @@ function RequestBusiness() {
                       </InputAdornment>
                     ),
                   }}
-                  sx={{ 
-                    '& .MuiInputBase-root': {
-                      minWidth: '310px' // Adjust this value as needed
-                  }}}
                 />
               </Grid>
               

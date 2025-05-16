@@ -320,7 +320,7 @@ function RequestAssistance() {
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ mb: 3 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Full Name"
@@ -342,7 +342,7 @@ function RequestAssistance() {
                 />
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Address (Sitio/Purok, etc.)"
@@ -364,7 +364,7 @@ function RequestAssistance() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Years of Residency"
@@ -388,7 +388,7 @@ function RequestAssistance() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <FormControl 
                   fullWidth 
                   error={!!formErrors.marginGroupType} 
@@ -514,7 +514,7 @@ function RequestAssistance() {
                 </>
               )}
               
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <FormControl 
                   fullWidth 
                   error={!!formErrors.assistanceType} 

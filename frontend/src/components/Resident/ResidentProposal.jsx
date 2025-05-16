@@ -442,7 +442,7 @@ function ResidentProposal() {
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ mb: 3 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Full Name"
@@ -467,7 +467,7 @@ function ResidentProposal() {
                   }}}
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Contact Number"
@@ -489,7 +489,7 @@ function ResidentProposal() {
                   }}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Email Address"
@@ -526,7 +526,7 @@ function ResidentProposal() {
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ mb: 3 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Project Title"
@@ -548,7 +548,7 @@ function ResidentProposal() {
                   }}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Project Description"
@@ -877,7 +877,7 @@ function ResidentProposal() {
         
         <Grid container spacing={3} sx={{ display: 'flex', justifyContent: 'center' }}>
           {/* Health & Wellness */}
-          <Grid item xs={12} sm={6} md={4} sx={{ width: '45%' }}>
+          <Grid item xs={12} sm={6} md={4} sx={{minWidth: {xs: '100%', sm: '100%', md: '45%'}}}>
             <Box sx={{ 
               height: '100%',
               display: 'flex',
@@ -934,7 +934,7 @@ function ResidentProposal() {
           </Grid>
           
           {/* Environment & Sustainability */}
-          <Grid item xs={12} sm={6} md={4} sx={{ width: '45%' }}>
+          <Grid item xs={12} sm={6} md={4} sx={{minWidth: {xs: '100%', sm: '100%', md: '45%'}}}>
             <Box sx={{ 
               height: '100%',
               display: 'flex',
@@ -991,7 +991,7 @@ function ResidentProposal() {
           </Grid>
           
           {/* Education & Skills */}
-          <Grid item xs={12} sm={6} md={4} sx={{ width: '45%' }}>
+          <Grid item xs={12} sm={6} md={4} sx={{minWidth: {xs: '100%', sm: '100%', md: '45%'}}}>
             <Box sx={{ 
               height: '100%',
               display: 'flex',
@@ -1048,7 +1048,7 @@ function ResidentProposal() {
           </Grid>
           
           {/* Infrastructure & Facilities */}
-          <Grid item xs={12} sm={6} md={4} sx={{ width: '45%' }}>
+          <Grid item xs={12} sm={6} md={4} sx={{minWidth: {xs: '100%', sm: '100%', md: '45%'}}}>
             <Box sx={{ 
               height: '100%',
               display: 'flex',
@@ -1105,7 +1105,7 @@ function ResidentProposal() {
           </Grid>
           
           {/* Community & Culture */}
-          <Grid item xs={12} sm={6} md={4} sx={{ width: '45%' }}>
+          <Grid item xs={12} sm={6} md={4} sx={{minWidth: {xs: '100%', sm: '100%', md: '45%'}}}>
             <Box sx={{ 
               height: '100%',
               display: 'flex',
@@ -1162,7 +1162,7 @@ function ResidentProposal() {
           </Grid>
           
           {/* Safety & Emergency */}
-          <Grid item xs={12} sm={6} md={4} sx={{ width: '45%' }}>
+          <Grid item xs={12} sm={6} md={4} sx={{minWidth: {xs: '100%', sm: '100%', md: '45%'}}}>
             <Box sx={{ 
               height: '100%',
               display: 'flex',

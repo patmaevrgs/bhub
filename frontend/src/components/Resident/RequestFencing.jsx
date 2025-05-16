@@ -226,7 +226,7 @@ function RequestFencing() {
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ mb: 3 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Full Name"
@@ -248,7 +248,7 @@ function RequestFencing() {
                 />
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: '370px'}}}>
                 <TextField
                   fullWidth
                   label="Residential Address"
@@ -267,11 +267,6 @@ function RequestFencing() {
                       </InputAdornment>
                     ),
                   }}
-                  sx={{ 
-                  '& .MuiInputBase-root': {
-                    width: '100%',
-                    minWidth: { xs: '290px', sm: '290px', md: '370px' }
-                  }}}
                 />
               </Grid>
             </Grid>
@@ -284,7 +279,7 @@ function RequestFencing() {
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ mb: 3 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Property Location in Barangay Maahas"
@@ -306,7 +301,7 @@ function RequestFencing() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Tax Declaration Number"
@@ -328,7 +323,7 @@ function RequestFencing() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: '230px'}}}>
                 <TextField
                   fullWidth
                   label="Property Identification Number"
@@ -347,15 +342,10 @@ function RequestFencing() {
                       </InputAdornment>
                     ),
                   }}
-                  sx={{ 
-                  '& .MuiInputBase-root': {
-                    width: '100%',
-                    minWidth: { xs: '230px', sm: '230px', md: '230px' }
-                  }}}
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Property Area"
@@ -378,7 +368,7 @@ function RequestFencing() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <FormControl 
                   fullWidth 
                   required

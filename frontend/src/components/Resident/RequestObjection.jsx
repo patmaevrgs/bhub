@@ -242,7 +242,7 @@ function RequestObjection() {
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ mb: 3 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Full Name"
@@ -264,7 +264,7 @@ function RequestObjection() {
                 />
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Address"
@@ -295,7 +295,7 @@ function RequestObjection() {
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ mb: 3 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <FormControl 
                   fullWidth 
                   required
@@ -326,7 +326,7 @@ function RequestObjection() {
                 </FormControl>
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   required
                   fullWidth
@@ -358,7 +358,7 @@ function RequestObjection() {
                 />
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   required
                   fullWidth

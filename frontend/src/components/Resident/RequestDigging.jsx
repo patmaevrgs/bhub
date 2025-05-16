@@ -237,7 +237,7 @@ function RequestDigging() {
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ mb: 3 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Full Name"
@@ -259,7 +259,7 @@ function RequestDigging() {
                 />
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Complete Address"
@@ -291,7 +291,7 @@ function RequestDigging() {
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ mb: 3 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <FormControl 
                   fullWidth 
                   required
@@ -321,7 +321,7 @@ function RequestDigging() {
                 </FormControl>
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: '410px'}}}>
                 <TextField
                   fullWidth
                   label="Company Name"
@@ -340,15 +340,10 @@ function RequestDigging() {
                       </InputAdornment>
                     ),
                   }}
-                  sx={{ 
-                  '& .MuiInputBase-root': {
-                    width: '100%',
-                    minWidth: { xs: '100%', sm: '100%', md: '400px' }
-                  }}}
                 />
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Connection/Application Details"

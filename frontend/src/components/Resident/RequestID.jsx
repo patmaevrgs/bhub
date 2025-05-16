@@ -264,7 +264,7 @@ function RequestID() {
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ mb: 3 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={4} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="First Name"
@@ -286,7 +286,7 @@ function RequestID() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={4} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Middle Name"
@@ -308,7 +308,7 @@ function RequestID() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={4}>
+              <Grid item xs={12} sm={4} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Last Name"
@@ -329,7 +329,7 @@ function RequestID() {
                   }}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Address in Maahas"
@@ -389,7 +389,7 @@ function RequestID() {
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ mb: 3 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Emergency Contact Name"
@@ -411,7 +411,7 @@ function RequestID() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Emergency Contact Number"

@@ -345,7 +345,7 @@ function ResidentRegistration() {
             justifyContent={{ xs: 'center', sm: 'flex-start' }} // Center grid on mobile
           >
             {/* Name fields */}
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={4} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
               <Box sx={{ display: 'flex', justifyContent: { xs: 'center', sm: 'flex-start' } }}>
                 <TextField
                   fullWidth
@@ -370,7 +370,7 @@ function ResidentRegistration() {
                 />
               </Box>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={4} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
               <Box sx={{ display: 'flex', justifyContent: { xs: 'center', sm: 'flex-start' } }}>
                 <TextField
                   fullWidth
@@ -394,7 +394,7 @@ function ResidentRegistration() {
                 />
               </Box>
             </Grid>
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={4} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
               <Box sx={{ display: 'flex', justifyContent: { xs: 'center', sm: 'flex-start' } }}>
                 <TextField
                   fullWidth
@@ -421,7 +421,7 @@ function ResidentRegistration() {
             </Grid>
             
             {/* Address field */}
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
               <Box sx={{ display: 'flex', justifyContent: { xs: 'center', sm: 'flex-start' } }}>
                 <TextField
                   fullWidth
@@ -449,7 +449,7 @@ function ResidentRegistration() {
             </Grid>
             
             {/* Precinct and Contact fields - ensure they're evenly spaced */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
               <Box sx={{ display: 'flex', justifyContent: { xs: 'center', sm: 'flex-start' } }}>
                 <TextField
                   fullWidth
@@ -474,7 +474,7 @@ function ResidentRegistration() {
               </Box>
             </Grid>
             
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
               <Box sx={{ display: 'flex', justifyContent: { xs: 'center', sm: 'flex-start' } }}>
                 <TextField
                   fullWidth
@@ -500,7 +500,7 @@ function ResidentRegistration() {
             </Grid>
             
             {/* Email field */}
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
               <Box sx={{ display: 'flex', justifyContent: { xs: 'center', sm: 'flex-start' } }}>
                 <TextField
                   fullWidth
@@ -527,7 +527,7 @@ function ResidentRegistration() {
             </Grid>
             
             {/* Categories dropdown - FIXED THE INPUT BOX WIDTH */}
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
               <Box sx={{ display: 'flex', justifyContent: { xs: 'center', sm: 'flex-start' }, width: '100%' }}>
                 <FormControl 
                   fullWidth
@@ -617,7 +617,7 @@ function ResidentRegistration() {
             </Grid>
             
             {/* Action buttons */}
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
               <Box sx={{ 
                 display: 'flex', 
                 justifyContent: 'center', // Always center buttons

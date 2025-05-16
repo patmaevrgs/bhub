@@ -636,7 +636,7 @@ const ResidentAmbulance = () => {
             </Box>
             
             <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Patient Full Name"
@@ -656,7 +656,7 @@ const ResidentAmbulance = () => {
                 />
               </Grid>
               
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Your Relation to Patient"
@@ -676,7 +676,7 @@ const ResidentAmbulance = () => {
                 />
               </Grid>
               
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Contact Number"
@@ -743,7 +743,7 @@ const ResidentAmbulance = () => {
                 />
               </Grid>
               
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={4} >
                 <TimePicker
                   label="Pickup Time"
                   value={formData.pickupTime}
@@ -763,7 +763,7 @@ const ResidentAmbulance = () => {
                 />
               </Grid>
               
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={4} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <FormControl 
                   fullWidth 
                   required 
@@ -791,7 +791,7 @@ const ResidentAmbulance = () => {
                 </FormControl>
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Pickup Address"
@@ -815,7 +815,7 @@ const ResidentAmbulance = () => {
                 />
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Destination"
@@ -867,7 +867,7 @@ const ResidentAmbulance = () => {
             </Box>
             
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Details of Emergency"
@@ -892,7 +892,7 @@ const ResidentAmbulance = () => {
                 />
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Additional Notes"

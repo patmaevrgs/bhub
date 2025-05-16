@@ -501,7 +501,7 @@ useEffect(() => {
               />
               
               <Grid container spacing={2} sx={{ mt: 1 }}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} >
                   <DatePicker
                     label="Reservation Date *"
                     value={formData.reservationDate}
@@ -521,7 +521,7 @@ useEffect(() => {
                 </Grid>
               </Grid>
               <Grid container spacing={2} sx={{ mt: 2.5 }}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: '150px'}}}>
                   <FormControl fullWidth required size="small">
                     <InputLabel id="duration-label">Duration</InputLabel>
                     <Select
@@ -540,7 +540,7 @@ useEffect(() => {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                   <TextField
                     required
                     fullWidth

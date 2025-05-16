@@ -349,7 +349,6 @@ const ResidentAnnouncements = () => {
                       src={getProperUrl(announcement.videos[0].path || announcement.videos[0])}
                       sx={{ 
                         height: '100%',
-                        maxWidth: '100%'
                       }}
                       image={announcement.videos[0].thumbnail ? getProperUrl(announcement.videos[0].thumbnail) : ''}
                     />

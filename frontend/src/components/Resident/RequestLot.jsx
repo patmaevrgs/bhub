@@ -253,7 +253,7 @@ function RequestLot() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Survey Number"
@@ -274,7 +274,7 @@ function RequestLot() {
                   }}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Lot Area"
@@ -297,7 +297,7 @@ function RequestLot() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <FormControl 
                   fullWidth 
                   required
@@ -326,7 +326,7 @@ function RequestLot() {
                 </FormControl>
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Property Location"
@@ -357,7 +357,7 @@ function RequestLot() {
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ mb: 3 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Owner Full Name"
@@ -379,7 +379,7 @@ function RequestLot() {
                 />
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: '300px'}}}>
                 <TextField
                   fullWidth
                   label="Owner Address"
@@ -398,10 +398,6 @@ function RequestLot() {
                       </InputAdornment>
                     ),
                   }}
-                  sx={{ 
-                  '& .MuiInputBase-root': {
-                    minWidth: '300px' // Adjust this value as needed
-                  }}}
                 />
               </Grid>
             </Grid>
@@ -415,7 +411,7 @@ function RequestLot() {
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ mb: 3 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   fullWidth
                   label="Purpose"

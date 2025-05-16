@@ -295,7 +295,7 @@ function RequestIndigency() {
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ mb: 3 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   required
                   fullWidth
@@ -318,7 +318,7 @@ function RequestIndigency() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   required
                   fullWidth
@@ -343,7 +343,7 @@ function RequestIndigency() {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <TextField
                   required
                   fullWidth
@@ -424,7 +424,7 @@ function RequestIndigency() {
               {/* Guardian fields - shown only if "Other" is selected */}
               {formData.isSelf !== true && (
                 <>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                     <TextField
                       required
                       fullWidth
@@ -447,7 +447,7 @@ function RequestIndigency() {
                     />
                   </Grid>
                   
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                     <FormControl 
                       fullWidth 
                       required 
@@ -494,7 +494,7 @@ function RequestIndigency() {
             <Divider sx={{ mb: 2 }} />
             <Box sx={{ mb: 3 }} />
             <Grid container spacing={3}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
                 <FormControl 
                   fullWidth 
                   required 

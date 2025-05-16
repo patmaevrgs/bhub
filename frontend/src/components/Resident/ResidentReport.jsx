@@ -513,7 +513,7 @@ function ResidentReport() {
           </Typography>
           <Box sx={{ mb: 3 }} />
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
               <TextField
                 fullWidth
                 label="Full Name"
@@ -534,7 +534,7 @@ function ResidentReport() {
                 }}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
               <TextField
                 fullWidth
                 label="Contact Number"
@@ -564,7 +564,7 @@ function ResidentReport() {
           </Typography>
           <Box sx={{ mb: 3 }} />
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
               <TextField
                 fullWidth
                 label="Location of Issue"
@@ -591,7 +591,7 @@ function ResidentReport() {
                   }}}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
               <TextField
                 fullWidth
                 label="Nearest Landmark"
@@ -626,7 +626,7 @@ function ResidentReport() {
           </Typography>
           <Box sx={{ mb: 3 }} />
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
               <TextField
                 select
                 fullWidth
@@ -658,7 +658,7 @@ function ResidentReport() {
                 ))}
               </TextField>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
               <TextField
                 fullWidth
                 label="Date of Observation"
@@ -683,7 +683,7 @@ function ResidentReport() {
                 }}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
               <TextField
                 fullWidth
                 label="Description of the Issue"
@@ -712,7 +712,7 @@ function ResidentReport() {
                   }}}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{minWidth: {xs: '100%', sm: '100%', md: 'auto'}}}>
               <TextField
                 fullWidth
                 label="Additional Comments/Suggestions"
