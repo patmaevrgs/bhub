@@ -795,14 +795,16 @@ const saveFooterData = async () => {
         imageUrl: imagePath
       };
       
+      let updatedOfficials;
       if (editingOfficialIndex >= 0) {
         // Update existing official
-        const updatedOfficials = [...officials];
+        updatedOfficials = [...officials];
         updatedOfficials[editingOfficialIndex] = officialWithImage;
         setOfficials(updatedOfficials);
       } else {
         // Add new official
-        setOfficials([...officials, officialWithImage]);
+        updatedOfficials = [...officials, officialWithImage];
+        setOfficials(updatedOfficials);
       }
       
       // Reset form and states
@@ -811,10 +813,10 @@ const saveFooterData = async () => {
       setSelectedOfficialImage(null);
       setOfficialImagePreview('');
       
-      // Important: Save the officials to backend right away
-      await saveOfficialsToBackend([...officials, officialWithImage]);
+      // FIXED: Use the updatedOfficials array instead of always appending
+      await saveOfficialsToBackend(updatedOfficials);
       
-      showAlert('Official added successfully!');
+      showAlert(editingOfficialIndex >= 0 ? 'Official updated successfully!' : 'Official added successfully!');
     } catch (error) {
       console.error('Error adding official:', error);
       showAlert('Error adding official. Please try again.', 'error');
