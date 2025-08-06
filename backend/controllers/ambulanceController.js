@@ -284,7 +284,7 @@ export const residentResponse = async (req, res) => {
   }
 };
 
-// Get all bookings for a calendar view (simplified data)
+// Get all bookings for a calendar view 
 export const getBookingsCalendar = async (req, res) => {
   try {
     const { month, year, startDate, endDate, view, start, end, userType } = req.query;
@@ -328,7 +328,7 @@ export const getBookingsCalendar = async (req, res) => {
       // Residents don't need to see patient details
       fieldsToSelect = 'pickupDate pickupTime duration status _id';
     } else {
-      // For admin and superadmin, show booked and completed (same behavior)
+      // For admin and superadmin, show booked and completed 
       statusFilter = { $in: ['booked', 'completed'] };
       // Admins can see all details
       fieldsToSelect = 'pickupDate pickupTime duration status patientName destination';
@@ -388,7 +388,7 @@ export const checkBookingConflict = async (req, res) => {
     } else if (duration === '4-6 hours') {
       newEndTimeMinutes += 360; // 6 hours in minutes
     } else if (duration === '6+ hours') {
-      newEndTimeMinutes += 480; // 8 hours as a reasonable estimate for 6+ hours
+      newEndTimeMinutes += 480; // 8 hours as estimate for 6+ hours
     }
     
     // Check for overlaps with each existing booking
@@ -410,8 +410,6 @@ export const checkBookingConflict = async (req, res) => {
       }
       
       // Check if time ranges overlap
-      // Two time ranges overlap if one range's start is before the other's end
-      // AND one range's end is after the other's start
       return (
         (newStartTimeMinutes < existingEndTimeMinutes) && 
         (newEndTimeMinutes > existingStartTimeMinutes)

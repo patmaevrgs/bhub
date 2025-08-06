@@ -97,7 +97,7 @@ import { generateDocument } from './controllers/documentGeneratorController.js';
 
 const router = Router();
 
-// Set up multer for memory storage (we'll handle file saving in controller)
+// Set up multer for memory storage 
 const storage = multer.memoryStorage();
 const upload = multer({ 
   storage: storage,
@@ -130,7 +130,7 @@ router.post('/logout', logout);
 // User Profile Routes
 router.get('/profile', getUserProfile);
 router.put('/profile/update', (req, res, next) => {
-  // Extract token from cookie for backward compatibility
+  // Extract token from cookie
   if (req.cookies && req.cookies.authToken && !req.headers.authorization) {
     req.headers.authorization = `Bearer ${req.cookies.authToken}`;
   }
@@ -138,7 +138,7 @@ router.put('/profile/update', (req, res, next) => {
 }, updateUserProfile);
 
 router.put('/profile/password', (req, res, next) => {
-  // Extract token from cookie for backward compatibility
+  // Extract token from cookie 
   if (req.cookies && req.cookies.authToken && !req.headers.authorization) {
     req.headers.authorization = `Bearer ${req.cookies.authToken}`;
   }
@@ -173,7 +173,7 @@ router.get('/court/:id', getCourtReservationById);
 router.patch('/court/:id/status', updateCourtReservationStatus);
 router.patch('/court/:id/cancel', cancelCourtReservation);
 router.get('/court-calendar', getCourtReservationsCalendar);
-router.get('/court-conflict', checkReservationConflict); // This endpoint doesn't need auth
+router.get('/court-conflict', checkReservationConflict); 
 
 // Transaction Routes
 router.post('/transactions', createTransaction);
@@ -184,7 +184,7 @@ router.patch('/transactions/:id/status', updateTransactionStatus);
 // Infrastructure Report Routes
 router.post('/reports', upload.array('media', 5), createReport); 
 router.get('/reports', getAllReports); 
-router.get('/reports/user', getUserReports); // This is the route causing the 500 error
+router.get('/reports/user', getUserReports); 
 router.put('/reports/:reportId/status', updateReportStatus); 
 router.post('/reports/:reportId/feedback', addResidentFeedback);
 router.put('/reports/:reportId/cancel', cancelReport);

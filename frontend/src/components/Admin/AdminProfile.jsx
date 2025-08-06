@@ -16,8 +16,7 @@ import {
   InputAdornment
 } from '@mui/material';
 import { Visibility, VisibilityOff, Edit } from '@mui/icons-material';
-import Cookies from 'universal-cookie'; // Import Cookies
-// Add these additional imports to your existing imports:
+import Cookies from 'universal-cookie'; 
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';

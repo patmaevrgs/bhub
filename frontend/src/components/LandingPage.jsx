@@ -40,7 +40,7 @@ import { alpha } from '@mui/material/styles';
 import { Link as RouterLink } from 'react-router-dom';
 import API_BASE_URL from '../config';
 
-// Ultra Fast Lightweight Carousel - Optimized for immediate display
+// Carousel
 function SimpleCarousel({ images }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(0);
@@ -51,7 +51,6 @@ function SimpleCarousel({ images }) {
     return imagePath.startsWith('http') ? imagePath : `${API_BASE_URL}${imagePath}`;
   };
 
-  // Auto-advance with simple state update (more efficient)
   useEffect(() => {
     if (!images || images.length <= 1) return;
     
@@ -62,7 +61,7 @@ function SimpleCarousel({ images }) {
     return () => clearInterval(interval);
   }, [images]);
   
-  // Simple arrow navigation
+  // Arrow navigation
   const goToNext = (e) => {
     e.stopPropagation();
     if (!images || images.length <= 1) return;
@@ -130,7 +129,7 @@ function SimpleCarousel({ images }) {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Static image - no animations or fancy transitions for speed */}
+      {/* Static image */}
       <Box
         component="img"
         src={getProperImageUrl(images[currentIndex]?.path || '')}
@@ -172,7 +171,7 @@ function SimpleCarousel({ images }) {
         </Box>
       )}
       
-      {/* Simple Arrow Navigation - No SVG or complex styling */}
+      {/* Arrow Navigation */}
       {images.length > 1 && (
         <>
           {/* Left Arrow */}
@@ -321,7 +320,7 @@ function LandingPage() {
       }
       const data = await response.json();
       setHomepageContent(data);
-      console.log("Homepage content loaded:", data); // Debug log
+      console.log("Homepage content loaded:", data); 
     } catch (error) {
       console.error('Error fetching homepage content:', error);
     } finally {
@@ -533,7 +532,7 @@ function LandingPage() {
                     sx={{ 
                       display: 'flex', 
                       flexDirection: 'column',
-                      height: 300, // Increased height to accommodate content
+                      height: 300, 
                       transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
                       '&:hover': {
                         transform: 'translateY(-4px)',
@@ -623,13 +622,12 @@ function LandingPage() {
                           display: '-webkit-box',
                           WebkitLineClamp: 2,
                           WebkitBoxOrient: 'vertical',
-                          mb: 2, // Add bottom margin to separate from button
+                          mb: 2, 
                         }}
                       >
                         {announcement.content}
                       </Typography>
                       
-                      {/* The button is now part of the card content with margin-top:auto to push it to the bottom */}
                       <Button 
                         component={RouterLink} 
                         to={`/announcements#${announcement._id}`}
@@ -654,7 +652,7 @@ function LandingPage() {
               )}
             </Box>
             
-            {/* "View All Announcements" button with proper alignment */}
+            {/* "View All Announcements" button */}
             <Box sx={{ 
               display: 'flex',
               justifyContent: 'flex-start',
@@ -685,9 +683,8 @@ function LandingPage() {
             </Box>
           </Box>
 
-          {/* Side-by-side Summary Data and Emergency Hotlines with equal width */}
+          {/* Side-by-side Summary Data and Emergency Hotlines */}
           <Grid container spacing={4} sx={{ mb: 5 }}>
-            {/* First make sure the About section is full width */}
             <Grid item xs={12}>
               <Paper sx={{ 
                 p: 3, 
@@ -774,7 +771,7 @@ function LandingPage() {
               </Paper>
             </Grid>
             
-            {/* Second row: Summary Data and Emergency Hotlines - FORCE FULL WIDTH */}
+            {/* Second row: Summary Data and Emergency Hotlines */}
             <Box 
               sx={{ 
                 width: '100%', 
@@ -943,7 +940,7 @@ function LandingPage() {
               </Box>
               </Box>
           </Grid>
-          {/* Full Width Barangay Location - with consistent styling */}
+          {/* Full Width Barangay Location */}
           <Paper sx={{ 
             p: 3, 
             mb: 5,

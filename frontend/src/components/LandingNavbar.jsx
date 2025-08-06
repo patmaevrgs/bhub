@@ -26,7 +26,6 @@ import MiscellaneousServicesIcon from '@mui/icons-material/MiscellaneousServices
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import bhubLogo from '../assets/bhub-logo.png';
 
-// Styled components for better readability
 const NavLink = styled(Link)(({ theme, active }) => ({
   textDecoration: 'none',
   color: active === 'true' ? theme.palette.primary.main : theme.palette.text.primary,
@@ -146,7 +145,7 @@ export default function LandingNavbar() {
             />
           </Box>
 
-          {/* Desktop Navigation - Centered */}
+          {/* Desktop Navigation */}
           {!isMobile && (
             <Box sx={{ 
               position: 'absolute',

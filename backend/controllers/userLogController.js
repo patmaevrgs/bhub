@@ -22,12 +22,11 @@ export const createLog = async (req, res) => {
   }
 };
 
-// Get all logs with optional filtering
+// Get all logs 
 export const getLogs = async (req, res) => {
   try {
     const { startDate, endDate, adminName, action, entityType, serviceId } = req.query;
     
-    // Build filter object based on query parameters
     const filter = {};
     
     // Date range filter
@@ -50,7 +49,7 @@ export const getLogs = async (req, res) => {
     if (serviceId) {
       filter.details = { 
         $regex: serviceId, 
-        $options: 'i'  // case insensitive
+        $options: 'i'  
       };
     }
 

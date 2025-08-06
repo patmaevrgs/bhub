@@ -614,7 +614,7 @@ function SignUp() {
             )}
           </Button>
           
-          {/* Optional social login section - can be hidden on smallest screens if desired */}
+          {/* Optional social login section*/}
           <Box sx={{ display: { xs: 'block', sm: 'block' } }}>
             <Divider sx={{ my: 3 }}>
               <Typography variant="body2" sx={{ color: 'text.secondary', px: 1 }}>

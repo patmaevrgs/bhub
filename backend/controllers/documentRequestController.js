@@ -78,12 +78,11 @@ export const createDocumentRequest = async (req, res) => {
   }
 };
 
-// Get all document requests with optional filtering
+// Get all document requests 
 export const getDocumentRequests = async (req, res) => {
   try {
     const { userId, documentType, status, startDate, endDate } = req.query;
     
-    // Build filter object based on query parameters
     const filter = {};
     
     // User filter
@@ -158,7 +157,7 @@ export const updateDocumentRequestStatus = async (req, res) => {
     const { id } = req.params;
     const { status, adminComment, adminName } = req.body;
     
-    // Get admin ID from authenticated user
+    // Get admin ID
     const adminId = req.userId;
     
     // Validate status
@@ -287,9 +286,9 @@ export const cancelDocumentRequest = async (req, res) => {
         });
       }
       
-      // Update status to cancelled with clear resident cancellation indicator
+      // Update status to cancelled 
       documentRequest.status = 'cancelled';
-      // Make it very clear this was cancelled by a resident
+      // Clear that this was cancelled by a resident
       documentRequest.adminComment = cancellationReason 
         ? `Cancelled by resident: ${cancellationReason}` 
         : 'Cancelled by resident';
@@ -329,7 +328,7 @@ export const cancelDocumentRequest = async (req, res) => {
     }
   };
 
-// Helper function to create a transaction from a document request
+// Create a transaction from a document request
 export const createTransactionFromDocumentRequest = async (documentRequestId) => {
   try {
     const documentRequest = await DocumentRequest.findById(documentRequestId);
@@ -370,7 +369,6 @@ export const createTransactionFromDocumentRequest = async (documentRequestId) =>
       };
       existingTransaction.adminComment = documentRequest.adminComment;
       
-      // Make sure processedBy is updated
       if (documentRequest.processedBy) {
         existingTransaction.processedBy = documentRequest.processedBy;
       }
@@ -385,7 +383,7 @@ export const createTransactionFromDocumentRequest = async (documentRequestId) =>
       userId: documentRequest.userId,
       serviceType: 'document_request',
       status: transactionStatus,
-      amount: 0, // Most barangay documents are free or minimal fee
+      amount: 0, 
       details: {
         documentType: documentRequest.documentType,
         purpose: documentRequest.purpose,

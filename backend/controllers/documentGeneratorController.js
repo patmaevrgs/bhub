@@ -1,4 +1,3 @@
-// controllers/documentGeneratorController.js
 import fs from 'fs';
 import path from 'path';
 import PizZip from 'pizzip';
@@ -217,7 +216,7 @@ export const generateDocument = async (req, res) => {
       };
     }
     else if (documentType === 'lot_ownership') {
-      // Get area unit in readable format
+      // Get area unit
       const areaUnitText = (() => {
         switch(formData.areaUnit) {
           case 'square_meters': 
@@ -245,7 +244,7 @@ export const generateDocument = async (req, res) => {
     }
     
     else if (documentType === 'fencing_permit') {
-      // Get area unit in readable format
+      // Get area unit
       const areaUnitText = (() => {
         switch(formData.areaUnit) {
           case 'square_meters': 
@@ -263,13 +262,12 @@ export const generateDocument = async (req, res) => {
         ...data,
         fullName: formData.fullName || '',
         residentAddress: formData.residentAddress || '',
-        propertyLocation: formData.propertyLocation || '', // Changed from propertyAddress
+        propertyLocation: formData.propertyLocation || '', 
         taxDeclarationNumber: formData.taxDeclarationNumber || '',
         propertyIdentificationNumber: formData.propertyIdentificationNumber || '',
         propertyArea: formData.propertyArea || '',
         areaUnit: areaUnitText,
         signedDate: signedDate
-        // The purpose is fixed as "installation of Fence" in the template
       };
     }
     else if (documentType === 'digging_permit') {
@@ -358,7 +356,7 @@ export const generateDocument = async (req, res) => {
     }
 
     else if (documentType === 'no_objection_certificate') {
-      // Format the purpose text based on the object type
+      // Format the purpose text 
       const purposeText = purpose || 'will proceed with the stated activity. This office has no objection as part of local permitting requirements.';
       
       data = {
@@ -371,7 +369,7 @@ export const generateDocument = async (req, res) => {
     }
 
     else if (documentType === 'barangay_id') {
-      // Allow admin to update the ID number value through the req.body
+      // Allow admin to update the ID number value
       const idNumber = req.body.idNumber || '';
       
       data = {

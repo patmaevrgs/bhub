@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 const API_URL = process.env.API_URL || 'http://localhost:3002';
 
-// Get all users (for admin dashboard)
+// Get all users 
 const getAllUsers = async (req, res) => {
   try {
     // Check for authentication in multiple places
@@ -125,7 +125,7 @@ const updateUserType = async (req, res) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // Include cookies
+        credentials: 'include', 
         body: JSON.stringify({
           action: `Updated user type`,
           adminId: adminId,
@@ -152,7 +152,7 @@ const updateUserType = async (req, res) => {
 // Get profile of the currently logged-in user
 const getUserProfile = async (req, res) => {
   try {
-    // First try authorization header (more reliable for mobile)
+    // First try authorization header (for mobile)
     let token = null;
     let userId = null;
     

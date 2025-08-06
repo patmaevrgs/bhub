@@ -85,14 +85,14 @@ export const createReport = async (req, res) => {
     const transaction = new Transaction({
       userId,
       serviceType: 'infrastructure_report',
-      status: 'pending', // This is correct - lowercase matches Transaction model
+      status: 'pending', 
       details: {
         reportId: savedReport._id,
         issueType: savedReport.issueType,
         location: savedReport.location,
         description: savedReport.description
       },
-      referenceId: savedReport._id // This was missing - add the reportId as referenceId
+      referenceId: savedReport._id 
     });
     
     await transaction.save();
@@ -217,7 +217,6 @@ export const updateReportStatus = async (req, res) => {
       const logAction = 'UPDATE_REPORT_STATUS';
       const logDetails = `Updated infrastructure report status from ${previousStatus} to ${status}. Report Type: ${report.issueType}, Location: ${report.location} (Service ID: ${report.serviceId || reportId})`;
       
-      // Using axios would be more appropriate, but we'll create a direct call to your API
       await createAdminLog(adminName, logAction, logDetails, report.serviceId || reportId);
     }
     
@@ -309,7 +308,6 @@ export const cancelReport = async (req, res) => {
     });
   }
 };
-
 
 export const getReportById = async (req, res) => {
   try {

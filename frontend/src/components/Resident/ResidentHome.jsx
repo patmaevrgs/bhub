@@ -40,7 +40,7 @@ import { alpha } from '@mui/material/styles';
 import { Link as RouterLink } from 'react-router-dom';
 import API_BASE_URL from '../../config';
 
-// Ultra Fast Lightweight Carousel - Optimized for immediate display
+// Carousel
 function SimpleCarousel({ images }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(0);
@@ -51,7 +51,6 @@ function SimpleCarousel({ images }) {
     return imagePath.startsWith('http') ? imagePath : `${API_BASE_URL}${imagePath}`;
   };
   
-  // Auto-advance with simple state update (more efficient)
   useEffect(() => {
     if (!images || images.length <= 1) return;
     

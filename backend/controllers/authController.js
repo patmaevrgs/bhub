@@ -34,7 +34,7 @@ const signUp = async (req, res) => {
         // Handle any other errors that might occur
         console.error("SignUp error:", error);
         
-        // Check if it's a MongoDB duplicate key error (another way to catch duplicates)
+        // Check if it's a MongoDB duplicate key error 
         if (error.code === 11000) {
             return res.status(409).json({ 
                 success: false, 
@@ -81,7 +81,7 @@ const login = async (req, res) => {
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   });
 
-  // Also return the token in the response for client-side storage if needed
+  // Also return the token in the response for client-side storage
   return res.send({ 
     success: true, 
     userType: user.userType, 
@@ -170,15 +170,13 @@ const logout = async (req, res) => {
     const authToken = req.cookies.authToken || 
                      (req.headers.authorization && req.headers.authorization.split(' ')[1]);
     
-    // Clear the authentication cookie - IMPORTANT: Updated settings for cross-domain cookies
+    // Clear the authentication cookie 
     res.clearCookie('authToken', {
       path: '/',
       httpOnly: true,
-      secure: true, // Always use secure for cross-domain cookies
-      sameSite: 'None' // Required for cross-domain cookies
+      secure: true, 
+      sameSite: 'None' 
     });
-    
-    // If you're using other cookies, clear them too using the same settings
     
     return res.status(200).json({
       success: true,

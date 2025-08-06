@@ -18,7 +18,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Enable trust proxy - add this EARLY
+// Enable trust proxy
 app.enable('trust proxy');
 
 app.use(express.json());
@@ -40,7 +40,7 @@ mongoose.connect(MONGODB_URI, {
   console.error('MongoDB connection error:', err);
 });
 
-// CORS configuration - keep only ONE CORS setup
+// CORS configuration
 const allowedOrigins = [
   FRONTEND_URL,
   'https://bhub-maahas.netlify.app',
@@ -57,7 +57,7 @@ app.use(cors({
     }
     return callback(null, true);
   },
-  credentials: true, // This is essential for cookies to work cross-origin
+  credentials: true, 
   exposedHeaders: ['set-cookie'] // Expose cookie headers
 }));
 
@@ -69,7 +69,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Set secure cookie settings for ALL environments, not just production
+// Set secure cookie settings for all environments
 app.use((req, res, next) => {
   res.originalCookie = res.cookie;
   res.cookie = function(name, value, options) {
@@ -78,8 +78,6 @@ app.use((req, res, next) => {
       sameSite: 'None',
       secure: true,
       httpOnly: options?.httpOnly !== false,
-      // Don't set domain explicitly unless you have a specific reason
-      // as it can cause issues with subdomains
       path: options?.path || '/'
     };
     return res.originalCookie(name, value, enhancedOptions);

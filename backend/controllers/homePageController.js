@@ -2,7 +2,7 @@ import HomepageContent from '../models/HomepageContent.js';
 import UserLog from '../models/UserLog.js';
 import { uploadFile, deleteFile } from '../supabaseUpload.js';
 
-// Helper function to log admin actions
+// Log admin actions
 const logAdminAction = async (adminName, action, details, entityId = null, entityType = 'Other') => {
     try {
       // Check if entityType is valid
@@ -32,7 +32,7 @@ const logAdminAction = async (adminName, action, details, entityId = null, entit
       return true;
     } catch (error) {
       console.warn('Error creating log entry:', error);
-      return false; // Return false instead of throwing, so we don't break the main operation
+      return false; // Return false instead of throwing
     }
   };
 
@@ -182,7 +182,6 @@ export const updateEmergencyHotlines = async (req, res) => {
         homepageContent = await HomepageContent.createDefaultIfNone();
       }
       
-      // Make sure we're replacing the entire array, not trying to merge
       homepageContent.emergencyHotlines = [...emergencyHotlines];
       homepageContent.lastUpdatedBy = adminName;
       homepageContent.lastUpdatedAt = new Date();
@@ -201,7 +200,7 @@ export const updateEmergencyHotlines = async (req, res) => {
           'UPDATE_HOMEPAGE_HOTLINES',
           `Updated emergency hotlines (${emergencyHotlines.length} hotlines)`,
           homepageContent._id,
-          'Other' // Use 'Other' instead of 'HomepageContent'
+          'Other'
         );
       } catch (logError) {
         console.warn('Error creating log entry:', logError);
@@ -273,12 +272,11 @@ export const updateOfficials = async (req, res) => {
         homepageContent = await HomepageContent.createDefaultIfNone();
       }
       
-      // Important: Make sure we're replacing the entire array, not trying to merge
       homepageContent.officials = [...officials];
       homepageContent.lastUpdatedBy = adminName;
       homepageContent.lastUpdatedAt = new Date();
       
-      // Save and verify changes
+      // Save changes
       await homepageContent.save();
       
       // Verify data was saved by retrieving it again
@@ -286,13 +284,13 @@ export const updateOfficials = async (req, res) => {
       console.log("Saved officials count:", updatedContent.officials.length);
       
       try {
-        // Try to log the action
+        // Log the action
         await logAdminAction(
           adminName,
           'UPDATE_HOMEPAGE_OFFICIALS',
           `Updated barangay officials (${officials.length} officials)`,
           homepageContent._id,
-          'Other' // Use 'Other' instead of 'HomepageContent'
+          'Other' 
         );
       } catch (logError) {
         console.warn('Error creating log entry:', logError);
@@ -309,7 +307,7 @@ export const updateOfficials = async (req, res) => {
 export const uploadCarouselImages = async (req, res) => {
   try {
     console.log('Request body:', req.body); // Debug log
-    console.log('Request files:', req.files ? req.files.length : 'No files'); // Debug log
+    console.log('Request files:', req.files ? req.files.length : 'No files'); 
     
     // Default to 'Unknown Admin' if adminName is missing
     const adminName = req.body?.adminName || 'Unknown Admin';
@@ -458,14 +456,14 @@ export const uploadOfficialImage = async (req, res) => {
       
       console.log("Image saved, path:", publicUrl);
       
-      // Try to log action, but don't fail if logging fails
+      // Log action
       try {
         await logAdminAction(
           adminName,
           'UPLOAD_OFFICIAL_IMAGE',
           `Uploaded image for official: ${req.file.originalname}`,
           null,
-          'Other' // Use 'Other' instead of 'HomepageContent' to avoid validation issues
+          'Other'
         );
       } catch (logError) {
         console.warn('Error logging official image upload:', logError);
@@ -479,7 +477,7 @@ export const uploadOfficialImage = async (req, res) => {
     }
   };
 
-// Update footer data (continued)
+// Update footer data 
 export const updateFooterData = async (req, res) => {
   try {
     const { footerData, adminName } = req.body;

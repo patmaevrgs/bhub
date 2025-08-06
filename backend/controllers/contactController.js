@@ -25,7 +25,6 @@ export const createContactMessage = async (req, res) => {
 
     await contactMessage.save();
 
-    // Optional: Send email notification to admin
     try {
       const transporter = nodemailer.createTransporter({
         service: 'gmail',
@@ -83,7 +82,7 @@ export const getContactMessages = async (req, res) => {
     
     let query = {};
     
-    // Filter by status if provided
+    // Filter by status
     if (status) {
       query.status = status;
     }

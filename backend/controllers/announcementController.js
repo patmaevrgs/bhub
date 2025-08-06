@@ -2,7 +2,7 @@ import Announcement from '../models/Announcement.js';
 import UserLog from '../models/UserLog.js';
 import { uploadFile, deleteFile } from '../supabaseUpload.js';
 
-// Helper function to log admin actions
+// Log Admin actions
 const logAdminAction = async (adminName, action, details, entityId = null, entityType = 'Announcement') => {
   try {
     // Check if entityId is a MongoDB ObjectId or a service ID string
@@ -13,7 +13,7 @@ const logAdminAction = async (adminName, action, details, entityId = null, entit
       action,
       details,
       timestamp: new Date(),
-      entityType, // Add the entity type parameter
+      entityType, 
       // Set the appropriate ID field based on the ID format
       ...(isMongoId ? { mongoId: entityId, entityType } : { entityId: entityId || 'N/A' })
     });
@@ -87,7 +87,7 @@ export const createAnnouncement = async (req, res) => {
       'CREATE_ANNOUNCEMENT', 
       `Created announcement "${title || 'Brgy Maahas Update'}: ${content.substring(0, 30)}..."${fileInfo}`,
       newAnnouncement._id,
-      'Announcement' // Add the entity type here
+      'Announcement' 
     );
     
     res.status(201).json(newAnnouncement);
@@ -142,7 +142,7 @@ export const deleteAnnouncement = async (req, res) => {
       'DELETE_ANNOUNCEMENT', 
       `Deleted announcement "${announcement.title}: ${announcement.content.substring(0, 30)}..."`,
       id,
-      'Announcement' // Add the entity type here
+      'Announcement' 
     );
     
     res.status(200).json({ message: 'Announcement deleted' });
@@ -249,7 +249,7 @@ export const updateAnnouncement = async (req, res) => {
       'UPDATE_ANNOUNCEMENT', 
       `Updated announcement "${updatedAnnouncement.title}: ${content.substring(0, 30)}..." - ${fileInfo}`,
       id,
-      'Announcement' // Add the entity type here
+      'Announcement' 
     );
   
     res.status(200).json(updatedAnnouncement);

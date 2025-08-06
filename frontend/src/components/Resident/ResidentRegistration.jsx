@@ -36,7 +36,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import API_BASE_URL from '../../config';
 
-// Resident type options - keeping original values
+// Resident type options 
 const residentTypes = ['Minor', '18-30', 'Illiterate', 'PWD', 'Senior Citizen', 'Indigent'];
 
 function ResidentRegistration() {
@@ -44,7 +44,7 @@ function ResidentRegistration() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   
-  // State variables - keeping only the original fields
+  // State variables 
   const [formData, setFormData] = useState({
     firstName: '',
     middleName: '',

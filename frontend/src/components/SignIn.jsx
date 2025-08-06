@@ -45,7 +45,6 @@ export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // Add these state variables at the top with your other useState declarations
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [formError, setFormError] = useState('');
@@ -105,7 +104,7 @@ export default function SignIn() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
-      credentials: 'include'  // Keep this for cookies
+      credentials: 'include'  
     });
     
     const body = await response.json();
@@ -117,7 +116,7 @@ export default function SignIn() {
       localStorage.setItem('lastName', body.lastName);
       localStorage.setItem('email', body.email);
       
-      // IMPORTANT: Always store token in localStorage for mobile compatibility
+      // Store token in localStorage for mobile compatibility
       if (body.token) {
         localStorage.setItem('authToken', body.token);
         // Also add to Authorization header for future requests
@@ -181,7 +180,7 @@ export default function SignIn() {
       }}
     />
 
-    {/* Left side - Image and branding */}
+    {/* Left side */}
     {!isMobile && (
       <Box
         sx={{
@@ -256,7 +255,6 @@ export default function SignIn() {
               zIndex: 3,
             }}
           >
-            {/* Logo at top left */}
             {/* Logo with contrasting background */}
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
               <Box 
@@ -402,7 +400,7 @@ export default function SignIn() {
         </Box>
       </Box>
     )}
-    {/* Right side - Login form */}
+    {/* Right side */}
     <Box
       sx={{
         width: isMobile ? '100%' : '50%',
@@ -665,7 +663,6 @@ export default function SignIn() {
       </Box>
     </Box>
       {/* Error Dialog */}
-      {/* Enhanced Error Dialog */}
 <Dialog
   open={showErrorDialog}
   onClose={() => setShowErrorDialog(false)}

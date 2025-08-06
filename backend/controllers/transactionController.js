@@ -33,12 +33,11 @@ export const createTransaction = async (req, res) => {
   }
 };
 
-// Get all transactions with optional filtering
+// Get all transactions 
 export const getTransactions = async (req, res) => {
   try {
     const { userId, serviceType, status, startDate, endDate } = req.query;
     
-    // Build filter object based on query parameters
     const filter = {};
     
     // User filter
@@ -159,7 +158,6 @@ export const updateTransactionStatus = async (req, res) => {
 };
 
 // Create a transaction from an ambulance booking
-// Create a transaction from an ambulance booking
 export const createTransactionFromBooking = async (bookingId) => {
   try {
     const booking = await AmbulanceBooking.findById(bookingId);
@@ -172,7 +170,7 @@ export const createTransactionFromBooking = async (bookingId) => {
     let transactionStatus;
     switch(booking.status) {
       case 'booked':
-        transactionStatus = 'approved'; // Map 'booked' in ambulance to 'approved' in transactions
+        transactionStatus = 'approved'; 
         break;
       case 'pending':
         transactionStatus = 'pending';
@@ -224,7 +222,7 @@ export const createTransactionFromBooking = async (bookingId) => {
       userId: booking.bookedBy,
       serviceType: 'ambulance_booking',
       status: transactionStatus,
-      amount: 0, // Free service
+      amount: 0, 
       details: {
         patientName: booking.patientName,
         pickupDate: booking.pickupDate,

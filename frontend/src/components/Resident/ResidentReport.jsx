@@ -5,7 +5,6 @@ import {
   FormControl, FormLabel, RadioGroup, FormControlLabel, Radio
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
-// Add these imports to the top of your file
 import LocationIcon from '@mui/icons-material/LocationOn';
 import PlaceIcon from '@mui/icons-material/Place';
 import EventIcon from '@mui/icons-material/Event';
@@ -23,7 +22,6 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined';
 import AlertTitle from '@mui/material/AlertTitle';
 import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
-// Add these imports near your other imports
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';

@@ -22,7 +22,7 @@ const createAdminLog = async (adminName, action, details, entityId, entityType =
   }
 };
 
-// Helper functions for court logging
+// For court logging
 const getCourtLogActionType = (status) => {
   switch (status) {
     case 'approved': return 'COURT_RESERVATION_APPROVED';
@@ -32,7 +32,7 @@ const getCourtLogActionType = (status) => {
   }
 };
 
-// Helper to get the correct verb based on status change
+// Get the correct verb based on status change
 const getStatusActionVerb = (newStatus, oldStatus) => {
   switch (newStatus) {
     case 'approved': return 'Approved';
@@ -127,7 +127,7 @@ export const createCourtReservation = async (req, res) => {
     // Save the reservation
     const savedReservation = await newReservation.save();
 
-    // Create transaction (optional, but recommended)
+    // Create transaction 
     const amount = calculateAmount(startTime, duration);
     const newTransaction = new Transaction({
       userId: userId,
@@ -146,7 +146,6 @@ export const createCourtReservation = async (req, res) => {
 
     await newTransaction.save();
     
-    // Send successful response
     res.status(201).json({
       success: true,
       reservation: savedReservation,
@@ -162,7 +161,7 @@ export const createCourtReservation = async (req, res) => {
   }
 };
 
-// Helper function to calculate amount (free in morning, 200 PHP/hour after 6PM)
+// Calculate amount (free in morning, 200 PHP/hour after 6PM)
 const calculateAmount = (startTime, duration) => {
   const hour = parseInt(startTime.split(':')[0]);
   
@@ -174,12 +173,11 @@ const calculateAmount = (startTime, duration) => {
   return 0;
 };
 
-// Get all court reservations with optional filtering
+// Get all court reservations 
 export const getCourtReservations = async (req, res) => {
   try {
     const { userId, status, startDate, endDate } = req.query;
     
-    // Build filter object
     const filter = {};
     
     // User filter
@@ -253,7 +251,7 @@ export const updateCourtReservationStatus = async (req, res) => {
       reqUserId: req.userId 
     });
     
-    // Get admin ID from authenticated user or request body
+    // Get admin ID
     const processedBy = req.userId || adminId;
     
     // Validate status
@@ -306,7 +304,7 @@ export const updateCourtReservationStatus = async (req, res) => {
     }
     reservation.updatedAt = Date.now();
     
-    // Save with detailed error handling
+    // Save
     try {
       await reservation.save();
       console.log('Reservation saved successfully');
@@ -361,11 +359,9 @@ export const updateCourtReservationStatus = async (req, res) => {
         console.log('Transaction updated successfully with status:', transactionStatus);
       } catch (transactionSaveError) {
         console.error('Error saving transaction:', transactionSaveError);
-        // Non-critical error, so we'll continue
       }
     } else {
       console.log('No transaction found for court reservation:', id);
-      // Create a new transaction if none exists
       
       // Determine transaction status based on court reservation status
       let transactionStatus;
@@ -397,7 +393,6 @@ export const updateCourtReservationStatus = async (req, res) => {
         console.log('New transaction created successfully with status:', transactionStatus);
       } catch (newTransactionError) {
         console.error('Error creating new transaction:', newTransactionError);
-        // Non-critical error, so we'll continue
       }
     }
     
@@ -418,13 +413,12 @@ export const updateCourtReservationStatus = async (req, res) => {
 };
 
 // Cancel a court reservation (for resident use)
-// Cancel a court reservation (for resident use)
 export const cancelCourtReservation = async (req, res) => {
     try {
       const { id } = req.params;
-      const { userId } = req.body; // Get userId from request body
+      const { userId } = req.body;
       
-      // Get user ID from authenticated user or request body
+      // Get user ID 
       const bookedBy = req.userId || userId;
       
       if (!bookedBy) {
@@ -477,7 +471,6 @@ export const cancelCourtReservation = async (req, res) => {
         await transaction.save();
       }
       
-      // Send a successful response
       res.status(200).json({ 
         success: true, 
         message: 'Court reservation cancelled successfully',
@@ -493,7 +486,6 @@ export const cancelCourtReservation = async (req, res) => {
     }
   };
 
-// Get court reservations calendar data
 // Get court reservations calendar data
 export const getCourtReservationsCalendar = async (req, res) => {
   try {
@@ -526,7 +518,7 @@ export const getCourtReservationsCalendar = async (req, res) => {
     
     console.log(`Found ${reservations.length} reservations for calendar`);
     
-    // Format for calendar - IMPROVED FORMATTING
+    // Format for calendar 
     const calendarData = reservations.map(reservation => {
       // Parse the reservation date and time properly
       const reservationDate = reservation.reservationDate;
@@ -563,10 +555,10 @@ export const getCourtReservationsCalendar = async (req, res) => {
       return {
         id: reservation._id,
         title,
-        start: startDateTime.toISOString(), // Full ISO format with time
-        end: endDateTime.toISOString(),     // Full ISO format with time
+        start: startDateTime.toISOString(), 
+        end: endDateTime.toISOString(),     
         status: reservation.status,
-        allDay: false                        // Explicitly mark as not all-day
+        allDay: false                        
       };
     });
     
@@ -612,7 +604,7 @@ export const checkReservationConflict = async (req, res) => {
     
     console.log(`Found ${conflictingReservations.length} reservations on the same day`);
     
-    // Check for time conflicts using JavaScript instead of MongoDB query operators
+    // Check for time conflicts 
     const newStartMinutes = hours * 60 + minutes;
     const newEndMinutes = newStartMinutes + (durationHours * 60);
     
@@ -649,7 +641,7 @@ export const checkReservationConflict = async (req, res) => {
       success: false, 
       message: 'Error checking reservation conflict', 
       error: error.message,
-      hasConflict: true  // Default to conflict on error (safer)
+      hasConflict: true 
     });
   }
 };

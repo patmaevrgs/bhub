@@ -56,10 +56,10 @@ function ResidentRoot() {
         headers: headers
       });
       
-      // Clear ALL localStorage items to ensure complete logout
+      // Clear all localStorage items for logout
       localStorage.clear();
       
-      // For safety, explicitly remove important items
+      // For safety, explicitly remove
       localStorage.removeItem('token');
       localStorage.removeItem('userType');
       localStorage.removeItem('firstName');
@@ -90,11 +90,11 @@ function ResidentRoot() {
 
       {/* Responsive Content Container */}
       <Container
-        maxWidth={false} // limits width on larger screens
+        maxWidth={false} 
         sx={{
           flex: 1,
-          px: { xs: 2, sm: 3, md: 4 }, // horizontal padding per screen size
-          py: { xs: 2, sm: 3 }, // vertical padding per screen size
+          px: { xs: 2, sm: 3, md: 4 }, 
+          py: { xs: 2, sm: 3 }, 
           display: 'flex',
           flexDirection: 'column',
         }}

@@ -61,7 +61,6 @@ import PendingIcon from '@mui/icons-material/Pending';
 import Avatar from '@mui/material/Avatar';
 import API_BASE_URL from '../../config';
 
-
 // Resident type options
 const residentTypes = ['Minor', '18-30', 'Illiterate', 'PWD', 'Senior Citizen', 'Indigent'];
 

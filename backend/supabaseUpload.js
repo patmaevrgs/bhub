@@ -8,6 +8,7 @@ import { supabase } from './config.js';
  * @param {string} contentType - The MIME type of the file
  * @returns {Promise<string>} - The public URL of the uploaded file
  */
+
 export const uploadFile = async (bucketName, fileName, fileBuffer, contentType) => {
   try {
     console.log(`Starting upload to bucket: ${bucketName}, file: ${fileName}, contentType: ${contentType}`);
@@ -88,6 +89,7 @@ export const uploadFile = async (bucketName, fileName, fileBuffer, contentType) 
  * @param {string} fileUrl - The full public URL of the file
  * @returns {Promise<boolean>} - Success status
  */
+
 export const deleteFile = async (bucketName, fileUrl) => {
   try {
     console.log(`Attempting to delete file from bucket: ${bucketName}, URL: ${fileUrl}`);
@@ -101,10 +103,6 @@ export const deleteFile = async (bucketName, fileUrl) => {
     // Extract file path from the URL
     const urlObj = new URL(fileUrl);
     const pathParts = urlObj.pathname.split('/');
-    // The file name is typically the last part of the path
-    // For Supabase URLs, we need to extract the actual filename from the path
-    // Format is typically: /storage/v1/object/public/bucket-name/filename
-    // We need just the filename part
     
     let fileName;
     // Look for the bucket name in the path and get everything after it
@@ -133,7 +131,7 @@ export const deleteFile = async (bucketName, fileUrl) => {
   } catch (error) {
     console.error('Error deleting file from Supabase:', error);
     console.error('Error details:', error.message);
-    // Return false but don't throw, as deletion failures shouldn't break the app
+    // Return false but don't throw
     return false;
   }
 };

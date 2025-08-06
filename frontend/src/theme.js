@@ -3,10 +3,10 @@ import { createTheme } from '@mui/material';
 const theme = createTheme({
   typography: {
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    fontSize: 14, // Base font size
+    fontSize: 14, 
     h1: {
       fontSize: '2.2rem',
-      fontWeight: 500, // Roboto looks better with slightly lighter weights
+      fontWeight: 500, 
     },
     h2: {
       fontSize: '1.8rem',
@@ -29,14 +29,14 @@ const theme = createTheme({
       fontWeight: 500,
     },
     body1: {
-      fontSize: '0.9rem', // Slightly smaller body text
+      fontSize: '0.9rem', 
     },
     body2: {
-      fontSize: '0.85rem', // Even smaller secondary text
+      fontSize: '0.85rem', 
     },
     button: {
       fontSize: '0.9rem',
-      textTransform: 'none', // Prevents ALL CAPS buttons
+      textTransform: 'none', 
       fontWeight: 500,
     },
   },

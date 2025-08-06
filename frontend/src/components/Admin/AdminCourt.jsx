@@ -75,7 +75,7 @@ function AdminCourt() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [calendarLoading, setCalendarLoading] = useState(false);
   const [allReservations, setAllReservations] = useState([]);
-  const [sortOrder, setSortOrder] = useState('newest'); // Options: 'newest', 'oldest'
+  const [sortOrder, setSortOrder] = useState('newest'); 
   const [searchTerm, setSearchTerm] = useState('');
   
   // For pagination

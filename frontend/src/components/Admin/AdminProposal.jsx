@@ -83,7 +83,7 @@ function AdminProposal() {
     fetchProposals();
   }, [statusFilter, showArchived]);
   
-  // Add this useEffect to handle filtering and searching
+  // Handle filtering and searching
   useEffect(() => {
     if (!proposals.length) {
       setFilteredProposals([]);

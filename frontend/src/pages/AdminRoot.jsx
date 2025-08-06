@@ -319,7 +319,7 @@ function AdminRoot() {
               </Paper>
             )}
 
-            {/* Action buttons - Right side */}
+            {/* Action buttons */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               {/* Environment chip */}
               <Chip 
@@ -365,7 +365,7 @@ function AdminRoot() {
             p: { xs: 2, sm: 3 }, 
             flexGrow: 1, 
             overflowY: 'auto',
-            pt: isMobile ? 5 : 3 // Add padding top for mobile to account for the menu button
+            pt: isMobile ? 5 : 3 
           }}
         >
           <Outlet />

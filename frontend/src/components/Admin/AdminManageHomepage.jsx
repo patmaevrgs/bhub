@@ -78,9 +78,6 @@ import API_BASE_URL from '../../config';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
-
-  
-
   return (
     <div
       role="tabpanel"

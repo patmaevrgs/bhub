@@ -57,7 +57,7 @@ const QuickStats = () => {
   const navigate = useNavigate();
 
   const handleViewAllActivity = () => {
-    navigate('/admin/logs'); // Adjust this path to match your actual logs page route
+    navigate('/admin/logs'); 
   };
 
   const fetchStats = async () => {
@@ -67,7 +67,7 @@ const QuickStats = () => {
       // Create fetch options with credentials to send cookies
       const fetchOptions = {
         method: 'GET',
-        credentials: 'include', // Important: This sends cookies with the request
+        credentials: 'include', 
         headers: {
           'Content-Type': 'application/json'
         }

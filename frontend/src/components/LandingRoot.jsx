@@ -41,11 +41,11 @@ function LandingRoot() {
 
       {/* Responsive Content Container */}
       <Container
-        maxWidth={false} // limits width on larger screens
+        maxWidth={false} 
         sx={{
           flex: 1,
-          px: { xs: 2, sm: 3, md: 4 }, // horizontal padding per screen size
-          py: { xs: 2, sm: 3 }, // vertical padding per screen size
+          px: { xs: 2, sm: 3, md: 4 }, 
+          py: { xs: 2, sm: 3 }, 
           display: 'flex',
           flexDirection: 'column',
         }}

@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 
-// Helper to create log for resident database actions
+// Create log for resident database actions
 const logResidentAction = async (userId, action, details) => {
     try {
       // Get admin information first to get the name
@@ -17,25 +17,23 @@ const logResidentAction = async (userId, action, details) => {
         return;
       }
       
-      // Now include the admin name in the log
       await createLog({
         body: {
           userId,
           action,
           category: 'Database',
           details,
-          adminName: `${admin.firstName} ${admin.lastName}` // Add admin name
+          adminName: `${admin.firstName} ${admin.lastName}` 
         }
       }, { 
         send: () => {},
-        status: () => ({ json: () => {} }) // Mock the res.status().json() method
+        status: () => ({ json: () => {} }) 
       });
     } catch (error) {
       console.error('Error creating log:', error);
     }
   };
 
-// Replace your existing parseNameFromCSV function
 const parseNameFromCSV = (name) => {
   if (!name) return { firstName: '', middleName: '', lastName: '' };
 
@@ -72,7 +70,7 @@ const parseNameFromCSV = (name) => {
 };
   
 
-// Simple CSV parser function
+// CSV parser function
 const parseCSV = (csvText) => {
   const lines = csvText.split('\n');
   if (lines.length === 0) return [];
@@ -120,7 +118,7 @@ const parseCSV = (csvText) => {
   return results;
 };
 
-// Helper to get userId from JWT cookie
+// Get userId from JWT cookie
 const getUserIdFromCookie = (req) => {
   try {
     if (!req.cookies || !req.cookies.authToken) {
@@ -251,7 +249,7 @@ export const getResidentById = async (req, res) => {
   }
 };
 
-// Create a new resident (Modified version without password authentication)
+// Create a new resident 
 export const createResident = async (req, res) => {
     try {
       const { 
@@ -811,8 +809,7 @@ export const rejectResidentRequest = async (req, res) => {
   }
 };
 
-// Import residents from CSV - updated version with fixes
-// Updated importResidentsFromCSV function for residentController.js
+// Import residents from CSV
 export const importResidentsFromCSV = async (req, res) => {
   try {
     if (!req.file) {
@@ -881,7 +878,7 @@ export const importResidentsFromCSV = async (req, res) => {
           continue;
         }
 
-        // Check for duplicates - use a more flexible approach
+        // Check for duplicates
         const duplicate = await Resident.findOne({
           $or: [
             // Check if matches exact first and last name
@@ -941,10 +938,9 @@ export const importResidentsFromCSV = async (req, res) => {
       }
     }
 
-    // Log action without using createLog
+    // Log action 
     console.log(`Import: Admin ${adminName} imported ${successCount} residents`);
 
-    // Enhanced response messages based on import results
     if (successCount === 0 && duplicates.length > 0) {
       // All valid rows were duplicates
       return res.status(200).json({
@@ -1015,7 +1011,7 @@ export const checkDuplicateResident = async (req, res) => {
       }
     ];
     
-    // Add isVerified filter if provided
+    // Add isVerified filter 
     if (isVerified !== undefined) {
       filters.forEach(filter => {
         filter.isVerified = isVerified === 'true';
@@ -1102,7 +1098,7 @@ export const createTransactionFromResidentRequest = async (residentId) => {
 export const cancelResidentRequest = async (req, res) => {
   try {
     const { id } = req.params;
-    const { cancellationReason } = req.body; // Optional cancellation reason from resident
+    const { cancellationReason } = req.body; 
     
     // Get user ID from cookie
     const userId = getUserIdFromCookie(req);

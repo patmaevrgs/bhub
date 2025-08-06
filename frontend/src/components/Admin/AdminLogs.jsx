@@ -55,10 +55,10 @@ function AdminLogs() {
   const [endDate, setEndDate] = useState('');
   const [adminFilter, setAdminFilter] = useState('');
   const [actionFilter, setActionFilter] = useState('');
-  const [entityTypeFilter, setEntityTypeFilter] = useState(''); // New filter for entity type
+  const [entityTypeFilter, setEntityTypeFilter] = useState(''); 
   const [uniqueAdmins, setUniqueAdmins] = useState([]);
   const [uniqueActions, setUniqueActions] = useState([]);
-  const [uniqueEntityTypes, setUniqueEntityTypes] = useState([]); // New state for entity types
+  const [uniqueEntityTypes, setUniqueEntityTypes] = useState([]); 
   const [currentAdmin, setCurrentAdmin] = useState('');
   const [filterExpanded, setFilterExpanded] = useState(false);
   const [copiedId, setCopiedId] = useState(null);

@@ -56,11 +56,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-/**
- * ResidentAnnouncements Component
- * 
- * Simplified version for compatibility with existing setup
- */
+
 const Announcements = () => {
   const [announcements, setAnnouncements] = useState([]);
   const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);

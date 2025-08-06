@@ -110,7 +110,7 @@ export const createProposal = async (req, res) => {
             ? description.substring(0, 100) + '...' 
             : description,
           proposalId: newProposal._id,
-          proposalStatus: 'pending' // Store the original proposal status
+          proposalStatus: 'pending' 
         },
         referenceId: newProposal._id
       };
@@ -138,12 +138,11 @@ export const createProposal = async (req, res) => {
   }
 };
 
-// Get all proposals with optional filtering
+// Get all proposals
 export const getProposals = async (req, res) => {
   try {
     const { userId, status, startDate, endDate } = req.query;
     
-    // Build filter object based on query parameters
     const filter = {};
     
     // User filter (for resident view)
