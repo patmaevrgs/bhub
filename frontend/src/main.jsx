@@ -70,7 +70,6 @@ const checkIfLoggedInOnHome = async () => {
     });
 
     const payload = await res.json();
-    console.log(`checkIfLoggedInHome: isLoggedIn: ${payload.isLoggedIn}, userType: ${payload.userType}`);
     
     if (payload.isLoggedIn) {
       if (payload.userType === "resident") {

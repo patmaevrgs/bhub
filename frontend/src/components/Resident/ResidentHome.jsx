@@ -326,7 +326,6 @@ function ResidentHome() {
       }
       const data = await response.json();
       setHomepageContent(data);
-      console.log("Homepage content loaded:", data); // Debug log
     } catch (error) {
       console.error('Error fetching homepage content:', error);
     } finally {
