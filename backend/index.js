@@ -43,6 +43,8 @@ mongoose.connect(MONGODB_URI, {
 // CORS configuration
 const allowedOrigins = [
   FRONTEND_URL,
+  'https://brgymaahas.com',
+  'https://www.brgymaahas.com',
   'https://bhub-maahas.netlify.app',
   'http://localhost:3000'
 ];
