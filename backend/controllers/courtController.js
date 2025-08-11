@@ -4,6 +4,20 @@ import UserLog from '../models/UserLog.js';
 import { format } from 'date-fns';
 import mongoose from 'mongoose';
 
+// Add this function at the top of each controller file
+const emitNotification = (req, eventType, data) => {
+  const io = req.app.get('io');
+  if (io) {
+    if (eventType.includes('new_request') || eventType.includes('request_submitted')) {
+      // Notify all admins
+      io.to('admins').emit(eventType, data);
+    } else if (eventType.includes('status_update')) {
+      // Notify specific resident
+      io.to(`user_${data.userId}`).emit(eventType, data);
+    }
+  }
+};
+
 const createAdminLog = async (adminName, action, details, entityId, entityType = 'CourtReservation') => {
   try {
     const newLog = new UserLog({
@@ -126,6 +140,16 @@ export const createCourtReservation = async (req, res) => {
     
     // Save the reservation
     const savedReservation = await newReservation.save();
+
+    // Emit notification to admins
+    emitNotification(req, 'new_request', {
+      type: 'court_reservation',
+      id: savedReservation._id,
+      serviceId: savedReservation.serviceId,
+      message: `New court reservation from ${savedReservation.representativeName}`,
+      timestamp: new Date(),
+      data: savedReservation
+    });
 
     // Create transaction 
     const amount = calculateAmount(startTime, duration);

@@ -7,6 +7,19 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
 
+const emitNotification = (req, eventType, data) => {
+  const io = req.app.get('io');
+  if (io) {
+    if (eventType.includes('new_request') || eventType.includes('request_submitted')) {
+      // Notify all admins
+      io.to('admins').emit(eventType, data);
+    } else if (eventType.includes('status_update')) {
+      // Notify specific resident
+      io.to(`user_${data.userId}`).emit(eventType, data);
+    }
+  }
+};
+
 // Create log for resident database actions
 const logResidentAction = async (userId, action, details) => {
     try {
@@ -572,6 +585,15 @@ export const requestAddToDatabase = async (req, res) => {
     });
 
     const savedResident = await resident.save();
+
+    // Emit notification to admins
+    emitNotification(req, 'new_request', {
+      type: 'resident_registration',
+      id: savedResident._id,
+      message: `New resident registration: ${savedResident.firstName} ${savedResident.lastName}`,
+      timestamp: new Date(),
+      data: savedResident
+    });
     
     // Create a transaction for the resident request
     try {

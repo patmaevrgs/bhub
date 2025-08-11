@@ -6,6 +6,20 @@ import Transaction from '../models/Transaction.js';
 import UserLog from '../models/UserLog.js';
 const API_URL = process.env.API_URL || 'http://localhost:3002';
 
+// Add this function at the top of each controller file
+const emitNotification = (req, eventType, data) => {
+  const io = req.app.get('io');
+  if (io) {
+    if (eventType.includes('new_request') || eventType.includes('request_submitted')) {
+      // Notify all admins
+      io.to('admins').emit(eventType, data);
+    } else if (eventType.includes('status_update')) {
+      // Notify specific resident
+      io.to(`user_${data.userId}`).emit(eventType, data);
+    }
+  }
+};
+
 const createAdminLog = async (adminName, action, details, entityId) => {
   try {
     const response = await fetch(`${API_URL}/logs`, {
@@ -96,6 +110,16 @@ export const createProposal = async (req, res) => {
     });
 
     await newProposal.save();
+
+    // Emit notification to admins
+    emitNotification(req, 'new_request', {
+      type: 'project_proposal',
+      id: newProposal._id,
+      serviceId: newProposal.serviceId,
+      message: `New project proposal: ${newProposal.projectTitle}`,
+      timestamp: new Date(),
+      data: newProposal
+    });
 
     // Create a transaction record for this proposal
     try {

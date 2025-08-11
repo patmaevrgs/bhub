@@ -4,6 +4,20 @@ import UserLog from '../models/UserLog.js';
 import mongoose from 'mongoose';
 import { createTransactionFromBooking } from '../controllers/transactionController.js';
 
+// Add this function at the top of each controller file
+const emitNotification = (req, eventType, data) => {
+  const io = req.app.get('io');
+  if (io) {
+    if (eventType.includes('new_request') || eventType.includes('request_submitted')) {
+      // Notify all admins
+      io.to('admins').emit(eventType, data);
+    } else if (eventType.includes('status_update')) {
+      // Notify specific resident
+      io.to(`user_${data.userId}`).emit(eventType, data);
+    }
+  }
+};
+
 const createAdminLog = async (adminName, action, details, entityId, entityType = 'AmbulanceBooking') => {
   try {
     const newLog = new UserLog({
@@ -104,6 +118,16 @@ export const createBooking = async (req, res) => {
     });
 
     const savedBooking = await newBooking.save();
+
+    // Emit notification to admins
+    emitNotification(req, 'new_request', {
+      type: 'ambulance_booking',
+      id: savedBooking._id,
+      serviceId: savedBooking.serviceId,
+      message: `New ambulance booking from ${savedBooking.patientName}`,
+      timestamp: new Date(),
+      data: savedBooking
+    });
     
     // Create a transaction for this booking
     try {
@@ -206,6 +230,16 @@ export const updateBookingStatus = async (req, res) => {
     booking.updatedAt = Date.now();
     
     await booking.save();
+
+    // Emit status update to resident
+    emitNotification(req, 'status_update', {
+      type: 'ambulance_booking',
+      id: booking._id,
+      userId: booking.bookedBy,
+      status: status,
+      message: `Your ambulance booking has been ${status}`,
+      timestamp: new Date()
+    });
     
     // Create admin log
     if (adminName) {

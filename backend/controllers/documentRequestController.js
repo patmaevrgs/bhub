@@ -4,6 +4,20 @@ import mongoose from 'mongoose';
 import UserLog from '../models/UserLog.js';
 const API_URL = process.env.API_URL || 'http://localhost:3002';
 
+// Add this function at the top of each controller file
+const emitNotification = (req, eventType, data) => {
+  const io = req.app.get('io');
+  if (io) {
+    if (eventType.includes('new_request') || eventType.includes('request_submitted')) {
+      // Notify all admins
+      io.to('admins').emit(eventType, data);
+    } else if (eventType.includes('status_update')) {
+      // Notify specific resident
+      io.to(`user_${data.userId}`).emit(eventType, data);
+    }
+  }
+};
+
 const createAdminLog = async (adminName, action, details, entityId) => {
   try {
     const response = await fetch(`${API_URL}/logs`, {
@@ -47,6 +61,16 @@ export const createDocumentRequest = async (req, res) => {
     });
     
     await newDocumentRequest.save();
+
+    // Emit notification to admins
+    emitNotification(req, 'new_request', {
+      type: 'document_request',
+      id: newDocumentRequest._id,
+      serviceId: newDocumentRequest.serviceId,
+      message: `New document request: ${newDocumentRequest.documentType}`,
+      timestamp: new Date(),
+      data: newDocumentRequest
+    });
     
     // Create a transaction for this document request
     const newTransaction = new Transaction({

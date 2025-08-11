@@ -1,6 +1,14 @@
 import ContactMessage from '../models/ContactMessage.js';
 import nodemailer from 'nodemailer';
 
+// emit notif
+const emitNotification = (req, eventType, data) => {
+  const io = req.app.get('io');
+  if (io) {
+    io.to('admins').emit(eventType, data);
+  }
+};
+
 // Create contact message
 export const createContactMessage = async (req, res) => {
   try {
@@ -24,6 +32,15 @@ export const createContactMessage = async (req, res) => {
     });
 
     await contactMessage.save();
+
+    // Emit notification to admins
+    emitNotification(req, 'new_request', {
+      type: 'contact_message',
+      id: contactMessage._id,
+      message: `New contact message: ${subject}`,
+      timestamp: new Date(),
+      data: contactMessage
+    });
 
     try {
       const transporter = nodemailer.createTransporter({

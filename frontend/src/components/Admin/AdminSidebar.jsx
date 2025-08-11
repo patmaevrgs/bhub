@@ -39,6 +39,7 @@ import {
 import CircleIcon from '@mui/icons-material/Circle';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
+import { useSocket } from '../../contexts/SocketContext';
 import API_BASE_URL from '../../config';
 import bhubLogo from '../../assets/bhub-logo.png';
 
@@ -49,6 +50,7 @@ export default function AdminSidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openServices, setOpenServices] = useState(false);
   const [userType, setUserType] = useState('admin');
+  const { notifications } = useSocket();
   const [pendingCounts, setPendingCounts] = useState({
     ambulance: 0,
     court: 0,
@@ -103,18 +105,15 @@ export default function AdminSidebar() {
   }
 }, [location.pathname]);
 
-  // New useEffect to fetch pending counts
+  // Fetch pending counts less frequently (every 5 minutes)
   useEffect(() => {
-    // This function fetches pending counts for each service
     const fetchPendingCounts = async () => {
       try {
-        // Get auth token if needed
         const token = localStorage.getItem('token');
         const headers = token ? {
           'Authorization': `Bearer ${token}`
         } : {};
 
-        // Create an object to store our counts
         let counts = {
           ambulance: 0,
           court: 0,
@@ -126,18 +125,13 @@ export default function AdminSidebar() {
           total: 0
         };
 
-        // Safely fetch function that handles errors and different response formats
         const safeFetch = async (url) => {
           try {
             const response = await fetch(url, { headers });
-            
-            // Check if response is OK
             if (!response.ok) {
               console.warn(`Error fetching ${url}: ${response.status} ${response.statusText}`);
               return null;
             }
-            
-            // Try to parse as JSON
             const text = await response.text();
             try {
               return JSON.parse(text);
@@ -171,7 +165,7 @@ export default function AdminSidebar() {
           counts.reports = reportsData.filter(r => r.status === 'Pending').length;
         }
 
-        // Fetch unread contact messages - add this after the documents fetch
+        // Fetch unread contact messages
         const contactData = await safeFetch(`${API_BASE_URL}/contact/unread-count`);
         if (contactData && contactData.success) {
           counts.contact = contactData.count;
@@ -187,18 +181,14 @@ export default function AdminSidebar() {
           counts.projects = projectsData.length;
         }
 
-        // Fetch document requests - using the correct endpoint from your controller
-        // Note: Your error showed this endpoint doesn't exist, so I'm using the endpoint from your controller
+        // Fetch document requests
         const formsData = await safeFetch(`${API_BASE_URL}/documents?status=pending`);
         if (formsData) {
           if (formsData.success && formsData.documentRequests) {
-            // If the API returns {success: true, documentRequests: [...]}
             counts.forms = formsData.documentRequests.length;
           } else if (Array.isArray(formsData)) {
-            // If the API directly returns an array
             counts.forms = formsData.length;
           } else if (formsData.success && Array.isArray(formsData.data)) {
-            // If the API returns {success: true, data: [...]}
             counts.forms = formsData.data.length;
           } else {
             console.warn('Unexpected format for forms data:', formsData);
@@ -206,10 +196,9 @@ export default function AdminSidebar() {
           }
         }
         
-        // Fetch unverified resident requests - this is the new part
+        // Fetch unverified resident requests
         const residentsData = await safeFetch(`${API_BASE_URL}/residents?isVerified=false`);
         if (residentsData) {
-          // Handle different response structures
           if (residentsData.success && residentsData.data) {
             counts.residents = residentsData.data.length;
           } else if (Array.isArray(residentsData)) {
@@ -223,8 +212,6 @@ export default function AdminSidebar() {
         counts.total = counts.ambulance + counts.court + counts.reports + counts.projects + counts.forms;
 
         console.log('Pending counts:', counts);
-        
-        // Update state with the counts
         setPendingCounts(counts);
       } catch (error) {
         console.error('Error fetching pending counts:', error);
@@ -234,7 +221,53 @@ export default function AdminSidebar() {
     // Initial fetch
     fetchPendingCounts();
     
+    // Refresh every 5 minutes instead of constantly
+    const refreshInterval = setInterval(() => {
+      fetchPendingCounts();
+    }, 5 * 60 * 1000);
+    
+    return () => clearInterval(refreshInterval);
   }, []);
+
+  // Handle real-time notifications
+  useEffect(() => {
+    if (notifications.length > 0) {
+      const latestNotification = notifications[0];
+      
+      setPendingCounts(prev => {
+        const newCounts = { ...prev };
+        
+        switch (latestNotification.type) {
+          case 'ambulance_booking':
+            newCounts.ambulance += 1;
+            break;
+          case 'court_reservation':
+            newCounts.court += 1;
+            break;
+          case 'document_request':
+            newCounts.forms += 1;
+            break;
+          case 'infrastructure_report':
+            newCounts.reports += 1;
+            break;
+          case 'project_proposal':
+            newCounts.projects += 1;
+            break;
+          case 'resident_registration':
+            newCounts.residents += 1;
+            break;
+          case 'contact_message':
+            newCounts.contact += 1;
+            break;
+        }
+        
+        newCounts.total = newCounts.ambulance + newCounts.court + 
+                         newCounts.reports + newCounts.projects + newCounts.forms;
+        
+        return newCounts;
+      });
+    }
+  }, [notifications]);
 
   const toggleDrawer = () => {
     setMobileOpen(!mobileOpen);

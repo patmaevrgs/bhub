@@ -3,6 +3,20 @@ import Transaction from '../models/Transaction.js';
 import { uploadFile, deleteFile } from '../supabaseUpload.js';
 const API_URL = process.env.API_URL || 'http://localhost:3002';
 
+// Add this function at the top of each controller file
+const emitNotification = (req, eventType, data) => {
+  const io = req.app.get('io');
+  if (io) {
+    if (eventType.includes('new_request') || eventType.includes('request_submitted')) {
+      // Notify all admins
+      io.to('admins').emit(eventType, data);
+    } else if (eventType.includes('status_update')) {
+      // Notify specific resident
+      io.to(`user_${data.userId}`).emit(eventType, data);
+    }
+  }
+};
+
 const createAdminLog = async (adminName, action, details, entityId) => {
   try {
     const response = await fetch(`${API_URL}/logs`, {
@@ -80,6 +94,16 @@ export const createReport = async (req, res) => {
     });
     
     const savedReport = await report.save();
+
+    // Emit notification to admins
+    emitNotification(req, 'new_request', {
+      type: 'infrastructure_report',
+      id: savedReport._id,
+      serviceId: savedReport.serviceId,
+      message: `New infrastructure report: ${savedReport.issueType}`,
+      timestamp: new Date(),
+      data: savedReport
+    });
 
     // Create a transaction for the report
     const transaction = new Transaction({

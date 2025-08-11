@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider, redirect } from 'react-router-dom'
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './theme';
 import './index.css';
+import { SocketProvider } from './contexts/SocketContext.jsx';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 import AdminRoot from './pages/AdminRoot';
@@ -237,7 +238,9 @@ root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <RouterProvider router={router} />    
+      <SocketProvider>
+        <RouterProvider router={router} />    
+      </SocketProvider>
     </ThemeProvider>
   </React.StrictMode>
 );
