@@ -4,6 +4,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import ResidentNav from '../components/Resident/ResidentNav';
 import Footer from '../components/Resident/Footer';
 import { Box, Container } from '@mui/material';
+import ChatWidget from '../components/ChatWidget';
 import API_BASE_URL from '../config';
 
 function ResidentRoot() {
@@ -101,6 +102,7 @@ function ResidentRoot() {
       >
         <Outlet context={{ firstName: ResidentFirstName }} />
       </Container>
+      <ChatWidget />
       
       {/* Footer Component with dynamic data */}
       <Footer footerData={footerData} />

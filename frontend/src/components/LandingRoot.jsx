@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import LandingNavbar from '../components/LandingNavbar';
 import Footer from '../components/Resident/Footer';
 import { Box, Container } from '@mui/material';
+import ChatWidget from './ChatWidget';
 import API_BASE_URL from '../config';
 
 function LandingRoot() {
@@ -53,6 +54,7 @@ function LandingRoot() {
         <Outlet />
       </Container>
       
+      <ChatWidget />
       {/* Footer Component with dynamic data */}
       <Footer footerData={footerData} />
     </Box>

@@ -16,6 +16,7 @@ import {
   Divider,
   Chip,
 } from '@mui/material';
+import { Chat as ChatSupportIcon } from '@mui/icons-material';
 import {
   Dashboard as DashboardIcon,
   Campaign as AnnouncementsIcon,
@@ -50,13 +51,16 @@ export default function AdminSidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openServices, setOpenServices] = useState(false);
   const [userType, setUserType] = useState('admin');
-  const { notifications } = useSocket();
+  const { notifications, socket } = useSocket(); // Get both notifications AND socket
   const [pendingCounts, setPendingCounts] = useState({
     ambulance: 0,
     court: 0,
     reports: 0,
     projects: 0,
     forms: 0,
+    residents: 0,
+    contact: 0,
+    chat: 0,
     total: 0
   });
   const theme = useTheme();
@@ -65,45 +69,45 @@ export default function AdminSidebar() {
   const navigate = useNavigate();
 
   useEffect(() => {
-  // Get user type from localStorage
-  const storedUserType = localStorage.getItem('userType');
-  if (storedUserType) {
-    setUserType(storedUserType);
-    console.log('User type from localStorage:', storedUserType);
-  } else {
-    // If not in localStorage, try to get it from the server
-    const checkUserType = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/checkifloggedin`, {
-          method: 'POST',
-          credentials: 'include'
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          if (data.isLoggedIn && data.userType) {
-            setUserType(data.userType);
-            localStorage.setItem('userType', data.userType);
-            console.log('User type from server:', data.userType);
+    // Get user type from localStorage
+    const storedUserType = localStorage.getItem('userType');
+    if (storedUserType) {
+      setUserType(storedUserType);
+      console.log('User type from localStorage:', storedUserType);
+    } else {
+      // If not in localStorage, try to get it from the server
+      const checkUserType = async () => {
+        try {
+          const response = await fetch(`${API_BASE_URL}/checkifloggedin`, {
+            method: 'POST',
+            credentials: 'include'
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            if (data.isLoggedIn && data.userType) {
+              setUserType(data.userType);
+              localStorage.setItem('userType', data.userType);
+              console.log('User type from server:', data.userType);
+            }
           }
+        } catch (error) {
+          console.error('Error fetching user type:', error);
         }
-      } catch (error) {
-        console.error('Error fetching user type:', error);
-      }
-    };
+      };
+      
+      checkUserType();
+    }
     
-    checkUserType();
-  }
-  
-  // Check if we should expand the services menu initially
-  const isServiceActive = navItems.some(item => 
-    item.submenu && item.submenu.some(sub => location.pathname === sub.path)
-  );
-  
-  if (isServiceActive) {
-    setOpenServices(true);
-  }
-}, [location.pathname]);
+    // Check if we should expand the services menu initially
+    const isServiceActive = navItems.some(item => 
+      item.submenu && item.submenu.some(sub => location.pathname === sub.path)
+    );
+    
+    if (isServiceActive) {
+      setOpenServices(true);
+    }
+  }, [location.pathname]);
 
   // Fetch pending counts less frequently (every 5 minutes)
   useEffect(() => {
@@ -122,6 +126,7 @@ export default function AdminSidebar() {
           forms: 0,
           residents: 0,
           contact: 0,
+          chat: 0,
           total: 0
         };
 
@@ -208,6 +213,11 @@ export default function AdminSidebar() {
           }
         }
 
+        const chatStatsData = await safeFetch(`${API_BASE_URL}/admin/chat-stats`);
+        if (chatStatsData && chatStatsData.success) {
+          counts.chat = chatStatsData.stats.unreadChats || 0;
+        }
+
         // Calculate total
         counts.total = counts.ambulance + counts.court + counts.reports + counts.projects + counts.forms;
 
@@ -259,6 +269,10 @@ export default function AdminSidebar() {
           case 'contact_message':
             newCounts.contact += 1;
             break;
+          case 'new_chat':
+          case 'user_message':
+            newCounts.chat += 1;
+            break;
         }
         
         newCounts.total = newCounts.ambulance + newCounts.court + 
@@ -269,9 +283,43 @@ export default function AdminSidebar() {
     }
   }, [notifications]);
 
+  // NEW: Handle chat-specific socket events for real-time count updates
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleChatRead = () => {
+      console.log('Chat marked as read - updating count'); // Debug log
+      setPendingCounts(prev => {
+        const newCount = Math.max(0, prev.chat - 1);
+        console.log('Chat count updated from', prev.chat, 'to', newCount); // Debug log
+        return {
+          ...prev,
+          chat: newCount
+        };
+      });
+    };
+
+    const handleUserMessage = (data) => {
+      console.log('New user message - updating count'); // Debug log
+      setPendingCounts(prev => ({
+        ...prev,
+        chat: prev.chat + 1
+      }));
+    };
+
+    socket.on('chat_read', handleChatRead);
+    socket.on('user_message', handleUserMessage);
+
+    return () => {
+      socket.off('chat_read', handleChatRead);
+      socket.off('user_message', handleUserMessage);
+    };
+  }, [socket]); // Using the existing socket from useSocket
+
   const toggleDrawer = () => {
     setMobileOpen(!mobileOpen);
   };
+
   // Base navigation items
   const baseNavItems = [
     {
@@ -301,6 +349,11 @@ export default function AdminSidebar() {
       path: '/admin/contact-messages',
     },
     {
+      label: 'Chat Support',
+      icon: <ChatSupportIcon />,
+      path: '/admin/chat-support',
+    },
+    {
       label: 'Resident Database',
       icon: <ResidentsIcon />,
       path: '/admin/database',
@@ -326,8 +379,11 @@ export default function AdminSidebar() {
       path: '/admin/manage-app',
     }
   ] : baseNavItems;
+
+  // Rest of your component remains the same...
   const renderDrawerContent = () => (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      {/* All your existing renderDrawerContent code stays exactly the same */}
       {/* Logo Header Section */}
       <Box 
         sx={{ 
@@ -503,6 +559,24 @@ export default function AdminSidebar() {
                             label={pendingCounts.contact}
                             size="small"
                             color="warning"
+                            sx={{
+                              height: 18,
+                              fontSize: '0.65rem',
+                              fontWeight: 600,
+                              minWidth: 20,
+                              ml: 1,
+                              '& .MuiChip-label': {
+                                padding: '0 6px',
+                                overflow: 'visible'
+                              }
+                            }}
+                          />
+                        )}
+                        {item.label === 'Chat Support' && pendingCounts.chat > 0 && (
+                          <Chip 
+                            label={pendingCounts.chat}
+                            size="small"
+                            color="error" // Use red for urgent chat notifications
                             sx={{
                               height: 18,
                               fontSize: '0.65rem',
@@ -908,6 +982,7 @@ export default function AdminSidebar() {
       </Box>
     </Box>
   );
+
   return (
     <>
       {isMobile ? (

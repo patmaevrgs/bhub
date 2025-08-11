@@ -2,6 +2,16 @@ import { Router } from 'express';
 import { signUp, login, checkIfLoggedIn, addAdmin, addSuperAdmin, logout } from './controllers/authController.js';
 import { createAnnouncement, getAnnouncements, deleteAnnouncement, updateAnnouncement } from './controllers/announcementController.js';
 import { createLog, getLogs, deleteOldLogs } from './controllers/userLogController.js';
+import {
+  createChat,
+  sendMessage,
+  getChat,
+  getAllChats,
+  closeChat,
+  deleteChat,
+  markChatAsRead,
+  getChatStats
+} from './controllers/chatController.js';
 import { 
   createBooking, 
   getBookings, 
@@ -144,6 +154,16 @@ router.put('/profile/password', (req, res, next) => {
   }
   next();
 }, updateUserPassword);
+
+// Chat Routes
+router.post('/chat/create', createChat);
+router.post('/chat/send', sendMessage);
+router.get('/chat/:chatId', getChat);
+router.get('/admin/chats', getAllChats);
+router.get('/admin/chat-stats', getChatStats);
+router.put('/chat/:chatId/close', closeChat);
+router.delete('/chat/:chatId', deleteChat);
+router.patch('/chat/:chatId/read', markChatAsRead);
 
 // Announcements
 router.post('/announcements', upload.array('files'), createAnnouncement);

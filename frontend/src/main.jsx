@@ -5,6 +5,7 @@ import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './theme';
 import './index.css';
 import { SocketProvider } from './contexts/SocketContext.jsx';
+import AdminChat from './components/Admin/AdminChat.jsx';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 import AdminRoot from './pages/AdminRoot';
@@ -199,6 +200,7 @@ const router = createBrowserRouter([
     {path: '/admin/services/infrastructure-reports', element: <AdminReport />},
     {path: '/admin/services/project-proposals', element: <AdminProposal />},
     {path: '/admin/contact-messages/', element: <AdminContact />},
+    {path: '/admin/chat-support', element: <AdminChat />},
     {
       path: '/admin/manage-app', 
       element: <AdminManageHomepage />,

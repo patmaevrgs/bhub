@@ -111,7 +111,7 @@ const connectedUsers = new Map();
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
-  // Handle user joining (authentication)
+  // Handle user joining (authentication) - YOUR EXISTING CODE
   socket.on('join', (userData) => {
     const { userId, userType, name } = userData;
     
@@ -133,7 +133,30 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Handle disconnection
+  // NEW CHAT EVENTS - ADDED FOR CHAT FUNCTIONALITY
+  
+  // Join specific chat room
+  socket.on('join_chat', (chatId) => {
+    socket.join(`chat_${chatId}`);
+    console.log(`User ${socket.id} joined chat room: chat_${chatId}`);
+  });
+
+  // Leave specific chat room
+  socket.on('leave_chat', (chatId) => {
+    socket.leave(`chat_${chatId}`);
+    console.log(`User ${socket.id} left chat room: chat_${chatId}`);
+  });
+
+  // Handle admin joining admin chat area
+  socket.on('join_admin_chat', () => {
+    const user = connectedUsers.get(socket.id);
+    if (user && (user.userType === 'admin' || user.userType === 'superadmin')) {
+      socket.join('admin_chat');
+      console.log(`Admin ${user.name} joined admin chat area`);
+    }
+  });
+
+  // Handle disconnection - YOUR EXISTING CODE
   socket.on('disconnect', () => {
     const user = connectedUsers.get(socket.id);
     if (user) {
@@ -142,7 +165,7 @@ io.on('connection', (socket) => {
     connectedUsers.delete(socket.id);
   });
 
-  // Chat functionality
+  // Chat functionality - YOUR EXISTING CODE
   socket.on('send_message', (messageData) => {
     const sender = connectedUsers.get(socket.id);
     if (!sender) return;
